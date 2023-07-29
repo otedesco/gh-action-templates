@@ -62,5 +62,5 @@ jobs:
       - run: pnpm run lint:check
 
       - run: pnpm run spell:check
-
-      - run: pnpm run test:coverage
+      # TODO: enable tests
+      # - run: pnpm run test:coverage

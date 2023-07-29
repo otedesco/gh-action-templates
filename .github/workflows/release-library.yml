@@ -1,7 +1,6 @@
 name: Build & Release NodeJs Library
 
-on:
-  workflow_call:
+on: workflow_call
 
 jobs:
   release:
