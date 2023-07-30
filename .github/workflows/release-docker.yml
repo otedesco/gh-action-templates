@@ -52,6 +52,8 @@ jobs:
             ${{ runner.os }}-node-${{ steps.versions.outputs.node_version }}-
 
       - name: Install dependencies
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           echo "Running pnpm install --frozen-lockfile"
           pnpm install --frozen-lockfile
@@ -59,6 +61,7 @@ jobs:
       - name: Release package
         if: ${{ success() }}
         env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
