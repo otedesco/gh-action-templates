@@ -1,0 +1,37 @@
+name: "Notify"
+description: "Notify pipeline status"
+inputs:
+  token:
+    description: 'A Github PAT'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Success ✅
+      if: ${{ success() }}
+      shell: bash
+      run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
+          --header 'authorization: Bearer ${{ inputs.token }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "context": "CI Succeeded",
+            "state": "success",
+            "description": "Pipeline job passed",
+            "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }'
+    - name: Failure 🚨
+      if: ${{ failure() }}
+      shell: bash
+      run: |
+          curl --request POST \
+          --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }} \
+          --header 'authorization: Bearer ${{ inputs.token }}' \
+          --header 'content-type: application/json' \
+          --data '{
+            "context": "CI Failure",
+            "state": "failure",
+            "description": "Pipeline job failed",
+            "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }'

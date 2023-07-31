@@ -1,0 +1,49 @@
+name: "Setup"
+description: "Setup node.js environment"
+inputs:
+  node-version:
+    description: Node version to be installed
+    required: true
+    default: "18.17.0"
+  npm-version:
+    description: NPM version to be installed
+    required: true
+    default: "9.6.7"
+  pnpm-version:
+    description: PNPM version to be installed
+    required: true
+    default: "8.6.10"
+  os:
+    description: Runner os
+    required: true
+    default: "ubuntu-latest"
+runs:
+  using: "composite"
+  steps:
+    - name: Set node/npm versions using volta
+      uses: volta-cli/action@v4
+      with:
+        node-version: "${{ inputs.node-version }}"
+        npm-version: "${{ inputs.npm-version }}"
+
+    - name: Install PNPM
+      uses: pnpm/action-setup@v2.2.1
+      with:
+        version: "${{ inputs.pnpm-version }}"
+    - name: Print node/npm/pnpm versions
+      shell: bash
+      run: |
+        node_ver=$( node --version )
+        pnpm_ver=$( pnpm --version || true )
+        echo "Node: ${node_ver:1}"
+        echo "NPM: $(npm --version )"
+        if [[ $pnpm_ver != '' ]]; then echo "PNPM: $pnpm_ver"; fi
+        echo "node_version=${node_ver:1}" >> "$GITHUB_OUTPUT"
+
+    - name: Use the node_modules cache if available [pnpm]
+      uses: actions/cache@v2
+      with:
+        path: ~/.pnpm-store
+        key: ${{ inputs.os }}-node-${{ steps.versions.outputs.node_version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ inputs.os }}-node-${{ steps.versions.outputs.node_version }}-
