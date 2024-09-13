@@ -1,0 +1,48 @@
+name: Build & Release NodeJs Docker Image
+
+on: workflow_call
+
+jobs:
+  release:
+    name: Release Docker Image
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}
+    strategy:
+      matrix:
+        include:
+          - image: ghcr.io/${{ github.repository }}
+            dockerfile: ./Dockerfile
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Replace npm token
+        run: echo -e "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ".npmrc"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ matrix.image }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            NPM_TOKEN=${{ secrets.NPM_TOKEN }}
