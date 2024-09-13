@@ -35,17 +35,16 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "Running pnpm install --frozen-lockfile"
-          pnpm install --frozen-lockfile
+          echo "Running pnpm install"
+          pnpm install --prefer-offline
 
       - run: pnpm type:check
 
       - run: pnpm lint:check
         env:
-          NODE_OPTIONS: '--max_old_space_size=4096'
+          NODE_OPTIONS: "--max_old_space_size=4096"
 
       - run: pnpm test
-
 
       - uses: otedesco/gh-action-templates/.github/actions/notify-status@main
         with:
