@@ -57,10 +57,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Create release branch
-        if: steps.changesets.outputs.published == 'true'
-        run: |
-          branch_name=release/v${{ steps.changesets.outputs.publishedPackages[0].version }}
-          git checkout -b $branch_name
-          git push --set-upstream origin $branch_name
