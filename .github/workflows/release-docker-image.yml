@@ -14,9 +14,15 @@ jobs:
         include:
           - image: ghcr.io/${{ github.repository }}
             dockerfile: ./Dockerfile
+          - image: ghcr.io/${{ github.repository }}
+            dockerfile: ./Dockerfile.worker
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+
+      - name: check if dockerfile exists
+        if: ${{ hashFiles(matrix.dockerfile) != '' }}
+        run: echo "File exists"
 
       - name: Replace npm token
         run: echo -e "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" > ".npmrc"
@@ -37,6 +43,7 @@ jobs:
           password: ${{ secrets.GH_TOKEN }}
 
       - name: Build and push Docker image
+        if: ${{ hashFiles(matrix.dockerfile) != '' }}
         uses: docker/build-push-action@v4
         with:
           context: .
