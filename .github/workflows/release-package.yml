@@ -1,6 +1,12 @@
 name: Build & Release NodeJs Library
 
-on: workflow_call
+on:
+  workflow_call:
+    secrets:
+      NPM_TOKEN:
+        required: true
+      GH_TOKEN:
+        required: true
 
 jobs:
   release-packages:
@@ -18,21 +24,15 @@ jobs:
 
       - name: Setup environment
         uses: otedesco/gh-action-templates/.github/actions/setup-environment@main
+        with:
+          registry-auth-required: "true"
+          npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "Running pnpm install"
           pnpm install --frozen-lockfile --prefer-offline
-
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //npm.pkg.github.com/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build package
         run: pnpm run build

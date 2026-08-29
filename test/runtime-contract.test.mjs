@@ -83,7 +83,7 @@ for (const dockerfile of ["../cerberus/Dockerfile", "../hermes/Dockerfile", "../
     assert.deepEqual(nodeImages, nodeImages.map(() => `${contract.nodeVersion}-alpine`));
     assert.doesNotMatch(content, /^ARG NPM_TOKEN/m, `${dockerfile} must not expose a token build argument`);
     assert.match(content, /RUN corepack enable && corepack install --global pnpm@10\.34\.0/);
-    assert.match(content, /--mount=type=secret,id=npm_token,env=NPM_TOKEN pnpm install --frozen-lockfile/);
+    assert.match(content, /--mount=type=secret,id=npm_token,required=true[\s\\]*NPM_TOKEN=[\s\S]*?pnpm install --frozen-lockfile/);
   });
 }
 

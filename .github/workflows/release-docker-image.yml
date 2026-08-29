@@ -1,6 +1,12 @@
 name: Build & Release NodeJs Docker Image
 
-on: workflow_call
+on:
+  workflow_call:
+    secrets:
+      NPM_TOKEN:
+        required: true
+      GH_TOKEN:
+        required: true
 
 jobs:
   release:
@@ -19,6 +25,12 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+
+      - name: Setup environment and validate private registry credentials
+        uses: otedesco/gh-action-templates/.github/actions/setup-environment@main
+        with:
+          registry-auth-required: "true"
+          npm-token: ${{ secrets.NPM_TOKEN }}
 
       - name: check if dockerfile exists
         if: ${{ hashFiles(matrix.dockerfile) != '' }}
