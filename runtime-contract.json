@@ -1,0 +1,16 @@
+{
+  "nodeVersion": "24.20.0",
+  "packageManagers": {
+    "pnpm": "10.34.0",
+    "npm": "10.8.2"
+  },
+  "repositories": {
+    "cerberus": { "packageManager": "pnpm", "lockfile": "pnpm-lock.yaml" },
+    "hermes": { "packageManager": "pnpm", "lockfile": "pnpm-lock.yaml" },
+    "notify": { "packageManager": "pnpm", "lockfile": "pnpm-lock.yaml" },
+    "server-utils": { "packageManager": "pnpm", "lockfile": "pnpm-lock.yaml" },
+    "commons": { "packageManager": "pnpm", "lockfile": "pnpm-lock.yaml" },
+    "cache": { "packageManager": "pnpm", "lockfile": "pnpm-lock.yaml" },
+    "web-app": { "packageManager": "npm", "lockfile": "package-lock.json" }
+  }
+}

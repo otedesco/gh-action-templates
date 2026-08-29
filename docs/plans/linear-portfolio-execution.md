@@ -33,6 +33,8 @@ The short overlaps permit discovery and environment preparation only. The WIP li
 
 **Objective:** establish deterministic local and CI checks for formatting, static analysis, tests, coverage, security, build, and release readiness.
 
+**Decision record:** [PRJ-001 ADR-001 — Quality Gates & CI Foundation](../projects/PRJ-001-quality-gates-ci-foundation/ADR-001-quality-gates-ci-foundation.md). `OPS-176` amends this project ADR with the accepted Node.js and package-manager contract; no separate runtime ADR is created.
+
 **Deliverables:**
 
 - Versioned quality-command and workflow contract

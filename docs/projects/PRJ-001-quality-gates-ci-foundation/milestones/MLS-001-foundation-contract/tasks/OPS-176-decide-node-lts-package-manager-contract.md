@@ -23,7 +23,7 @@
 
 **Files:**
 
-- Create: `docs/architecture/decisions/ADR-001-node-package-manager-contract.md`
+- Modify: `docs/projects/PRJ-001-quality-gates-ci-foundation/ADR-001-quality-gates-ci-foundation.md`
 - Create: `test/runtime-contract.test.mjs`
 - Create: `package.json`
 - Create: `runtime-contract.json`
@@ -61,7 +61,7 @@ Expected: FAIL and report the current `18.17.0`/`18.17.1`, `8.6.10`/`8.15.6`, mi
 
 **Step 4: Write and accept the ADR**
 
-In `ADR-001-node-package-manager-contract.md`, record:
+Amend the existing project ADR at `docs/projects/PRJ-001-quality-gates-ci-foundation/ADR-001-quality-gates-ci-foundation.md` with the OPS-176 runtime decision. Do not create a second ADR. Record:
 
 - status and decision date;
 - exact Node LTS patch version and support window;
@@ -77,7 +77,7 @@ The chosen values must be explicitly approved before continuing. Put those exact
 **Step 5: Commit the red contract and accepted decision**
 
 ```bash
-git add docs/architecture/decisions/ADR-001-node-package-manager-contract.md package.json runtime-contract.json test/runtime-contract.test.mjs
+git add docs/projects/PRJ-001-quality-gates-ci-foundation/ADR-001-quality-gates-ci-foundation.md package.json runtime-contract.json test/runtime-contract.test.mjs
 git commit -m "docs: decide Node and package-manager contract"
 ```
 
@@ -174,7 +174,7 @@ git commit -m "build: adopt the supported runtime contract"
 - Modify: `../cerberus/Dockerfile`
 - Modify: `../hermes/Dockerfile`
 - Modify: `../hermes/Dockerfile.worker`
-- Modify: `docs/architecture/decisions/ADR-001-node-package-manager-contract.md`
+- Modify: `docs/projects/PRJ-001-quality-gates-ci-foundation/ADR-001-quality-gates-ci-foundation.md`
 - Modify: `test/runtime-contract.test.mjs`
 
 **Step 1: Assert Docker compatibility**
@@ -219,4 +219,3 @@ Add the clean-install, workflow, and image-build evidence to the ADR, then commi
 - Contract tests reject missing, ranged, moving, or divergent versions.
 - No dependency upgrade or package-manager exception is undocumented.
 - Evidence is linked back to `OPS-176`.
-

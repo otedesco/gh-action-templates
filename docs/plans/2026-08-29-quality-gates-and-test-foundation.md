@@ -20,7 +20,7 @@
 ### Task 1: Record runtime and package-manager decision
 
 **Files:**
-- Create: `docs/decisions/0001-supported-node-and-package-managers.md`
+- Modify: `docs/projects/PRJ-001-quality-gates-ci-foundation/ADR-001-quality-gates-ci-foundation.md`
 - Modify: `.github/actions/setup-environment/action.yml`
 - Modify: every product repository's `package.json`
 
@@ -36,7 +36,7 @@ Expected: FAIL listing all manifests without the required declarations.
 
 **Step 3: Write the ADR and minimal declarations**
 
-Select a currently supported Node LTS after compatibility testing. Record the exact supported range, package-manager versions, upgrade cadence, and rollback plan. Add `engines` and `packageManager` to each manifest and update setup defaults.
+Amend the existing project ADR at `docs/projects/PRJ-001-quality-gates-ci-foundation/ADR-001-quality-gates-ci-foundation.md` with the currently supported Node LTS, exact package-manager versions, upgrade cadence, and rollback plan. Do not create a second ADR. Add `engines` and `packageManager` to each manifest and update setup defaults.
 
 **Step 4: Run the fixture and each repository type/build check**
 
@@ -47,7 +47,7 @@ Expected: PASS on the selected runtime with no lockfile changes.
 **Step 5: Commit**
 
 ```bash
-git add docs/decisions/0001-supported-node-and-package-managers.md .github/actions/setup-environment/action.yml
+git add docs/projects/PRJ-001-quality-gates-ci-foundation/ADR-001-quality-gates-ci-foundation.md .github/actions/setup-environment/action.yml
 git commit -m "docs: define supported Node and package managers"
 ```
 
@@ -577,4 +577,3 @@ Plan complete and saved to `docs/plans/2026-08-29-quality-gates-and-test-foundat
 
 1. **Subagent-driven (this session):** execute one task/repository PR at a time with review between tasks.
 2. **Parallel session:** open a dedicated worktree/session and execute this plan in batches with checkpoints.
-

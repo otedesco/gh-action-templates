@@ -1,0 +1,13 @@
+{
+  "name": "@otedesco/quality-gates-foundation",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.20.0",
+    "pnpm": "10.34.0"
+  },
+  "packageManager": "pnpm@10.34.0",
+  "scripts": {
+    "test:runtime-contract": "node --test test/runtime-contract.test.mjs"
+  }
+}

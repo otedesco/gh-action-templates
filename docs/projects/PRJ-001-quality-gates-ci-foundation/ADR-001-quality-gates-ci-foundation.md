@@ -39,6 +39,20 @@ The project will deliver through four ordered milestones:
 3. `MLS-003` — Security, release, and branch enforcement, target 2026-10-23.
 4. `MLS-004` — Adoption and stability evidence, target 2026-11-06.
 
+### OPS-176 runtime decision amendment
+
+`OPS-176` is an amendment to this project ADR; it does not create a separate architecture decision record.
+
+**Decision:** Use Node.js `24.20.0` as the supported runtime. Use pnpm `10.34.0` for `cerberus`, `hermes`, `notify`, `server-utils`, `commons`, and `cache`. Keep `web-app` on npm `10.8.2` as a temporary, explicitly documented exception because it currently has an npm package contract and no pnpm lockfile.
+
+**Enforcement:** Corepack installs and activates the exact package-manager version declared by each manifest. CI setup defaults, reusable workflow matrices, package manifests, lockfiles, and service Dockerfiles must agree with this contract. No floating major, range, `latest`, or `lts/*` value is allowed. The machine-readable `runtime-contract.json` and its contract test are implementation artifacts of this ADR and must match these values exactly.
+
+**Compatibility and migration:** Before the milestone closes, clean frozen installs, type checks, builds, and service image builds must pass on Node `24.20.0` for all seven repositories. The test matrix must cover SWC, Next.js, Jest, Vitest, Corepack, and production Docker images. The npm exception is revisited after the web test/build harness is established; its removal requires a separate reviewed migration with a pnpm lockfile and no unrelated dependency upgrade.
+
+**Rollback:** If a consumer cannot meet the contract, revert that consumer's adoption commit and record the incompatibility as an owned, expiring exception. Do not silently retain Node 18 or a ranged package-manager declaration.
+
+**OPS-176 verification evidence (2026-08-29):** The central Node contract suite passes with 17 tests covering all seven manifests, lockfile formats, the shared setup action, reusable workflows, Docker runtime/package-manager declarations, and BuildKit secret usage. Frozen offline installs pass for `cerberus`, `notify`, `server-utils`, `commons`, and `cache`; `hermes` reaches dependency resolution but requires the uncached private `@otedesco/notify@0.0.2` tarball and therefore requires authenticated online installation under `OPS-177`. The local environment uses Node `20.11.1`, so package-manager checks emit the expected unsupported-engine warning; CI and Docker use the accepted Node `24.20.0`. Full image builds remain an environment-dependent follow-up because this Docker CLI does not provide `build --check` and private registry credentials are not available locally.
+
 ## Delivery roadmap
 
 | Milestone | Linear issues | Primary outcome | Exit date |
