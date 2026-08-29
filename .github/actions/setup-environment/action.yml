@@ -13,6 +13,13 @@ inputs:
     description: PNPM version to be installed
     required: false
     default: "10.34.0"
+  npm-token:
+    description: GitHub Packages token used only when registry-auth-required is true
+    required: false
+  registry-auth-required:
+    description: Fail before install when private registry credentials are absent
+    required: false
+    default: "false"
 runs:
   using: "composite"
   steps:
@@ -45,3 +52,10 @@ runs:
           restore-keys: |
                 ${{ runner.os }}-pnpm-
           path: ~/.local/share/pnpm
+
+    - name: Validate private registry credentials
+      if: ${{ inputs.registry-auth-required == 'true' }}
+      shell: bash
+      env:
+        INPUT_NPM_TOKEN: ${{ inputs.npm-token }}
+      run: node "$GITHUB_ACTION_PATH/registry-auth-cli.mjs"

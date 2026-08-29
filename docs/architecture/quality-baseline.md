@@ -84,7 +84,7 @@ flowchart LR
 - Product repositories call reusable workflows from `otedesco/gh-action-templates@main`, a mutable branch reference.
 - Third-party actions are referenced by moving tags instead of reviewed full commit SHAs.
 - Workflow permissions are not explicitly minimized, and product workflows use `secrets: inherit`.
-- The setup action declares no `npm_token` input but reads `inputs.npm_token`; local installs also warn that `${NPM_TOKEN}` is unresolved. This prevents reproducible private-package installation.
+- The shared setup action now accepts `npm-token` and `registry-auth-required`, validates credentials before private installs, and never rewrites `.npmrc`; consumer workflows pass only named `NPM_TOKEN`/`GH_TOKEN` secrets.
 - Node 18.17.x is pinned in CI and Dockerfiles. Node 18 reached end of life on 2025-03-27; the supported target must be selected and tested before migration.
 - Live GitHub inspection returned zero repository rulesets and zero visible workflow runs for all eight repositories. Branch-protection details could not be read because the connected integration lacks that permission, so protection must be verified by an administrator before the enforcement milestone closes.
 
@@ -106,7 +106,14 @@ flowchart LR
 | `server-utils` type/lint/build | Type/build pass; lint reports 2 warnings; formatting fails in 4 files |
 | `server-utils` tests | 9 pass, 1 skipped, then run fails on an unhandled `listen EPERM` error |
 | `server-utils` coverage | Statements 95.26%, branches 87.5%, functions 90.9%, lines 95.26%; command fails due to unhandled error |
-| `notify`, `cerberus`, `hermes` install | Fail with HTTP 401 for private `@otedesco/*` packages when `NPM_TOKEN` is unavailable |
+| `notify`, `cerberus`, `hermes` install | Missing credentials fail in the shared preflight with an actionable `NPM_TOKEN` error before package resolution; authenticated clean-install evidence remains dependent on CI/OPS-177 credentials |
+
+## OPS-177 registry-auth evidence
+
+- `pnpm test:registry-auth` passes with 100% statement, branch, function, and line coverage for `registry-auth.mjs`.
+- The missing-token CLI path returns non-zero and emits only the actionable GitHub error annotation; the valid-token path reports configuration without printing the token.
+- The three consumer `.npmrc` files remain credential-free `${NPM_TOKEN}` placeholders, and all relevant caller workflows use explicit named secrets instead of `secrets: inherit`.
+- Docker installers require the `npm_token` BuildKit secret and use `pnpm install --frozen-lockfile`; no token build argument or token-bearing `.npmrc` rewrite remains.
 
 ## High-risk characterization targets
 
@@ -160,4 +167,3 @@ Large-scale refactoring must not begin until all of the following are true:
 - [Node.js release status](https://nodejs.org/en/about/previous-releases)
 - [GitHub Actions security hardening](https://docs.github.com/en/code-security/tutorials/secure-your-organization/protect-against-threats)
 - [GitHub Actions repository policies](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository)
-
