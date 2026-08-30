@@ -1,0 +1,28 @@
+{
+  "requiredScripts": [
+    "format:check",
+    "lint:check",
+    "type:check",
+    "test",
+    "test:coverage",
+    "build",
+    "quality:check"
+  ],
+  "qualityOrder": [
+    "format:check",
+    "lint:check",
+    "type:check",
+    "test",
+    "test:coverage",
+    "build"
+  ],
+  "repositories": {
+    "cerberus": { "packageManager": "pnpm", "testHarness": "jest" },
+    "hermes": { "packageManager": "pnpm", "testHarness": "OPS-217" },
+    "notify": { "packageManager": "pnpm", "testHarness": "vitest" },
+    "server-utils": { "packageManager": "pnpm", "testHarness": "vitest" },
+    "commons": { "packageManager": "pnpm", "testHarness": "vitest" },
+    "cache": { "packageManager": "pnpm", "testHarness": "vitest" },
+    "web-app": { "packageManager": "npm", "testHarness": "OPS-228" }
+  }
+}

@@ -9,6 +9,7 @@
   "packageManager": "pnpm@10.34.0",
   "scripts": {
     "test:runtime-contract": "node --test test/runtime-contract.test.mjs",
-    "test:registry-auth": "node --test test/registry-auth.test.mjs"
+    "test:registry-auth": "node --test test/registry-auth.test.mjs",
+    "test:quality-script-contract": "node --test test/quality-script-contract.test.mjs"
   }
 }
