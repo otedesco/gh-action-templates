@@ -3,6 +3,11 @@ name: Lint And Test
 on:
   workflow_call:
     inputs:
+      package-manager:
+        description: Package manager selected by the repository runtime contract
+        required: false
+        type: string
+        default: pnpm
       registry-auth-required:
         description: Whether this repository installs private packages
         required: false
@@ -32,19 +37,38 @@ jobs:
           registry-auth-required: ${{ inputs.registry-auth-required }}
           npm-token: ${{ secrets.NPM_TOKEN }}
 
-      - name: Install dependencies
+      - name: Install dependencies with pnpm
+        if: ${{ inputs.package-manager == 'pnpm' }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           pnpm install --frozen-lockfile --prefer-offline
 
-      - run: pnpm type:check
+      - name: Install dependencies with npm
+        if: ${{ inputs.package-manager == 'npm' }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm ci --prefer-offline
 
-      - run: pnpm lint:check
+      - name: Format check
+        run: ${{ inputs.package-manager }} run format:check
+
+      - name: Lint check
+        run: ${{ inputs.package-manager }} run lint:check
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
 
-      - run: pnpm test
+      - name: Type check
+        run: ${{ inputs.package-manager }} run type:check
+
+      - name: Test
+        run: ${{ inputs.package-manager }} run test
+
+      - name: Test coverage
+        run: ${{ inputs.package-manager }} run test:coverage
+
+      - name: Build
+        run: ${{ inputs.package-manager }} run build
 
       - uses: otedesco/gh-action-templates/.github/actions/notify-status@main
         with:

@@ -115,6 +115,13 @@ flowchart LR
 - The three consumer `.npmrc` files remain credential-free `${NPM_TOKEN}` placeholders, and all relevant caller workflows use explicit named secrets instead of `secrets: inherit`.
 - Docker installers require the `npm_token` BuildKit secret and use `pnpm install --frozen-lockfile`; no token build argument or token-bearing `.npmrc` rewrite remains.
 
+## OPS-178 quality-script evidence
+
+- The central quality-script contract covers all seven repositories and passes structural validation.
+- `format:check`, `lint:check`, `type:check`, `test`, `test:coverage`, `build`, and `quality:check` are now declared everywhere; the reusable workflow invokes the six checks separately and supports the approved npm exception.
+- Check-only commands contain no fix/write flags, forced exits, pass-with-no-tests options, ignored failures, or placeholder success paths.
+- Hermes and web-app test/coverage commands fail explicitly on missing `OPS-217` and `OPS-228` harnesses. The six repositories with existing test commands now fail honestly on zero tests or missing coverage providers where applicable.
+
 ## High-risk characterization targets
 
 These are observations that tests must characterize before refactoring; they are not silently approved fixes.
