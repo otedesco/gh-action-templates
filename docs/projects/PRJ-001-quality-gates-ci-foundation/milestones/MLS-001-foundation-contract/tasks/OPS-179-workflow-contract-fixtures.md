@@ -160,3 +160,14 @@ git commit -m "docs: record workflow fixture evidence"
 - The shared workflow calls the canonical check-only commands.
 - The harness is documented for extension by later milestone tasks.
 
+## Execution update — 2026-09-02
+
+Implemented the fixture harness and contract checks in `gh-action-templates`.
+
+- Added isolated, timeout-bounded fixture execution with structured evidence and repository-mutation protection.
+- Added the valid control and executable single-defect cases for type, lint, format, no-test, coverage, and build failures.
+- Added static security and container defect fixtures that fail closed under contract assertions; scanner/image enforcement remains owned by OPS-184 and OPS-185.
+- Added reusable workflow wiring assertions for `workflow_call`, package-manager input, canonical check-only commands, and forbidden failure escapes.
+- Added reproduction and extension guidance in `docs/testing/workflow-fixtures.md`.
+
+Evidence: `pnpm run test:workflow-contract` and `pnpm run test:workflow-fixtures` pass under the available runtime. The environment reports Node `v25.6.0` while the repository contract requests `24.20.0`; this produces a pnpm engine warning and should be rerun under the accepted runtime before milestone sign-off.

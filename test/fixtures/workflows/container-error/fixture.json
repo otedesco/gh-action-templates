@@ -1,0 +1,1 @@
+{ "gate": "container", "defect": "container runs as root", "message": "container gate rejects root execution" }

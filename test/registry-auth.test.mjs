@@ -3,7 +3,11 @@ import { readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { missingTokenMessage, runRegistryAuth, validateRegistryToken } from "../.github/actions/setup-environment/registry-auth.mjs";
+import {
+  missingTokenMessage,
+  runRegistryAuth,
+  validateRegistryToken,
+} from "../.github/actions/setup-environment/registry-auth.mjs";
 
 test("validateRegistryToken rejects missing and blank values", () => {
   for (const token of [undefined, "", "   "]) {
@@ -79,7 +83,10 @@ for (const [repository, workflowNames] of Object.entries({
 })) {
   for (const workflowName of workflowNames) {
     test(`${repository}/${workflowName} passes only named registry secrets`, async () => {
-      const content = await readFile(new URL(`../../${repository}/.github/workflows/${workflowName}`, import.meta.url), "utf8");
+      const content = await readFile(
+        new URL(`../../${repository}/.github/workflows/${workflowName}`, import.meta.url),
+        "utf8",
+      );
       assert.doesNotMatch(content, /secrets:\s*inherit/);
       assert.match(content, /registry-auth-required: true/);
       assert.match(content, /NPM_TOKEN: \$\{\{ secrets\.NPM_TOKEN \}\}/);

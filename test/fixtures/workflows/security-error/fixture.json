@@ -1,0 +1,5 @@
+{
+  "gate": "security",
+  "defect": "mutable third-party action reference",
+  "message": "security gate rejects mutable action references"
+}

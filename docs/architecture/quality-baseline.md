@@ -87,6 +87,7 @@ flowchart LR
 - The shared setup action now accepts `npm-token` and `registry-auth-required`, validates credentials before private installs, and never rewrites `.npmrc`; consumer workflows pass only named `NPM_TOKEN`/`GH_TOKEN` secrets.
 - Node 18.17.x is pinned in CI and Dockerfiles. Node 18 reached end of life on 2025-03-27; the supported target must be selected and tested before migration.
 - Live GitHub inspection returned zero repository rulesets and zero visible workflow runs for all eight repositories. Branch-protection details could not be read because the connected integration lacks that permission, so protection must be verified by an administrator before the enforcement milestone closes.
+- The M1 workflow fixture contract now includes a valid control, six executable single-defect foundation fixtures, and static fail-closed security/container fixtures. Reproduction details are in `docs/testing/workflow-fixtures.md`.
 
 ## Executable baseline
 
