@@ -53,6 +53,25 @@ Because the starting global coverage is near zero, enforcement rolls out without
 
 The ratchet is a migration mechanism, not a waiver of the final objective.
 
+## Changed-code evaluator and global ratchet
+
+OPS-181 uses a normalized report with repository-relative file names and integer
+covered/total pairs for statements, branches, functions, and lines. The source
+inventory is independent of the coverage provider, so an executable source file
+that is absent from a report is an explicit failure.
+
+Pull-request evaluation requires explicit base and head revisions and complete
+history. It fails closed when the merge base, report, source inventory, or
+baseline is missing or malformed. Every changed executable file must satisfy all
+four metrics. A global baseline may stay equal or increase, but no metric may
+decrease; baseline proposals are emitted as reviewable output rather than
+written automatically by a pull-request check.
+
+The reusable workflow runs source inventory, report normalization, changed-code
+evaluation, and global-ratchet evaluation after the repository's coverage
+command. Raw reports and the JSON decision are uploaded even when evaluation
+fails, while the evaluator's exit status remains authoritative.
+
 ## Test layers
 
 ### Unit tests
@@ -158,4 +177,3 @@ A component is considered tested only when:
 5. Tests are deterministic and pass in clean CI.
 6. Mutation results meet policy when the component is in mutation scope.
 7. Documentation identifies ownership, commands, dependencies, and fixtures.
-

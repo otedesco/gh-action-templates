@@ -1,5 +1,7 @@
 # OPS-181 Changed-Code Coverage and Global Ratchet Implementation Plan
 
+**Execution status:** Implementation in progress — central normalizer, source inventory, changed-scope parser, four-metric evaluator, ratchet, fixtures, and workflow contract are implemented in `gh-action-templates`.
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** Enforce 100% changed executable code coverage across all four metrics while preventing any global coverage regression.
@@ -122,4 +124,3 @@ actionlint .github/workflows/lint-and-test.yml
 git add .github/workflows/lint-and-test.yml test/workflow-contract.test.mjs docs/testing/testing-and-coverage-strategy.md
 git commit -m "ci: enforce changed coverage and global ratchet"
 ```
-
