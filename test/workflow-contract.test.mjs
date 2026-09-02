@@ -1,10 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { CORE_GATE_NAMES, CORE_GATE_COMMANDS } from "../scripts/validate-core-gates.mjs";
 
 const root = new URL("../", import.meta.url).pathname;
 const workflow = await readFile(join(root, ".github/workflows/lint-and-test.yml"), "utf8");
 const qualityOrder = ["format:check", "lint:check", "type:check", "test", "test:coverage", "build"];
+const stepNames = ["Format check", "Lint", "Type check", "Unit tests", "Coverage", "Build"];
 
 function fixturePath(name, file) {
   return join(root, "test/fixtures/workflows", name, file);
@@ -30,6 +32,17 @@ for (const command of qualityOrder) {
     `missing ${command} workflow step`,
   );
 }
+for (const stepName of stepNames) assert.match(workflow, new RegExp("- name: " + stepName), "missing named gate step: " + stepName);
+assert.match(workflow, /git diff --exit-code/, "workflow must fail on generated-file drift");
+assert.deepEqual(CORE_GATE_NAMES, ["format", "lint", "type", "unit", "coverage", "build"]);
+assert.deepEqual(CORE_GATE_COMMANDS, {
+  format: "format:check",
+  lint: "lint:check",
+  type: "type:check",
+  unit: "test",
+  coverage: "test:coverage",
+  build: "build",
+});
 assert.doesNotMatch(workflow, /continue-on-error|\|\|\s*true|--fix\b|--write\b|--passWithNoTests|--forceExit/);
 
 const securityFixture = JSON.parse(await readFile(fixturePath("security-error", "fixture.json"), "utf8"));
