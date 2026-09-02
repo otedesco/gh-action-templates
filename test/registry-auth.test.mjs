@@ -93,7 +93,7 @@ for (const [repository, workflowNames] of Object.entries({
       assert.match(content, /registry-auth-required: true/);
       assert.match(content, /NPM_TOKEN: \$\{\{ secrets\.NPM_TOKEN \}\}/);
       if (workflowName !== "quality-checks.yml") {
-        assert.doesNotMatch(content, /GH_TOKEN: \$\{\{ secrets\.GH_TOKEN \}\}/);
+        assert.match(content, /GH_TOKEN: \$\{\{ secrets\.GH_TOKEN \}\}/);
       }
     });
   }
