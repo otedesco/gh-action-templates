@@ -1,0 +1,32 @@
+name: Coverage Gate
+description: Normalize and evaluate changed-code and global coverage from the caller repository
+inputs:
+  report:
+    description: Path to the provider coverage-final.json or coverage-summary.json file
+    required: false
+    default: coverage/coverage-final.json
+  baseline:
+    description: Path to the checked-in repository baseline
+    required: false
+    default: coverage-baselines/current.json
+  base:
+    description: Explicit base revision
+    required: true
+  head:
+    description: Explicit head revision
+    required: true
+outputs:
+  decision:
+    description: Path to the combined coverage decision JSON
+    value: ${{ steps.evaluate.outputs.decision }}
+runs:
+  using: composite
+  steps:
+    - id: evaluate
+      shell: bash
+      env:
+        COVERAGE_REPORT: ${{ inputs.report }}
+        COVERAGE_BASELINE: ${{ inputs.baseline }}
+        COVERAGE_BASE: ${{ inputs.base }}
+        COVERAGE_HEAD: ${{ inputs.head }}
+      run: node "$GITHUB_ACTION_PATH/run.mjs"

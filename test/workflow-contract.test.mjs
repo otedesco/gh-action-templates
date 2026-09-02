@@ -5,6 +5,7 @@ import { CORE_GATE_NAMES, CORE_GATE_COMMANDS } from "../scripts/validate-core-ga
 
 const root = new URL("../", import.meta.url).pathname;
 const workflow = await readFile(join(root, ".github/workflows/lint-and-test.yml"), "utf8");
+const coverageAction = await readFile(join(root, ".github/actions/coverage-gate/action.yml"), "utf8");
 const qualityOrder = ["format:check", "lint:check", "type:check", "test", "test:coverage", "build"];
 const stepNames = ["Format check", "Lint", "Type check", "Unit tests", "Coverage", "Build"];
 
@@ -36,18 +37,25 @@ for (const stepName of stepNames)
   assert.match(workflow, new RegExp("- name: " + stepName), "missing named gate step: " + stepName);
 assert.match(workflow, /git diff --exit-code/, "workflow must fail on generated-file drift");
 assert.match(workflow, /fetch-depth: 0/, "coverage evaluation requires complete history");
-for (const command of ["coverage:source", "coverage:normalize", "coverage:changed", "coverage:ratchet"])
-  assert.match(
-    workflow,
-    new RegExp(`run: \\\$\\{\\{ inputs\\.package-manager \\\}\\} run ${command.replace(":", "\\:")}`),
-    `missing ${command} coverage step`,
-  );
-assert.match(workflow, /COVERAGE_BASE:/, "workflow must provide an explicit coverage base");
-assert.match(workflow, /COVERAGE_HEAD:/, "workflow must provide an explicit coverage head");
+assert.match(
+  workflow,
+  /uses: otedesco\/gh-action-templates\/\.github\/actions\/coverage-gate@main/,
+  "workflow must use the central coverage action",
+);
+assert.match(workflow, /base:/, "workflow must provide an explicit coverage base");
+assert.match(workflow, /head:/, "workflow must provide an explicit coverage head");
 assert.match(
   workflow,
   /Upload coverage decision[\s\S]*if: \$\{\{ always\(\) \}\}/,
   "coverage evidence must upload on failure",
+);
+assert.match(coverageAction, /using: composite/, "coverage gate must be a composite action");
+assert.match(coverageAction, /base:/, "coverage action must require a base revision");
+assert.match(coverageAction, /head:/, "coverage action must require a head revision");
+assert.match(
+  coverageAction,
+  /coverage-baselines\/current\.json/,
+  "coverage action must fail closed without a baseline",
 );
 assert.deepEqual(CORE_GATE_NAMES, ["format", "lint", "type", "unit", "coverage", "build"]);
 assert.deepEqual(CORE_GATE_COMMANDS, {

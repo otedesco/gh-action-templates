@@ -9,8 +9,13 @@ export function evaluateChangedCoverage(report, changed, { executableFiles = Obj
     const data = report.files[file];
     if (!data) { errors.push({ code: "missing-report-file", file, remediation: "Generate coverage for the changed executable file." }); continue; }
     for (const metric of METRICS) {
-      const value = data[metric];
-      if (value.covered !== value.total) errors.push({ code: "changed-code-below-threshold", file, lines, metric, covered: value.covered, total: value.total, remediation: `Add tests covering changed ${metric}.` });
+      const locations = data.locations?.[metric] ?? [];
+      const changedLocations = locations.filter(({ line }) => lines.includes(line));
+      if (changedLocations.length) {
+        for (const location of changedLocations) if (location.covered <= 0) errors.push({ code: "changed-code-below-threshold", file, line: location.line, metric, covered: location.covered, total: 1, remediation: `Add tests covering changed ${metric} at ${file}:${location.line}.` });
+      } else if (!locations.length && data[metric].covered !== data[metric].total) {
+        errors.push({ code: "changed-code-below-threshold", file, lines, metric, covered: data[metric].covered, total: data[metric].total, remediation: `Add tests covering changed ${metric}.` });
+      }
     }
   }
   return { passed: errors.length === 0, errors };

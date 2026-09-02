@@ -1,6 +1,6 @@
 # OPS-181 Changed-Code Coverage and Global Ratchet Implementation Plan
 
-**Execution status:** Implementation in progress — central normalizer, source inventory, changed-scope parser, four-metric evaluator, ratchet, fixtures, and workflow contract are implemented in `gh-action-templates`.
+**Execution status:** Implementation in progress — central normalizer, source inventory, changed-scope parser, location-aware four-metric evaluator, ratchet, fixtures, composite action, and workflow contract are implemented in `gh-action-templates`. Consumer baseline/adoption evidence remains the OPS-189 handoff.
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 

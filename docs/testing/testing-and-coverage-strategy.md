@@ -72,6 +72,12 @@ evaluation, and global-ratchet evaluation after the repository's coverage
 command. Raw reports and the JSON decision are uploaded even when evaluation
 fails, while the evaluator's exit status remains authoritative.
 
+The workflow invokes the central `coverage-gate` composite action, so consumer
+repositories do not need to copy OPS-181 implementation scripts into their own
+trees. Each consumer must provide provider coverage output and a reviewed
+`coverage-baselines/current.json` during quality-contract adoption. Missing
+output or baseline data is intentionally a red result until that evidence exists.
+
 ## Test layers
 
 ### Unit tests

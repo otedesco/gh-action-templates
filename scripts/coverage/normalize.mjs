@@ -18,6 +18,31 @@ function countMetric(metric, file, name) {
   return { covered: value.covered, total: value.total };
 }
 
+function detailedMetric(metric, file) {
+  const locations = [];
+  if (metric === "statements" && file.statementMap && file.s) {
+    for (const [id, location] of Object.entries(file.statementMap)) locations.push({ line: location.start.line, covered: file.s[id] ?? 0 });
+  } else if (metric === "functions" && file.fnMap && file.f) {
+    for (const [id, location] of Object.entries(file.fnMap)) locations.push({ line: location.loc?.start?.line ?? location.decl?.start?.line, covered: file.f[id] ?? 0 });
+  } else if (metric === "branches" && file.branchMap && file.b) {
+    for (const [id, locationsForBranch] of Object.entries(file.branchMap)) {
+      const counts = file.b[id] ?? [];
+      locationsForBranch.locations?.forEach((location, index) => locations.push({ line: location.start.line, covered: counts[index] ?? 0 }));
+    }
+  } else if (metric === "lines" && file.l) {
+    for (const [line, covered] of Object.entries(file.l)) locations.push({ line: Number(line), covered });
+  }
+  return locations.filter(({ line }) => Number.isInteger(line)).sort((a, b) => a.line - b.line);
+}
+
+function normalizeMetric(metric, file, name) {
+  if (file?.[metric]?.total !== undefined) return { metric: countMetric(metric, file, name), locations: [] };
+  const locations = detailedMetric(metric, file);
+  if (!locations.length) fail(`Missing ${metric} coverage for ${name}`, { code: "missing-coverage-metric", metric });
+  const covered = locations.filter(({ covered }) => covered > 0).length;
+  return { metric: { covered, total: locations.length }, locations };
+}
+
 export function normalizeCoverage(summary, { root = process.cwd() } = {}) {
   const files = summary?.files;
   if (!files || typeof files !== "object" || Array.isArray(files)) fail("Coverage report must contain a files object", { code: "missing-files" });
@@ -26,7 +51,8 @@ export function normalizeCoverage(summary, { root = process.cwd() } = {}) {
     const name = path.relative(root, path.resolve(root, rawName)).split(path.sep).join("/");
     if (!name || name.startsWith("../") || path.isAbsolute(name)) fail(`Coverage path escapes repository: ${rawName}`, { code: "path-outside-repository" });
     if (normalized[name]) fail(`Duplicate normalized coverage path: ${name}`, { code: "duplicate-file" });
-    normalized[name] = Object.fromEntries(METRICS.map((metric) => [metric, countMetric(metric, file, name)]));
+    const entries = METRICS.map((metric) => [metric, normalizeMetric(metric, file, name)]);
+    normalized[name] = { ...Object.fromEntries(entries.map(([metric, { metric: value }]) => [metric, value])), locations: Object.fromEntries(entries.map(([metric, { locations }]) => [metric, locations])) };
   }
   if (!Object.keys(normalized).length) fail("Coverage report contains no files", { code: "empty-report" });
   return { schemaVersion: 1, files: Object.fromEntries(Object.entries(normalized).sort(([a], [b]) => a.localeCompare(b))) };
