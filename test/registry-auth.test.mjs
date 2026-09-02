@@ -71,7 +71,7 @@ test("Docker release wiring uses a required named secret", async () => {
   assert.match(workflow, /GH_TOKEN:\s*\n\s+required: true/);
   assert.match(workflow, /registry-auth-required: "true"/);
   assert.match(workflow, /npm-token: \$\{\{ secrets\.NPM_TOKEN \}\}/);
-  assert.match(workflow, /setup-environment@main/);
+  assert.match(workflow, /setup-environment@091ae85019ee71d8aefbfca32e02cb4d670feae1/);
   assert.match(workflow, /secrets:\s*\|\s*npm_token=\$\{\{ secrets\.NPM_TOKEN \}\}/);
   assert.doesNotMatch(workflow, /build-args:[\s\S]*NPM_TOKEN|echo.*_authToken/);
 });

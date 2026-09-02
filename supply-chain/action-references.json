@@ -111,6 +111,36 @@
       "reviewedAt": "2026-09-02",
       "purpose": "Report quality workflow status",
       "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/lint-and-test.yml",
+      "reference": "46eefa62da65e573739f4ac686560cd14bb7849b",
+      "release": "central-2026-09-02",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Shared quality workflow consumed by product repositories",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/release-package.yml",
+      "reference": "46eefa62da65e573739f4ac686560cd14bb7849b",
+      "release": "central-2026-09-02",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Shared package release workflow consumed by product repositories",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/release-docker-image.yml",
+      "reference": "46eefa62da65e573739f4ac686560cd14bb7849b",
+      "release": "central-2026-09-02",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Shared Docker release workflow consumed by product repositories",
+      "repositories": ["cerberus", "hermes"]
     }
   ]
 }
