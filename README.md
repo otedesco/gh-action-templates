@@ -101,6 +101,7 @@ Install the required tool versions, then run the central contract suite:
 
 ```bash
 pnpm test
+pnpm quality:check
 ```
 
 Individual checks are available for focused work:
@@ -112,6 +113,18 @@ pnpm run test:quality-script-contract
 pnpm run test:workflow-contract
 pnpm run test:workflow-fixtures
 ```
+
+JavaScript and JSON quality checks are available independently:
+
+```bash
+pnpm run format:check   # Prettier check for JS, MJS, CJS, and JSON
+pnpm run format         # Prettier write mode for local development
+pnpm run lint:js        # ESLint for JavaScript-family files
+pnpm run lint:json      # JSON syntax validation for every repository JSON file
+pnpm run lint:check     # JavaScript lint plus JSON validation
+```
+
+`quality:check` runs formatting, linting, JSON validation, and the complete contract test suite. Formatting and linting checks are intentionally check-only in CI; `format` is the separate developer convenience command that may rewrite files.
 
 The workflow fixture suite copies each fixture into a temporary directory, runs it with `CI=true`, applies a timeout, records structured evidence, and verifies that the central repository is not mutated. It does not require product-repository dependencies or network services.
 

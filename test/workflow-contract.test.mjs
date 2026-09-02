@@ -24,7 +24,11 @@ function assertContainerFixture(dockerfile) {
 assert.match(workflow, /workflow_call:/, "workflow must be reusable");
 assert.match(workflow, /package-manager:/, "workflow must accept the runtime package-manager contract");
 for (const command of qualityOrder) {
-  assert.match(workflow, new RegExp(`run: \\$\\{\\{ inputs\\.package-manager \\}\\} run ${command.replace(":", "\\:")}`), `missing ${command} workflow step`);
+  assert.match(
+    workflow,
+    new RegExp(`run: \\$\\{\\{ inputs\\.package-manager \\}\\} run ${command.replace(":", "\\:")}`),
+    `missing ${command} workflow step`,
+  );
 }
 assert.doesNotMatch(workflow, /continue-on-error|\|\|\s*true|--fix\b|--write\b|--passWithNoTests|--forceExit/);
 

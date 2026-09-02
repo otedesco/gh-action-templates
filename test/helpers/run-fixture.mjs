@@ -26,15 +26,19 @@ export async function runFixture(name, script = "quality:check") {
 
   for (const gate of gates) {
     const child = spawn(process.execPath, ["gate.mjs", gate], {
-    cwd: fixturePath,
-    env: { ...stableEnvironment(), CI: "true", npm_config_update_notifier: "false" },
-    stdio: ["ignore", "pipe", "pipe"],
+      cwd: fixturePath,
+      env: { ...stableEnvironment(), CI: "true", npm_config_update_notifier: "false" },
+      stdio: ["ignore", "pipe", "pipe"],
     });
 
     child.stdout.setEncoding("utf8");
     child.stderr.setEncoding("utf8");
-    child.stdout.on("data", (chunk) => { stdout += chunk; });
-    child.stderr.on("data", (chunk) => { stderr += chunk; });
+    child.stdout.on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += chunk;
+    });
 
     const timer = setTimeout(() => {
       timedOut = true;
@@ -72,5 +76,7 @@ export async function runFixture(name, script = "quality:check") {
 }
 
 export function diagnostic(result) {
-  return `${result.evidence?.gate ?? "unknown"}: ${result.evidence?.message ?? "no diagnostic"} ${result.stdout} ${result.stderr}`.replace(/\s+/g, " ").trim();
+  return `${result.evidence?.gate ?? "unknown"}: ${result.evidence?.message ?? "no diagnostic"} ${result.stdout} ${result.stderr}`
+    .replace(/\s+/g, " ")
+    .trim();
 }

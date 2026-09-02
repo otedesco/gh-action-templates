@@ -1,21 +1,6 @@
 {
-  "requiredScripts": [
-    "format:check",
-    "lint:check",
-    "type:check",
-    "test",
-    "test:coverage",
-    "build",
-    "quality:check"
-  ],
-  "qualityOrder": [
-    "format:check",
-    "lint:check",
-    "type:check",
-    "test",
-    "test:coverage",
-    "build"
-  ],
+  "requiredScripts": ["format:check", "lint:check", "type:check", "test", "test:coverage", "build", "quality:check"],
+  "qualityOrder": ["format:check", "lint:check", "type:check", "test", "test:coverage", "build"],
   "repositories": {
     "cerberus": { "packageManager": "pnpm", "testHarness": "jest" },
     "hermes": { "packageManager": "pnpm", "testHarness": "OPS-217" },

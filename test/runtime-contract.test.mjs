@@ -35,7 +35,10 @@ for (const [repository, expected] of repositories) {
   test(`${repository} manifest and lockfile match the contract`, async () => {
     const manifest = await readJson(join(root, "..", repository, "package.json"));
     assert.equal(manifest.engines?.node, contract.nodeVersion, `${repository} Node engine`);
-    assert.equal(manifest.packageManager, `${expected.packageManager}@${contract.packageManagers[expected.packageManager]}`);
+    assert.equal(
+      manifest.packageManager,
+      `${expected.packageManager}@${contract.packageManagers[expected.packageManager]}`,
+    );
     if (expected.packageManager === "pnpm") {
       assert.equal(manifest.engines?.pnpm, contract.packageManagers.pnpm, `${repository} package-manager engine`);
     }
@@ -43,8 +46,11 @@ for (const [repository, expected] of repositories) {
     await readFile(join(repositoryRoot, expected.lockfile));
     const lockfiles = (await import("node:fs/promises")).readdir(repositoryRoot);
     const names = await lockfiles;
-    assert.equal(names.filter((name) => /^(?:pnpm-lock\.yaml|package-lock\.json|yarn\.lock)$/.test(name)).length, 1,
-      `${repository} must have exactly one lockfile`);
+    assert.equal(
+      names.filter((name) => /^(?:pnpm-lock\.yaml|package-lock\.json|yarn\.lock)$/.test(name)).length,
+      1,
+      `${repository} must have exactly one lockfile`,
+    );
     if (expected.packageManager === "pnpm") {
       const lockfile = await readFile(join(repositoryRoot, expected.lockfile), "utf8");
       assert.match(lockfile, /^lockfileVersion: '9\.0'/, `${repository} must use the pnpm 10 lockfile format`);
@@ -80,10 +86,16 @@ for (const dockerfile of ["../cerberus/Dockerfile", "../hermes/Dockerfile", "../
     const content = await readFile(join(root, dockerfile), "utf8");
     const nodeImages = [...content.matchAll(/^FROM node:([^ ]+)/gim)].map((match) => match[1]);
     assert.ok(nodeImages.length >= 2, `${dockerfile} must pin installer and production Node images`);
-    assert.deepEqual(nodeImages, nodeImages.map(() => `${contract.nodeVersion}-alpine`));
+    assert.deepEqual(
+      nodeImages,
+      nodeImages.map(() => `${contract.nodeVersion}-alpine`),
+    );
     assert.doesNotMatch(content, /^ARG NPM_TOKEN/m, `${dockerfile} must not expose a token build argument`);
     assert.match(content, /RUN corepack enable && corepack install --global pnpm@10\.34\.0/);
-    assert.match(content, /--mount=type=secret,id=npm_token,required=true[\s\\]*NPM_TOKEN=[\s\S]*?pnpm install --frozen-lockfile/);
+    assert.match(
+      content,
+      /--mount=type=secret,id=npm_token,required=true[\s\\]*NPM_TOKEN=[\s\S]*?pnpm install --frozen-lockfile/,
+    );
   });
 }
 
