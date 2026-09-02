@@ -1,0 +1,14 @@
+name: Release-like pull request
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  release:
+    permissions:
+      contents: write
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo release
