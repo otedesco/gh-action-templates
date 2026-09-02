@@ -5,12 +5,15 @@ on:
     secrets:
       NPM_TOKEN:
         required: true
-      GH_TOKEN:
-        required: true
+
+permissions: {}
 
 jobs:
   release:
     name: Release Docker Image
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -47,7 +50,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GH_TOKEN }}
+          password: ${{ github.token }}
 
       - name: Build and push Docker image
         if: ${{ hashFiles(matrix.dockerfile) != '' }}

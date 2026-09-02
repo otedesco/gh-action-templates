@@ -61,14 +61,16 @@ test("reusable workflows declare named secrets and frozen installs", async () =>
     assert.match(content, /pnpm install --frozen-lockfile/);
     assert.doesNotMatch(content, /secrets:\s*inherit|Creating \.npmrc|\$HOME\/\.npmrc/);
   }
-  assert.match(release, /GH_TOKEN:\s*\n\s+required: true/);
+  assert.doesNotMatch(release, /GH_TOKEN:\s*\n\s+required: true/);
+  assert.match(release, /GITHUB_TOKEN: \$\{\{ github\.token \}\}/);
   assert.match(release, /registry-auth-required: "true"/);
 });
 
 test("Docker release wiring uses a required named secret", async () => {
   const workflow = await readFile(new URL("../.github/workflows/release-docker-image.yml", import.meta.url), "utf8");
   assert.match(workflow, /NPM_TOKEN:\s*\n\s+required: true/);
-  assert.match(workflow, /GH_TOKEN:\s*\n\s+required: true/);
+  assert.doesNotMatch(workflow, /GH_TOKEN:\s*\n\s+required: true/);
+  assert.match(workflow, /password: \$\{\{ github\.token \}\}/);
   assert.match(workflow, /registry-auth-required: "true"/);
   assert.match(workflow, /npm-token: \$\{\{ secrets\.NPM_TOKEN \}\}/);
   assert.match(workflow, /setup-environment@091ae85019ee71d8aefbfca32e02cb4d670feae1/);
