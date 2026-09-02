@@ -53,7 +53,7 @@ jobs:
       - name: Format check
         run: ${{ inputs.package-manager }} run format:check
 
-      - name: Lint check
+      - name: Lint
         run: ${{ inputs.package-manager }} run lint:check
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
@@ -61,14 +61,17 @@ jobs:
       - name: Type check
         run: ${{ inputs.package-manager }} run type:check
 
-      - name: Test
+      - name: Unit tests
         run: ${{ inputs.package-manager }} run test
 
-      - name: Test coverage
+      - name: Coverage
         run: ${{ inputs.package-manager }} run test:coverage
 
       - name: Build
         run: ${{ inputs.package-manager }} run build
+
+      - name: Check for generated-file drift
+        run: git diff --exit-code
 
       - uses: otedesco/gh-action-templates/.github/actions/notify-status@main
         with:

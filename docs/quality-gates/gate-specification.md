@@ -28,6 +28,14 @@ Fast pull-request checks should finish first and cancel superseded runs. Integra
 
 ## Repository scripts contract
 
+OPS-180 makes the six core commands below the executable minimum. Every command is check-only and propagates failures; `quality:check` runs them in this order:
+
+```text
+format:check -> lint:check -> type:check -> test -> test:coverage -> build
+```
+
+Lint uses a zero-warning policy, coverage declares its provider and emits text, JSON summary, LCOV, and Cobertura evidence, and build is followed by a tracked-file drift check. OPS-217 and OPS-228 remain explicit owned blockers; OPS-181 owns coverage ratcheting and OPS-182/183 own references and permissions/secrets.
+
 Each product repository must provide these check-only scripts, even when a script delegates to another tool:
 
 ```json
@@ -148,4 +156,3 @@ Exceptions are rare, explicit records—not inline `continue-on-error` flags. Ea
 - Maximum duration of seven days for test quarantine and 30 days for non-test tooling exceptions.
 
 Expired exceptions fail the gate automatically.
-

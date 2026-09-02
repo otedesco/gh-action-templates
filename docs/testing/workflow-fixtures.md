@@ -31,3 +31,29 @@ pnpm run test:workflow-fixtures
 The final evidence run should repeat `pnpm run test:workflow-fixtures` three times, run `pnpm test`, validate workflow syntax with `actionlint .github/workflows/*.yml` when available, and confirm that the working tree has no changes caused by the checks.
 
 Later gate work should add scanner- and image-backed cases without changing the result shape or isolation rules. OPS-180 extends the core quality gate behavior; OPS-181 extends coverage ratcheting; OPS-182/183 harden workflow references and permissions; OPS-184/185 implement security and container enforcement.
+
+# Workflow fixture contract
+
+The fixture runner copies each fixture to an isolated temporary directory and
+executes the six core gates in policy order. Every negative fixture contains
+one deterministic defect and must exit non-zero at exactly its declared gate;
+the valid fixture must complete all gates successfully. Structured evidence in
+`.fixture-result.json` identifies the gate and includes an actionable
+diagnostic. The runner snapshots the central repository before and after each
+run to ensure check-only behavior does not mutate tracked or untracked files.
+
+| Fixture                     | Gate       | Defect represented           |
+| --------------------------- | ---------- | ---------------------------- |
+| `valid`                     | —          | All gates pass               |
+| `lint-warning`              | `lint`     | Warning output               |
+| `focused-test`              | `test`     | Focused test                 |
+| `skipped-test`              | `test`     | Skipped test                 |
+| `unhandled-error`           | `test`     | Unhandled asynchronous error |
+| `leaked-handle`             | `test`     | Leaked handle                |
+| `missing-coverage-provider` | `coverage` | Missing coverage provider    |
+| `uncovered-source`          | `coverage` | Source omitted from coverage |
+| `build-drift`               | `build`    | Generated build drift        |
+
+Run `pnpm run test:workflow-fixtures` three times when changing fixture
+classification or runner behavior. Results must be stable and must not time
+out.

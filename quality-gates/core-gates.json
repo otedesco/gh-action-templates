@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "gates": [
+    {
+      "name": "format",
+      "check": "quality / format",
+      "command": "format:check",
+      "failureConditions": ["formatting drift"],
+      "evidence": { "paths": [] },
+      "exceptions": []
+    },
+    {
+      "name": "lint",
+      "check": "quality / lint",
+      "command": "lint:check",
+      "failureConditions": ["lint errors", "lint warnings", "configuration errors"],
+      "evidence": { "paths": [] },
+      "exceptions": []
+    },
+    {
+      "name": "type",
+      "check": "quality / types",
+      "command": "type:check",
+      "failureConditions": ["type diagnostics"],
+      "evidence": { "paths": [] },
+      "exceptions": []
+    },
+    {
+      "name": "unit",
+      "check": "quality / unit",
+      "command": "test",
+      "failureConditions": [
+        "test failures",
+        "no tests",
+        "skipped tests",
+        "focused tests",
+        "unhandled errors",
+        "leaked handles"
+      ],
+      "evidence": { "paths": [] },
+      "exceptions": []
+    },
+    {
+      "name": "coverage",
+      "check": "quality / coverage",
+      "command": "test:coverage",
+      "failureConditions": ["threshold miss", "missing coverage provider", "uncovered source", "missing report"],
+      "evidence": {
+        "paths": ["coverage/coverage-summary.json", "coverage/lcov.info", "coverage/cobertura-coverage.xml"]
+      },
+      "exceptions": []
+    },
+    {
+      "name": "build",
+      "check": "quality / build",
+      "command": "build",
+      "failureConditions": ["build errors", "build warnings", "missing artifact", "generated-file drift"],
+      "evidence": { "paths": ["dist"] },
+      "exceptions": []
+    }
+  ]
+}
