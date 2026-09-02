@@ -13,6 +13,14 @@ const fixtures = [
   { name: "no-tests", expectedGate: "test" },
   { name: "coverage-gap", expectedGate: "coverage" },
   { name: "build-error", expectedGate: "build" },
+  { name: "lint-warning", expectedGate: "lint" },
+  { name: "focused-test", expectedGate: "test" },
+  { name: "skipped-test", expectedGate: "test" },
+  { name: "unhandled-error", expectedGate: "test" },
+  { name: "leaked-handle", expectedGate: "test" },
+  { name: "missing-coverage-provider", expectedGate: "coverage" },
+  { name: "uncovered-source", expectedGate: "coverage" },
+  { name: "build-drift", expectedGate: "build" },
 ];
 
 async function repositorySnapshot(directory) {
