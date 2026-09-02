@@ -10,6 +10,9 @@
   "scripts": {
     "test:runtime-contract": "node --test test/runtime-contract.test.mjs",
     "test:registry-auth": "node --test test/registry-auth.test.mjs",
-    "test:quality-script-contract": "node --test test/quality-script-contract.test.mjs"
+    "test:quality-script-contract": "node --test test/quality-script-contract.test.mjs",
+    "test:workflow-fixtures": "node test/workflow-fixtures.test.mjs",
+    "test:workflow-contract": "node test/workflow-contract.test.mjs",
+    "test": "pnpm run test:runtime-contract && pnpm run test:registry-auth && pnpm run test:quality-script-contract && pnpm run test:workflow-contract && pnpm run test:workflow-fixtures"
   }
 }
