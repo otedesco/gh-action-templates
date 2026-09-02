@@ -1,0 +1,14 @@
+name: Fork quality
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  quality:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    secrets: {}
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm test
