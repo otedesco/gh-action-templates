@@ -82,6 +82,8 @@ Required CI scripts must never mutate source files. `--fix`, formatter write mod
 8. Generate an SBOM and artifact attestation for published packages and images.
 9. Run `actionlint`, `shellcheck`, and a workflow security analyzer against all workflow/action YAML and shell fragments.
 
+Action pin updates are proposed weekly by Dependabot and require human review. Reviewers must verify upstream release notes, the final commit SHA and release metadata, changed permissions and secret exposure, workflow fixtures, the immutable-reference audit, and `actionlint`. Dependabot is not configured to merge these updates automatically.
+
 ## Security and dependency policy
 
 - Critical/high production dependency findings block merge unless an approved exception includes owner, exploitability assessment, compensating control, and expiration.

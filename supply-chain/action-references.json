@@ -1,0 +1,146 @@
+{
+  "policy": "Remote GitHub Actions and reusable workflows must use a reviewed 40-character lowercase commit SHA.",
+  "references": [
+    {
+      "owner": "actions",
+      "repository": "checkout",
+      "reference": "11bd71901bbe5b1630ceea73d27597364c9af683",
+      "release": "v4.2.2",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Checkout repository history for quality and release jobs",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "actions",
+      "repository": "upload-artifact",
+      "reference": "ea165f8d65b6e75b540449e92b4886f43607fa02",
+      "release": "v4.6.2",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Upload coverage evidence",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "actions",
+      "repository": "cache",
+      "reference": "0400d5f644dc74513175e3cd8d07132dd4860809",
+      "release": "v4.2.4",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Cache the pnpm store",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "volta-cli",
+      "repository": "action",
+      "reference": "615a78f6c83e116339c53b94f3f82b4d6c0b7d18",
+      "release": "v5.0.0",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Install the repository Node and npm runtime",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "pnpm",
+      "repository": "action-setup",
+      "reference": "a7487c7e89a18df4991f7f222e4898a00d66ddda",
+      "release": "v4.2.0",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Install the repository pnpm runtime",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "docker",
+      "repository": "metadata-action",
+      "reference": "902fa8ec7d6ecbf8d84d538b9b233a880e428804",
+      "release": "v5.7.0",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Generate Docker image tags and labels",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "docker",
+      "repository": "login-action",
+      "reference": "184bdaa0721073962dff0199f1fb9940f07167d1",
+      "release": "v3.5.0",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Authenticate to GitHub Container Registry",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "docker",
+      "repository": "build-push-action",
+      "reference": "263435318d21b8e681c14492fe198d362a7d2c83",
+      "release": "v6.18.0",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Build and publish Docker images",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "changesets",
+      "repository": "action",
+      "reference": "746c25e23caa47dceb6a48ee85b4cbc5a9f5f293",
+      "release": "v1.5.0",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Create release pull requests and publish packages",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/actions/setup-environment",
+      "reference": "091ae85019ee71d8aefbfca32e02cb4d670feae1",
+      "release": "central-pre-OPS-182",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Shared runtime setup composite action",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/actions/coverage-gate",
+      "reference": "091ae85019ee71d8aefbfca32e02cb4d670feae1",
+      "release": "central-pre-OPS-182",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Shared changed-code coverage gate",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/actions/notify-status",
+      "reference": "091ae85019ee71d8aefbfca32e02cb4d670feae1",
+      "release": "central-pre-OPS-182",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Report quality workflow status",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/lint-and-test.yml",
+      "reference": "b0bd33051b7b5b8ebe0a8f5a1c588ea0d466ed2d",
+      "release": "central-2026-09-02",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Shared quality workflow consumed by product repositories",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/release-package.yml",
+      "reference": "b0bd33051b7b5b8ebe0a8f5a1c588ea0d466ed2d",
+      "release": "central-2026-09-02",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Shared package release workflow consumed by product repositories",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/release-docker-image.yml",
+      "reference": "b0bd33051b7b5b8ebe0a8f5a1c588ea0d466ed2d",
+      "release": "central-2026-09-02",
+      "reviewedAt": "2026-09-02",
+      "purpose": "Shared Docker release workflow consumed by product repositories",
+      "repositories": ["cerberus", "hermes"]
+    }
+  ]
+}
