@@ -30,6 +30,45 @@ test("accepts a read-only pull-request quality workflow", async () => {
   assert.deepEqual(auditWorkflowText(workflow, basePolicy), []);
 });
 
+test("accepts a fork-safe quality workflow with no secrets", async () => {
+  const workflow = await fixture("pull-request", "fork-quality.yml");
+  assert.deepEqual(auditWorkflowText(workflow, { ...basePolicy, forkSafe: true }), []);
+});
+
+test("accepts the minimum package and container release scopes", async () => {
+  const packageWorkflow = await fixture("release", "package.yml");
+  const containerWorkflow = await fixture("release", "container.yml");
+  const packagePolicy = {
+    ...basePolicy,
+    workflow: ".github/workflows/package.yml",
+    events: ["workflow_call"],
+    workflowPermissions: {},
+    declaredSecrets: ["NPM_TOKEN"],
+    jobs: {
+      release: {
+        permissions: { contents: "write", "pull-requests": "write" },
+        allowedSecrets: ["NPM_TOKEN"],
+        forbiddenSecrets: ["GH_TOKEN", "GITHUB_TOKEN"],
+        release: true,
+      },
+    },
+  };
+  const containerPolicy = {
+    ...packagePolicy,
+    workflow: ".github/workflows/container.yml",
+    jobs: {
+      release: {
+        permissions: { contents: "read", packages: "write" },
+        allowedSecrets: ["NPM_TOKEN"],
+        forbiddenSecrets: ["GH_TOKEN", "GITHUB_TOKEN"],
+        release: true,
+      },
+    },
+  };
+  assert.deepEqual(auditWorkflowText(packageWorkflow, packagePolicy), []);
+  assert.deepEqual(auditWorkflowText(containerWorkflow, containerPolicy), []);
+});
+
 test("fails closed for missing explicit permissions and write-all", () => {
   const workflow = `
 name: Invalid
