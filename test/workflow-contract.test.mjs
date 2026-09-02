@@ -26,14 +26,10 @@ function assertContainerFixture(dockerfile) {
 
 assert.match(workflow, /workflow_call:/, "workflow must be reusable");
 assert.match(workflow, /package-manager:/, "workflow must accept the runtime package-manager contract");
+assert.match(workflow, /^permissions:\n  contents: read/m, "quality workflow must declare read-only token authority");
 assert.match(
   workflow,
-  /^permissions:\n[ ]{2}contents: read/m,
-  "quality workflow must declare read-only token authority",
-);
-assert.match(
-  workflow,
-  /jobs:\n[ ]{2}lint-and-test:[\s\S]*?permissions:\n[ ]{6}contents: read/,
+  /jobs:\n  lint-and-test:[\s\S]*?permissions:\n      contents: read/,
   "quality job must declare its permissions",
 );
 assert.doesNotMatch(
@@ -86,11 +82,11 @@ assert.doesNotMatch(workflow, /continue-on-error|\|\|\s*true|--fix\b|--write\b|-
 for (const [name, expectedPermissions] of [
   [
     "release-package.yml",
-    /permissions: \{\}\n\njobs:\n[ ]{2}[^\n]+:[\s\S]*?permissions:\n[ ]{6}contents: write\n[ ]{6}pull-requests: write/,
+    /permissions: \{\}\n\njobs:[\s\S]*?permissions:\n      contents: write\n      pull-requests: write/,
   ],
   [
     "release-docker-image.yml",
-    /permissions: \{\}\n\njobs:\n[ ]{2}[^\n]+:[\s\S]*?permissions:\n[ ]{6}contents: read\n[ ]{6}packages: write/,
+    /permissions: \{\}\n\njobs:[\s\S]*?permissions:\n      contents: read\n      packages: write/,
   ],
 ]) {
   const releaseWorkflow = await readFile(join(root, `.github/workflows/${name}`), "utf8");

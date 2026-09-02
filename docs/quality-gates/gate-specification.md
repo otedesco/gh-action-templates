@@ -8,21 +8,21 @@
 
 Every repository must expose stable, uniquely named checks. Jobs should run in parallel after a single deterministic install job where artifact/cache sharing is safe.
 
-| Check                   | Required behavior                                                              | Failure conditions                                                                    |
-| ----------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| `quality / install`     | Frozen lockfile, supported package manager/runtime, private registry preflight | Lock drift, missing auth, lifecycle-script policy violation, non-reproducible install |
-| `quality / format`      | Check-only formatter                                                           | Any source/config/documentation drift                                                 |
-| `quality / types`       | Strict TypeScript check including tests                                        | Any diagnostic or excluded test source                                                |
-| `quality / lint`        | Lint all source, tests, scripts, and configuration with zero warnings          | Any error, warning, unused suppression, or invalid config                             |
-| `quality / unit`        | Run tests without `passWithNoTests`                                            | Zero tests, skipped/focused tests, unhandled errors, leaked handles, nondeterminism   |
-| `quality / coverage`    | Publish machine-readable and HTML reports; enforce changed-code/global ratchet | Threshold miss, missing source file, broad exclusion, global decrease                 |
-| `quality / build`       | Build production/library artifacts from clean source                           | Build warning promoted by policy, failure, undeclared artifact, type drift            |
-| `quality / integration` | Real boundary tests with disposable services                                   | Migration, persistence, cache, broker, SMTP, or HTTP contract failure                 |
-| `quality / contract`    | OpenAPI, event schema, package export, env schema compatibility                | Breaking/unversioned change or generated-contract drift                               |
-| `quality / security`    | Dependency review, SAST/CodeQL, secret and license checks                      | Unapproved critical/high issue, secret, prohibited license, unsafe workflow           |
-| `quality / container`   | Build, scan, inspect, and smoke production images                              | Critical/high unapproved CVE, root user, missing health behavior, startup failure     |
-| `quality / e2e`         | Playwright critical journeys on built stack                                    | Journey, accessibility, console/page error, or artifact collection failure            |
-| `quality / mutation`    | Changed critical logic mutation check                                          | Score below policy or survived high-risk mutant                                       |
+| Check | Required behavior | Failure conditions |
+|---|---|---|
+| `quality / install` | Frozen lockfile, supported package manager/runtime, private registry preflight | Lock drift, missing auth, lifecycle-script policy violation, non-reproducible install |
+| `quality / format` | Check-only formatter | Any source/config/documentation drift |
+| `quality / types` | Strict TypeScript check including tests | Any diagnostic or excluded test source |
+| `quality / lint` | Lint all source, tests, scripts, and configuration with zero warnings | Any error, warning, unused suppression, or invalid config |
+| `quality / unit` | Run tests without `passWithNoTests` | Zero tests, skipped/focused tests, unhandled errors, leaked handles, nondeterminism |
+| `quality / coverage` | Publish machine-readable and HTML reports; enforce changed-code/global ratchet | Threshold miss, missing source file, broad exclusion, global decrease |
+| `quality / build` | Build production/library artifacts from clean source | Build warning promoted by policy, failure, undeclared artifact, type drift |
+| `quality / integration` | Real boundary tests with disposable services | Migration, persistence, cache, broker, SMTP, or HTTP contract failure |
+| `quality / contract` | OpenAPI, event schema, package export, env schema compatibility | Breaking/unversioned change or generated-contract drift |
+| `quality / security` | Dependency review, SAST/CodeQL, secret and license checks | Unapproved critical/high issue, secret, prohibited license, unsafe workflow |
+| `quality / container` | Build, scan, inspect, and smoke production images | Critical/high unapproved CVE, root user, missing health behavior, startup failure |
+| `quality / e2e` | Playwright critical journeys on built stack | Journey, accessibility, console/page error, or artifact collection failure |
+| `quality / mutation` | Changed critical logic mutation check | Score below policy or survived high-risk mutant |
 
 Fast pull-request checks should finish first and cancel superseded runs. Integration, end-to-end, and mutation checks may use path filters only when an automatically validated dependency map proves the changed code cannot affect them.
 
@@ -74,8 +74,8 @@ Required CI scripts must never mutate source files. `--fix`, formatter write mod
 
 1. Pin third-party actions to reviewed full commit SHAs and annotate the intended release tag in comments.
 2. Reference reusable Apart workflows by an immutable release tag or commit SHA, never `@main`.
-3. Declare top-level `permissions: contents: read` and grant narrow job-level permissions only when required. OPS-183 records the event-aware policy and audits all product callers in [`supply-chain/workflow-permissions.json`](../../supply-chain/workflow-permissions.json).
-4. Replace broad `secrets: inherit` with explicit named secrets. Release and fork-isolation evidence is recorded in [`docs/evidence/OPS-183-permission-matrix.md`](../evidence/OPS-183-permission-matrix.md).
+3. Declare top-level `permissions: contents: read` and grant narrow job-level permissions only when required.
+4. Replace broad `secrets: inherit` with explicit named secrets.
 5. Fix the setup action's registry-token input contract and add a redaction-safe preflight check.
 6. Use OIDC for cloud publishing where supported; avoid long-lived deployment credentials.
 7. Add concurrency cancellation for pull-request checks and protect release jobs from cancellation after publication begins.
@@ -110,11 +110,11 @@ Release workflows must depend on the same immutable build/test result used for r
 
 ## Scheduled and release-only gates
 
-| Frequency | Checks                                                                                                                     |
-| --------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Nightly   | Full mutation suite, all-browser E2E, dependency/container scan, flaky-test repetition, migration upgrade matrix           |
-| Weekly    | Full secret-history scan, license report, dependency freshness report, performance trend, restore test                     |
-| Release   | Full quality suite, clean artifact rebuild, SBOM, provenance/attestation, image smoke, rollback rehearsal where applicable |
+| Frequency | Checks |
+|---|---|
+| Nightly | Full mutation suite, all-browser E2E, dependency/container scan, flaky-test repetition, migration upgrade matrix |
+| Weekly | Full secret-history scan, license report, dependency freshness report, performance trend, restore test |
+| Release | Full quality suite, clean artifact rebuild, SBOM, provenance/attestation, image smoke, rollback rehearsal where applicable |
 
 ## Rollout stages
 
