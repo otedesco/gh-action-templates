@@ -2,7 +2,7 @@
 
 Reviewed date: 2026-09-02
 
-The central workflow release is commit `46eefa62da65e573739f4ac686560cd14bb7849b` from `gh-action-templates`. It pins all central third-party actions and is the single immutable target used by product consumers.
+The central workflow release is commit `b0bd33051b7b5b8ebe0a8f5a1c588ea0d466ed2d` from `gh-action-templates`. It pins all central third-party actions and is the single immutable target used by product consumers.
 
 | Repository | Rollout commit | Workflows | Validation |
 | --- | --- | --- | --- |
