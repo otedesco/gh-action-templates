@@ -42,3 +42,24 @@ test("requires all four metrics for changed executable code", () => {
     ["statements", "branches", "functions", "lines"],
   );
 });
+
+test("checks only executable locations touched by the change", () => {
+  const detailed = normalizeCoverage({
+    files: {
+      "src/a.ts": {
+        statementMap: {
+          0: { start: { line: 2 }, end: { line: 2 } },
+          1: { start: { line: 8 }, end: { line: 8 } },
+        },
+        s: { 0: 1, 1: 0 },
+        branchMap: { 0: { locations: [{ start: { line: 8 } }] } },
+        b: { 0: [0] },
+        fnMap: { 0: { loc: { start: { line: 8 } } } },
+        f: { 0: 0 },
+        l: { 2: 1, 8: 0 },
+      },
+    },
+  });
+  const result = evaluateChangedCoverage(detailed, { "src/a.ts": [2] }, { executableFiles: ["src/a.ts"] });
+  assert.equal(result.passed, true);
+});
