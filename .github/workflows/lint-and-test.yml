@@ -17,14 +17,9 @@ on:
       NPM_TOKEN:
         required: false
 
-permissions:
-  contents: read
-
 jobs:
   lint-and-test:
     name: Test on the supported runtime
-    permissions:
-      contents: read
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -34,6 +29,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup environment
         uses: otedesco/gh-action-templates/.github/actions/setup-environment@091ae85019ee71d8aefbfca32e02cb4d670feae1 # central-pre-OPS-182
@@ -91,3 +87,7 @@ jobs:
           path: |
             coverage/
             coverage-baselines/
+
+      - uses: otedesco/gh-action-templates/.github/actions/notify-status@091ae85019ee71d8aefbfca32e02cb4d670feae1 # central-pre-OPS-182
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
