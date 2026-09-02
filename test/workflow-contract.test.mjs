@@ -35,6 +35,20 @@ for (const command of qualityOrder) {
 for (const stepName of stepNames)
   assert.match(workflow, new RegExp("- name: " + stepName), "missing named gate step: " + stepName);
 assert.match(workflow, /git diff --exit-code/, "workflow must fail on generated-file drift");
+assert.match(workflow, /fetch-depth: 0/, "coverage evaluation requires complete history");
+for (const command of ["coverage:source", "coverage:normalize", "coverage:changed", "coverage:ratchet"])
+  assert.match(
+    workflow,
+    new RegExp(`run: \\\$\\{\\{ inputs\\.package-manager \\\}\\} run ${command.replace(":", "\\:")}`),
+    `missing ${command} coverage step`,
+  );
+assert.match(workflow, /COVERAGE_BASE:/, "workflow must provide an explicit coverage base");
+assert.match(workflow, /COVERAGE_HEAD:/, "workflow must provide an explicit coverage head");
+assert.match(
+  workflow,
+  /Upload coverage decision[\s\S]*if: \$\{\{ always\(\) \}\}/,
+  "coverage evidence must upload on failure",
+);
 assert.deepEqual(CORE_GATE_NAMES, ["format", "lint", "type", "unit", "coverage", "build"]);
 assert.deepEqual(CORE_GATE_COMMANDS, {
   format: "format:check",

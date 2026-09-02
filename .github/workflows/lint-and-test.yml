@@ -28,7 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 1
+          fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup environment
@@ -67,11 +67,35 @@ jobs:
       - name: Coverage
         run: ${{ inputs.package-manager }} run test:coverage
 
+      - name: Inventory executable source
+        run: ${{ inputs.package-manager }} run coverage:source
+
+      - name: Normalize coverage report
+        run: ${{ inputs.package-manager }} run coverage:normalize
+
+      - name: Evaluate changed-code coverage
+        env:
+          COVERAGE_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          COVERAGE_HEAD: ${{ github.sha }}
+        run: ${{ inputs.package-manager }} run coverage:changed
+
+      - name: Evaluate global coverage ratchet
+        run: ${{ inputs.package-manager }} run coverage:ratchet
+
       - name: Build
         run: ${{ inputs.package-manager }} run build
 
       - name: Check for generated-file drift
         run: git diff --exit-code
+
+      - name: Upload coverage decision
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-decision
+          path: |
+            coverage/
+            coverage-baselines/
 
       - uses: otedesco/gh-action-templates/.github/actions/notify-status@main
         with:
