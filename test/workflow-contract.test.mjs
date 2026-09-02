@@ -32,7 +32,8 @@ for (const command of qualityOrder) {
     `missing ${command} workflow step`,
   );
 }
-for (const stepName of stepNames) assert.match(workflow, new RegExp("- name: " + stepName), "missing named gate step: " + stepName);
+for (const stepName of stepNames)
+  assert.match(workflow, new RegExp("- name: " + stepName), "missing named gate step: " + stepName);
 assert.match(workflow, /git diff --exit-code/, "workflow must fail on generated-file drift");
 assert.deepEqual(CORE_GATE_NAMES, ["format", "lint", "type", "unit", "coverage", "build"]);
 assert.deepEqual(CORE_GATE_COMMANDS, {

@@ -2,7 +2,12 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import test from "node:test";
-import { CORE_GATE_COMMANDS, CORE_GATE_NAMES, validateCoreGates } from "../scripts/validate-core-gates.mjs";
+import {
+  CORE_GATE_COMMANDS,
+  CORE_GATE_NAMES,
+  validateConsumerManifest,
+  validateCoreGates,
+} from "../scripts/validate-core-gates.mjs";
 
 const root = new URL("..", import.meta.url).pathname;
 const policy = JSON.parse(await readFile(join(root, "quality-gates/core-gates.json"), "utf8"));
@@ -46,4 +51,14 @@ test("validator rejects incomplete exceptions and missing required metadata", ()
   assert.ok(rules.includes("missing failure conditions"));
   assert.ok(rules.includes("missing evidence paths"));
   assert.ok(rules.includes("incomplete exception"));
+});
+
+test("all consumer manifests expose truthful core scripts or owned blockers", async () => {
+  const repositories = ["commons", "cache", "server-utils", "notify", "cerberus", "hermes", "web-app"];
+  for (const repository of repositories) {
+    const directory = join(root, "..", repository);
+    const manifest = JSON.parse(await readFile(join(directory, "package.json"), "utf8"));
+    const configText = repository === "cerberus" ? await readFile(join(directory, "jest.config.js"), "utf8") : "";
+    assert.deepEqual(validateConsumerManifest(manifest, { repository, configText }), [], repository);
+  }
 });

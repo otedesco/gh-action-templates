@@ -123,6 +123,14 @@ flowchart LR
 - Check-only commands contain no fix/write flags, forced exits, pass-with-no-tests options, ignored failures, or placeholder success paths.
 - Hermes and web-app test/coverage commands fail explicitly on missing `OPS-217` and `OPS-228` harnesses. The six repositories with existing test commands now fail honestly on zero tests or missing coverage providers where applicable.
 
+## OPS-180 truthful core-gate evidence
+
+- Six stable gates (`format`, `lint`, `type`, `unit`, `coverage`, `build`) map to canonical check-only scripts.
+- The reusable workflow runs named fail-closed steps and checks tracked-file drift after build.
+- Sixteen deterministic fixtures passed three consecutive repetitions without mutation or timeout.
+- Vitest consumers declare V8 coverage providers; Cerberus collects all source and emits complete reports. Hermes and web-app retain explicit OPS-217/OPS-228 blockers.
+- Local verification used available Node 20.11.1 / 25.6.0 rather than Node 24.20.0; `actionlint` was unavailable locally.
+
 ## High-risk characterization targets
 
 These are observations that tests must characterize before refactoring; they are not silently approved fixes.

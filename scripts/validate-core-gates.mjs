@@ -97,6 +97,63 @@ export function validateCoreGates(policy, { repository = "central" } = {}) {
   return errors;
 }
 
+export function validateConsumerManifest(manifest, { repository = "unknown", configText = "" } = {}) {
+  const errors = [];
+  const scripts = manifest?.scripts ?? {};
+  for (const command of Object.values(CORE_GATE_COMMANDS)) {
+    if (typeof scripts[command] !== "string" || !scripts[command].trim()) {
+      errors.push(error(command, "missing consumer script", `Add a check-only ${command} script.`, repository));
+    }
+  }
+  const quality = scripts["quality:check"] ?? "";
+  const order = Object.values(CORE_GATE_COMMANDS)
+    .map((command) => `${command}`)
+    .join(" && ");
+  if (!order.split(" && ").every((command) => quality.includes(command))) {
+    errors.push(error("quality", "incomplete quality command graph", `Run gates in order: ${order}.`, repository));
+  }
+  for (const name of ["format:check", "lint:check", "type:check", "test", "test:coverage", "build"]) {
+    if (forbidden.test(scripts[name] ?? ""))
+      errors.push(
+        error(
+          name,
+          "unsupported escape flag or ignored failure",
+          "Use a check-only command that propagates failures.",
+          repository,
+        ),
+      );
+  }
+  if (!/--max-warnings\s+0/.test(scripts["lint:check"] ?? ""))
+    errors.push(error("lint", "warnings are not fatal", "Configure lint:check with --max-warnings 0.", repository));
+  if (/--write|--fix/.test(scripts["format:check"] ?? ""))
+    errors.push(error("format", "formatter mutates files", "Use formatter check mode only.", repository));
+  const ownedBlocker = repository === "hermes" || repository === "web-app";
+  if (!ownedBlocker && !/coverage\.provider|coverageReporters/.test(`${scripts["test:coverage"]} ${configText}`)) {
+    errors.push(
+      error(
+        "coverage",
+        "coverage provider is not explicit",
+        "Configure and install a coverage provider and required reports.",
+        repository,
+      ),
+    );
+  }
+  if (
+    !ownedBlocker &&
+    /test harness is not implemented|passWithNoTests/.test(`${scripts.test} ${scripts["test:coverage"]}`)
+  ) {
+    errors.push(
+      error(
+        "unit",
+        "placeholder test success",
+        "Implement the test harness or retain a truthful failing blocker.",
+        repository,
+      ),
+    );
+  }
+  return errors;
+}
+
 export async function validateCoreGatesFile(path, options) {
   return validateCoreGates(JSON.parse(await readFile(path, "utf8")), options);
 }
