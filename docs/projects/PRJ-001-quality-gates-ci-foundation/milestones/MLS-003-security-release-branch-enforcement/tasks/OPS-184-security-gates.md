@@ -8,6 +8,33 @@
 
 **Tech Stack:** GitHub Actions, CodeQL, dependency-review-action, gitleaks, license-checker or equivalent approved scanner, zizmor/actionlint, SARIF, JSON Schema, Node test runner.
 
+## Completion — 2026-09-03
+
+**Status:** Complete — implementation and repository adoption merged.
+
+### Merged changes
+
+- `gh-action-templates` PR [#26](https://github.com/otedesco/gh-action-templates/pull/26), merge commit `90a71ee8bff12cc2905b431d92a71bf13b7443ef`: security policy, exception schema/evaluator, report normalization, and safe positive/negative fixtures.
+- `gh-action-templates` PR [#27](https://github.com/otedesco/gh-action-templates/pull/27), merge commit `32dcc51235dc1332104aab1ceb461e495ba8761f`: reusable security workflow, immutable scanner references, explicit permissions, SARIF upload, bounded artifacts, and fail-closed aggregate check.
+- Consumer adoption: [commons #20](https://github.com/otedesco/commons/pull/20) (`4579378d03ae4904cf97038cd2110677febf0e23`), [cache #24](https://github.com/otedesco/cache/pull/24) (`3ef5edd315205b35010437c1bf137b95213717a0`), [server-utils #15](https://github.com/otedesco/server-utils/pull/15) (`33b05dd966de52615a0cc643e402e160ee3396dd`), [notify #20](https://github.com/otedesco/notify/pull/20) (`b20bec39ec975a9f18be5262a31d11a273dd32ca`), [cerberus #52](https://github.com/otedesco/cerberus/pull/52) (`23a4ac749a3b3d2751647fa234dc856987d1b7e5`), [hermes #20](https://github.com/otedesco/hermes/pull/20) (`a92812f8195179f7e922e7fe45a8fbdca6829e5f`), and [web-app #7](https://github.com/otedesco/web-app/pull/7) (`519109fcaf50bad32118934e512a5dedea9b718f`).
+
+### Delivered capability and technical decisions
+
+The central repository now defines one versioned blocking policy for CodeQL, dependency review, secret scanning, license policy, and workflow security. Findings normalize to a stable tool/rule/severity/subject/fingerprint shape; critical and high findings block unless a narrow, owned, approved, future-expiring exception matches exactly. The reusable workflow runs the five scanner paths with least-privilege permissions, uploads CodeQL SARIF only from the dedicated security-events job, bounds evidence retention, and fails closed when any scanner fails, is cancelled, skipped, or unavailable.
+
+All eight repositories now call the immutable central workflow at `32dcc51235dc1332104aab1ceb461e495ba8761f`; private-dependency repositories pass `NPM_TOKEN` only to the license/dependency installation path.
+
+### Validation and limitations
+
+- `pnpm test`, security policy/fixture suites, workflow contract tests, action-reference audit, workflow-permission audit, formatting, linting, JSON validation, and `git diff --check` passed locally.
+- GitHub verification confirmed all eight scoped PRs are merged and each consumer `main` contains the central workflow reference.
+- The local environment used Node `20.11.1` instead of the repository’s Node `24.20.0` contract, producing the expected engine warning.
+- `actionlint` was not installed locally. Hosted scanner run URLs, SARIF links, and controlled negative PR evidence must be added as they become available; this closeout does not invent those artifacts.
+
+### Follow-up
+
+OPS-185 owns container release enforcement, OPS-186 owns protected-branch rulesets, and MLS-004 owns sustained adoption/stability evidence and dashboard reporting.
+
 ---
 
 ## Dependencies and scope
@@ -158,4 +185,3 @@ git commit -m "docs: record security gate evidence"
 - Secrets are redacted from logs and artifacts.
 - Actions are immutable and permissions are minimal.
 - Evidence is linked to `OPS-184`.
-

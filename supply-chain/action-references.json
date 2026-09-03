@@ -216,6 +216,16 @@
       "reviewedAt": "2026-09-02",
       "purpose": "Shared container release workflow with minimum GHCR authority",
       "repositories": ["cerberus", "hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/security.yml",
+      "reference": "32dcc51235dc1332104aab1ceb461e495ba8761f",
+      "release": "OPS-184-security-gates",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Shared blocking security workflow",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes", "web-app"]
     }
   ]
 }
