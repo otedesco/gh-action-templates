@@ -5,6 +5,7 @@ import { CORE_GATE_NAMES, CORE_GATE_COMMANDS } from "../scripts/validate-core-ga
 
 const root = new URL("../", import.meta.url).pathname;
 const workflow = await readFile(join(root, ".github/workflows/lint-and-test.yml"), "utf8");
+const securityWorkflow = await readFile(join(root, ".github/workflows/security.yml"), "utf8");
 const coverageAction = await readFile(join(root, ".github/actions/coverage-gate/action.yml"), "utf8");
 const qualityOrder = ["format:check", "lint:check", "type:check", "test", "test:coverage", "build"];
 const stepNames = ["Format check", "Lint", "Type check", "Unit tests", "Coverage", "Build"];
@@ -100,9 +101,30 @@ for (const [name, expectedPermissions] of [
 }
 
 const securityFixture = JSON.parse(await readFile(fixturePath("security-error", "fixture.json"), "utf8"));
-const securityWorkflow = await readFile(fixturePath("security-error", "workflow.yml"), "utf8");
+const securityFixtureWorkflow = await readFile(fixturePath("security-error", "workflow.yml"), "utf8");
 assert.equal(securityFixture.gate, "security");
-assert.throws(() => assertSecurityFixture(securityWorkflow), /security gate/);
+assert.throws(() => assertSecurityFixture(securityFixtureWorkflow), /security gate/);
+
+assert.match(securityWorkflow, /pull_request:/, "security workflow must run on pull requests");
+assert.match(securityWorkflow, /workflow_call:/, "security workflow must be reusable");
+for (const job of ["codeql", "dependency-review", "secret-scan", "license", "workflow-security", "aggregate"]) {
+  assert.match(securityWorkflow, new RegExp(`jobs:\\n[\\s\\S]*[ ]{2}${job}:`), `missing security job: ${job}`);
+}
+assert.match(securityWorkflow, /fetch-depth: 0/, "security scans require complete history");
+assert.match(securityWorkflow, /security-events: write/, "SARIF upload must have explicit security-events access");
+assert.match(securityWorkflow, /upload-sarif@[0-9a-f]{40}/, "SARIF upload must be immutable");
+assert.match(securityWorkflow, /dependency-review-action@[0-9a-f]{40}/, "dependency review must be immutable");
+assert.match(securityWorkflow, /gitleaks-action@[0-9a-f]{40}/, "secret scanning must be immutable");
+assert.match(securityWorkflow, /zizmor-action@[0-9a-f]{40}/, "workflow security must be immutable");
+assert.match(securityWorkflow, /retention-days:/, "security artifacts must have bounded retention");
+assert.match(securityWorkflow, /validate-policy\.mjs/, "aggregate must validate policy and exceptions");
+assert.match(
+  securityWorkflow,
+  /needs:\s*\[codeql, dependency-review, secret-scan, license, workflow-security\]/,
+  "aggregate must require every scanner",
+);
+assert.match(securityWorkflow, /needs\.[a-z-]+\.result.*(failure|cancelled|skipped)/s, "aggregate must fail closed");
+assert.doesNotMatch(securityWorkflow, /continue-on-error|secrets:\s*inherit|secrets\.NPM_TOKEN.*pull_request/s);
 
 const containerFixture = JSON.parse(await readFile(fixturePath("container-error", "fixture.json"), "utf8"));
 const dockerfile = await readFile(fixturePath("container-error", "Dockerfile"), "utf8");

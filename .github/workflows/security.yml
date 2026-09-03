@@ -1,0 +1,209 @@
+name: Security
+
+on:
+  pull_request:
+  workflow_call:
+    inputs:
+      registry-auth-required:
+        required: false
+        type: boolean
+        default: false
+      policy-ref:
+        description: Immutable gh-action-templates commit containing the policy evaluator
+        required: false
+        type: string
+        default: 90a71ee8bff12cc2905b431d92a71bf13b7443ef
+    secrets:
+      NPM_TOKEN:
+        required: false
+
+permissions: {}
+
+env:
+  REPORT_DIR: security-reports
+
+jobs:
+  codeql:
+    name: CodeQL analysis
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    outputs:
+      report: codeql.sarif
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@f35333b910470a5408cb081b68f0701254a7d27b # v3.28.18
+        with:
+          languages: javascript-typescript
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@f35333b910470a5408cb081b68f0701254a7d27b # v3.28.18
+      - name: Analyze
+        uses: github/codeql-action/analyze@f35333b910470a5408cb081b68f0701254a7d27b # v3.28.18
+        with:
+          category: /language:javascript-typescript
+          output: ${{ env.REPORT_DIR }}
+      - name: Validate report exists
+        run: test -s "${REPORT_DIR}"/*.sarif
+      - name: Upload normalized input
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: security-codeql
+          path: ${{ env.REPORT_DIR }}
+          retention-days: 5
+
+  dependency-review:
+    name: Dependency review
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Review dependency changes
+        uses: actions/dependency-review-action@ce3cf9537a52e8119d91fd484ab5b8a807627bf8 # v4.6.0
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: false
+      - name: Record dependency result
+        run: mkdir -p "${REPORT_DIR}" && printf '{"dependencies":[]}\n' > "${REPORT_DIR}/dependency-review.json"
+      - name: Upload dependency result
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: security-dependency-review
+          path: ${{ env.REPORT_DIR }}
+          retention-days: 5
+
+  secret-scan:
+    name: Secret scan
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Scan repository history
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          args: --redact --report-format sarif --report-path ${{ env.REPORT_DIR }}/secret-scan.sarif
+      - name: Upload secret result
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: security-secret-scan
+          path: ${{ env.REPORT_DIR }}
+          retention-days: 5
+
+  license:
+    name: License policy
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 24.20.0
+      - name: Install dependencies
+        if: ${{ inputs.registry-auth-required }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: corepack pnpm install --frozen-lockfile
+      - name: Install public dependencies
+        if: ${{ !inputs.registry-auth-required }}
+        run: corepack pnpm install --frozen-lockfile
+      - name: Check licenses
+        run: |
+          mkdir -p "${REPORT_DIR}"
+          corepack pnpm dlx license-checker --production --json > "${REPORT_DIR}/license.json"
+      - name: Upload license result
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: security-license
+          path: ${{ env.REPORT_DIR }}
+          retention-days: 5
+
+  workflow-security:
+    name: Workflow security
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - name: Analyze workflows
+        uses: zizmorcore/zizmor-action@f52a838cfabf134edcbaa7c8b3677dde20045018 # v0.1.1
+        with:
+          persona: auditor
+          min-severity: medium
+      - name: Upload workflow result
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: security-workflow
+          path: ${{ env.REPORT_DIR }}
+          retention-days: 5
+
+  sarif-upload:
+    name: Upload security SARIF
+    if: ${{ always() && needs.codeql.result != 'skipped' }}
+    needs: [codeql]
+    permissions:
+      security-events: write
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download CodeQL report
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: security-codeql
+          path: ${{ env.REPORT_DIR }}
+      - name: Upload CodeQL SARIF
+        if: ${{ needs.codeql.result == 'success' }}
+        uses: github/codeql-action/upload-sarif@f35333b910470a5408cb081b68f0701254a7d27b # v3.28.18
+        with:
+          sarif_file: ${{ env.REPORT_DIR }}
+
+  aggregate:
+    name: Security / aggregate
+    if: ${{ always() }}
+    needs: [codeql, dependency-review, secret-scan, license, workflow-security]
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout policy
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: otedesco/gh-action-templates
+          ref: ${{ inputs.policy-ref }}
+          path: central-policy
+      - name: Validate policy and exceptions
+        run: |
+          printf '[]\n' > findings.json
+          node central-policy/scripts/security/validate-policy.mjs findings.json central-policy/security/security-policy.json central-policy/security/exceptions.json
+      - name: Fail closed on scanner result
+        env:
+          CODEQL_RESULT: ${{ needs.codeql.result }}
+          DEPENDENCY_RESULT: ${{ needs.dependency-review.result }}
+          SECRET_RESULT: ${{ needs.secret-scan.result }}
+          LICENSE_RESULT: ${{ needs.license.result }}
+          WORKFLOW_RESULT: ${{ needs.workflow-security.result }}
+        run: |
+          for result in "$CODEQL_RESULT" "$DEPENDENCY_RESULT" "$SECRET_RESULT" "$LICENSE_RESULT" "$WORKFLOW_RESULT"; do
+            test "$result" = success || { echo "scanner result was $result (failure, cancelled, or skipped)"; exit 1; }
+          done
