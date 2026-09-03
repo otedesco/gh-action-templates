@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { evaluateFindings, formatFindings, validatePolicy } from "../scripts/security/validate-policy.mjs";
 
@@ -81,6 +82,14 @@ test("fails closed for malformed policies", () => {
   const result = evaluateFindings([highFinding], undefined);
   assert.equal(result.blocking.length, 1);
   assert.match(result.diagnostics.join("\n"), /policy/);
+});
+
+test("rejects the malformed exception fixture against the schema contract", async () => {
+  const malformed = JSON.parse(
+    await readFile(new URL("./fixtures/security/invalid-exception.json", import.meta.url), "utf8"),
+  );
+  const errors = validatePolicy(policy, [malformed]);
+  assert.match(errors.join("\n"), /invalid format|missing owner|scope|expiry/);
 });
 
 test("sorts diagnostics deterministically and never formats secret snippets", () => {
