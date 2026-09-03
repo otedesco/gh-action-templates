@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 const SEVERITIES = new Set(["critical", "high", "medium", "low", "info"]);
 
 function required(value, name) {
@@ -9,6 +11,10 @@ function severity(value) {
   const normalized = String(value ?? "").toLowerCase();
   if (!SEVERITIES.has(normalized)) throw new Error(`unsupported severity: ${value}`);
   return normalized;
+}
+
+function sarifSeverity(level) {
+  return { error: "high", warning: "medium", note: "low", none: "info" }[String(level ?? "").toLowerCase()] ?? level;
 }
 
 function finding(tool, rule, level, subject, fingerprint) {
@@ -24,13 +30,24 @@ function finding(tool, rule, level, subject, fingerprint) {
 function normalizeSarif(tool, report) {
   if (report.version !== "2.1.0") throw new Error(`unsupported SARIF version: ${report.version ?? "missing"}`);
   if (!Array.isArray(report.runs)) throw new Error("runs is required");
-  return report.runs.flatMap((run) => {
+  return report.runs.flatMap((run, runIndex) => {
     if (!Array.isArray(run.results)) throw new Error("results is required");
     return run.results.map((result) => {
       const rule = result.ruleId;
       const subject = result.locations?.[0]?.physicalLocation?.artifactLocation?.uri;
-      const fingerprint = Object.values(result.partialFingerprints ?? {})[0] ?? `${rule}:${subject}`;
-      const level = result.properties?.severity ?? (result.level === "error" ? "high" : result.level);
+      const knownFingerprintKeys = ["primaryLocationLineHash", "primaryLocationStartLineHash", "contextualHash"];
+      const partial = result.partialFingerprints ?? {};
+      const fingerprintValue = knownFingerprintKeys.map((key) => partial[key]).find((value) => value);
+      const region = result.locations?.[0]?.physicalLocation?.region ?? {};
+      const identity = JSON.stringify({
+        run: runIndex,
+        rule,
+        subject,
+        region,
+        message: result.message?.text ?? result.message?.markdown ?? "",
+      });
+      const fingerprint = fingerprintValue ?? `sha256:${createHash("sha256").update(identity).digest("hex")}`;
+      const level = result.properties?.severity ?? sarifSeverity(result.level);
       return finding(tool, rule, level, subject, fingerprint);
     });
   });

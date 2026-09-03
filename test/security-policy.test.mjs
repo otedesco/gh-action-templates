@@ -59,13 +59,28 @@ test("blocks critical and high findings while allowing configured lower severiti
 });
 
 test("applies only a valid, future, exact-scope exception", () => {
-  const result = evaluateFindings([highFinding], policy, [validException], new Date("2026-09-02T00:00:00Z"));
-  assert.deepEqual(result.blocking, []);
+  const result = evaluateFindings(
+    [highFinding, { ...highFinding, subject: "@example/other", fingerprint: "sha256:other" }],
+    policy,
+    [validException],
+    new Date("2026-09-02T00:00:00Z"),
+  );
+  assert.deepEqual(
+    result.blocking.map((finding) => finding.subject),
+    ["@example/other"],
+  );
   assert.equal(result.excepted.length, 1);
 
   const expired = evaluateFindings([highFinding], policy, [{ ...validException, expiresAt: "2026-01-01T00:00:00Z" }]);
   assert.equal(expired.blocking.length, 1);
   assert.match(expired.diagnostics.join("\n"), /expired/);
+});
+
+test("fails closed for malformed policies", () => {
+  assert.doesNotThrow(() => evaluateFindings([highFinding], undefined));
+  const result = evaluateFindings([highFinding], undefined);
+  assert.equal(result.blocking.length, 1);
+  assert.match(result.diagnostics.join("\n"), /policy/);
 });
 
 test("sorts diagnostics deterministically and never formats secret snippets", () => {

@@ -48,3 +48,33 @@ test("serializes sorted findings without secret snippets", async () => {
   assert.doesNotMatch(output, /SENTINEL-SECURITY-TOKEN/);
   assert.equal(output.endsWith("\n"), true);
 });
+
+test("maps SARIF levels and fingerprints findings deterministically", () => {
+  const report = {
+    version: "2.1.0",
+    runs: [
+      {
+        results: [
+          {
+            ruleId: "rule",
+            level: "warning",
+            locations: [{ physicalLocation: { artifactLocation: { uri: "a.js" }, region: { startLine: 1 } } }],
+            message: { text: "one" },
+          },
+          {
+            ruleId: "rule",
+            level: "note",
+            locations: [{ physicalLocation: { artifactLocation: { uri: "a.js" }, region: { startLine: 2 } } }],
+            message: { text: "two" },
+          },
+        ],
+      },
+    ],
+  };
+  const findings = normalizeReport("codeql", report);
+  assert.deepEqual(
+    findings.map(({ severity }) => severity),
+    ["medium", "low"],
+  );
+  assert.notEqual(findings[0].fingerprint, findings[1].fingerprint);
+});

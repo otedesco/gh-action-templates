@@ -11,7 +11,9 @@
       "rationale": { "type": "string", "minLength": 1 },
       "scope": {
         "type": "object",
-        "minProperties": 2,
+        "required": ["tool", "rule", "subject"],
+        "minProperties": 3,
+        "maxProperties": 3,
         "additionalProperties": false,
         "properties": {
           "tool": { "type": "string", "minLength": 1 },
