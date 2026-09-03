@@ -26,6 +26,17 @@ function assertContainerFixture(dockerfile) {
 
 assert.match(workflow, /workflow_call:/, "workflow must be reusable");
 assert.match(workflow, /package-manager:/, "workflow must accept the runtime package-manager contract");
+assert.match(workflow, /^permissions:\n  contents: read/m, "quality workflow must declare read-only token authority");
+assert.match(
+  workflow,
+  /jobs:\n  lint-and-test:[\s\S]*?permissions:\n      contents: read/,
+  "quality job must declare its permissions",
+);
+assert.doesNotMatch(
+  workflow,
+  /secrets\.GITHUB_TOKEN|notify-status/,
+  "quality checks must use built-in check reporting",
+);
 for (const command of qualityOrder) {
   assert.match(
     workflow,
@@ -67,6 +78,22 @@ assert.deepEqual(CORE_GATE_COMMANDS, {
   build: "build",
 });
 assert.doesNotMatch(workflow, /continue-on-error|\|\|\s*true|--fix\b|--write\b|--passWithNoTests|--forceExit/);
+
+for (const [name, expectedPermissions] of [
+  [
+    "release-package.yml",
+    /permissions: \{\}\n\njobs:[\s\S]*?permissions:\n      contents: write\n      pull-requests: write/,
+  ],
+  [
+    "release-docker-image.yml",
+    /permissions: \{\}\n\njobs:[\s\S]*?permissions:\n      contents: read\n      packages: write/,
+  ],
+]) {
+  const releaseWorkflow = await readFile(join(root, `.github/workflows/${name}`), "utf8");
+  assert.match(releaseWorkflow, expectedPermissions, `${name} must declare minimum release permissions`);
+  assert.doesNotMatch(releaseWorkflow, /secrets\.GH_TOKEN|secrets\.GITHUB_TOKEN/);
+  assert.match(releaseWorkflow, /github\.token/);
+}
 
 const securityFixture = JSON.parse(await readFile(fixturePath("security-error", "fixture.json"), "utf8"));
 const securityWorkflow = await readFile(fixturePath("security-error", "workflow.yml"), "utf8");

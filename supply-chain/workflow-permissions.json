@@ -311,21 +311,7 @@
     },
     "web-app": {
       "path": "../web-app",
-      "workflows": {
-        ".github/workflows/quality-checks.yml": {
-          "events": ["workflow_call", "pull_request"],
-          "workflowPermissions": { "contents": "read" },
-          "declaredSecrets": [],
-          "jobs": {
-            "lint-and-test": {
-              "permissions": { "contents": "read" },
-              "allowedSecrets": [],
-              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
-            }
-          },
-          "remediation": "Adopt the central quality workflow with npm and no repository secrets."
-        }
-      }
+      "workflows": {}
     }
   }
 }
