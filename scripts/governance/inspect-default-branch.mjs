@@ -7,6 +7,40 @@ const root = fileURLToPath(new URL("../../", import.meta.url));
 
 export { inspectWorkflowText };
 
+export function findPullRequestBranches(workflowText) {
+  const lines = workflowText.split(/\r?\n/);
+  const pullRequestIndex = lines.findIndex((line) => /^\s{2}pull_request:\s*/.test(line));
+  if (pullRequestIndex < 0) return null;
+
+  for (let index = pullRequestIndex + 1; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (!line.trim()) continue;
+    const level = line.match(/^ */)?.[0].length ?? 0;
+    if (level <= 2) break;
+    const branches = line.match(/^\s{4}branches:\s*(.*)$/);
+    if (!branches) continue;
+    const inline = branches[1].trim();
+    if (inline) {
+      return inline
+        .replace(/^\[|\]$/g, "")
+        .split(",")
+        .map((branch) => branch.trim().replace(/^['"]|['"]$/g, ""))
+        .filter(Boolean);
+    }
+    const values = [];
+    for (let valueIndex = index + 1; valueIndex < lines.length; valueIndex += 1) {
+      const valueLine = lines[valueIndex];
+      if (!valueLine.trim()) continue;
+      const valueLevel = valueLine.match(/^ */)?.[0].length ?? 0;
+      if (valueLevel <= 4) break;
+      const value = valueLine.match(/^\s{6}-\s*(.*)$/);
+      if (value) values.push(value[1].trim().replace(/^['"]|['"]$/g, ""));
+    }
+    return values;
+  }
+  return null;
+}
+
 function finding(repository, rule, actual, expected, workflow) {
   return {
     repository: repository.name,
@@ -77,6 +111,18 @@ export function auditRequiredChecks(repository, workflowTexts, { requireObserved
           "check-not-pull-request",
           workflow.events.join(",") || "none",
           "pull_request",
+          check.workflow,
+        ),
+      );
+    }
+    const branches = findPullRequestBranches(workflowText);
+    if (branches && !branches.includes(repository.protectedBranch)) {
+      findings.push(
+        finding(
+          repository,
+          "check-not-protected-branch",
+          branches.join(",") || "none",
+          repository.protectedBranch,
           check.workflow,
         ),
       );

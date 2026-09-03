@@ -3,11 +3,13 @@ import test from "node:test";
 import {
   auditRequiredChecks,
   findDuplicateJobKeys,
+  findPullRequestBranches,
   inspectWorkflowText,
 } from "../scripts/governance/inspect-default-branch.mjs";
 
 const validRepository = {
   name: "example",
+  protectedBranch: "main",
   workflows: [".github/workflows/quality-checks.yml"],
   requiredChecks: [
     {
@@ -23,6 +25,7 @@ const validWorkflow = `
 name: Quality checks
 on:
   pull_request:
+    branches: [main]
 jobs:
   quality-gate:
     name: Quality / core
@@ -59,6 +62,14 @@ test("rejects checks that are not observed on pull requests", () => {
     ),
     ["check-not-pull-request"],
   );
+
+  const wrongBranch = validWorkflow.replace("branches: [main]", "branches: [develop]");
+  assert.deepEqual(
+    auditRequiredChecks(validRepository, { ".github/workflows/quality-checks.yml": wrongBranch }).map(
+      ({ rule }) => rule,
+    ),
+    ["check-not-protected-branch"],
+  );
 });
 
 test("rejects missing jobs and mismatched emitted names", () => {
@@ -92,6 +103,7 @@ test("rejects duplicate direct job keys", () => {
 });
 
 test("inspects a workflow in the same shape used by required-check discovery", () => {
+  assert.deepEqual(findPullRequestBranches(validWorkflow), ["main"]);
   assert.deepEqual(inspectWorkflowText(validWorkflow).jobs[0], {
     id: "quality-gate",
     name: "Quality / core",
