@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { access, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { validateSbomEvidence } from "./build-release-evidence.mjs";
 
 const REQUIRED_JOBS = ["build", "smoke", "vulnerability", "sbom", "provenance"];
 
@@ -23,6 +24,8 @@ async function verifyArtifact(result, job) {
 export function validateReleaseEvidence(evidence) {
   if (!evidence || typeof evidence !== "object" || Array.isArray(evidence))
     throw new Error("evidence must be an object");
+  const image = required(evidence.image, "image");
+  if (!/^ghcr\.io\/[^/]+\/[^/]+$/.test(image)) throw new Error(`invalid image: ${image}`);
   const digest = required(evidence.digest, "digest");
   if (!/^sha256:[0-9a-f]{64}$/.test(digest)) throw new Error(`invalid digest: ${digest}`);
   if (!evidence.jobs || typeof evidence.jobs !== "object" || Array.isArray(evidence.jobs))
@@ -49,8 +52,7 @@ export function validateReleaseEvidence(evidence) {
   return { digest, jobs: REQUIRED_JOBS };
 }
 
-async function main() {
-  const path = process.argv[2];
+export async function verifyReleaseEvidence(path) {
   if (!path) throw new Error("usage: node scripts/container/verify-release-evidence.mjs <evidence.json>");
   const evidence = JSON.parse(await readFile(path, "utf8"));
   const result = validateReleaseEvidence(evidence);
@@ -58,7 +60,10 @@ async function main() {
     const target = job === "sbom" || job === "provenance" ? evidence[job] : evidence.jobs[job];
     await verifyArtifact(target, job);
   }
+  const sbom = JSON.parse(await readFile(evidence.sbom.artifact, "utf8"));
+  validateSbomEvidence(sbom, evidence.image, evidence.digest);
   console.log(JSON.stringify(result));
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) await main();
+/* node:coverage ignore next */
+if (process.argv[1] === fileURLToPath(import.meta.url)) await verifyReleaseEvidence(process.argv[2]);

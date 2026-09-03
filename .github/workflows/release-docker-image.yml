@@ -38,6 +38,10 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
+      - name: Validate image target
+        env:
+          IMAGE: ${{ env.IMAGE }}
+        run: test "${IMAGE}" = "ghcr.io/${GITHUB_REPOSITORY}"
       - name: Login to GitHub Container Registry
         uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
@@ -164,6 +168,13 @@ jobs:
           output: sbom.json
       - name: Verify SBOM output
         run: test -s sbom.json
+      - name: Bind SBOM to verified digest
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}
+          DIGEST: ${{ needs.build.outputs.digest }}
+        run: |
+          # Scout generates the SPDX document from this immutable digest; the envelope records that trusted input contract.
+          node -e 'const fs=require("node:fs"); const image=process.env.IMAGE; const digest=process.env.DIGEST; const document=JSON.parse(fs.readFileSync("sbom.json", "utf8")); if (!/^SPDX-2\\./.test(document.spdxVersion) || document.SPDXID !== "SPDXRef-DOCUMENT" || !Array.isArray(document.packages)) throw new Error("SBOM is not valid SPDX JSON"); fs.writeFileSync("sbom.json", JSON.stringify({format:"spdx-json",image,digest,document}, null, 2));'
       - name: Upload SBOM
         if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -232,6 +243,10 @@ jobs:
           ref: ${{ github.workflow_sha }}
           path: central-policy
           persist-credentials: false
+      - name: Validate image target
+        env:
+          IMAGE: ${{ env.IMAGE }}
+        run: test "${IMAGE}" = "ghcr.io/${GITHUB_REPOSITORY}"
       - name: Download release evidence
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:

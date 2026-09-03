@@ -28,6 +28,17 @@ test("release workflow separates build, verification, attestation, and publicati
   assert.match(workflow, /actions\/download-artifact@/, "publish must consume uploaded evidence artifacts");
   assert.match(workflow, /build-release-evidence\.mjs/, "publish must build evidence from artifact contents");
   assert.match(workflow, /Publish verified digest[\s\S]*docker\/login-action@/, "publish must authenticate to GHCR");
+  assert.match(
+    workflow,
+    /Validate image target[\s\S]*ghcr\.io\/\$\{GITHUB_REPOSITORY\}/,
+    "release must constrain the image target",
+  );
+  assert.match(
+    workflow,
+    /run: test "\$\{IMAGE\}" = "ghcr\.io\/\$\{GITHUB_REPOSITORY\}"/,
+    "invalid image targets must fail",
+  );
+  assert.match(workflow, /Bind SBOM to verified digest/, "SBOM must carry an explicit digest contract");
   assert.doesNotMatch(workflow, /publish[\s\S]*docker\/build-push-action/, "publish must not rebuild the image");
 });
 

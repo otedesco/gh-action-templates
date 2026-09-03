@@ -27,6 +27,7 @@
     "test:coverage-gate": "node --test test/coverage-normalize.test.mjs test/coverage-changed.test.mjs test/coverage-ratchet.test.mjs",
     "test:container-contract": "node --test test/container-contract.test.mjs",
     "test:container-workflow": "node --test test/container-workflow.test.mjs",
+    "test:container-evidence": "node --experimental-test-coverage --test-coverage-lines=100 --test-coverage-functions=100 --test test/container-evidence.test.mjs",
     "coverage:source": "node scripts/coverage/source-inventory.mjs > coverage/source-inventory.json",
     "coverage:normalize": "node scripts/coverage/normalize.mjs --report coverage/coverage-summary.json --output coverage/normalized.json",
     "coverage:changed": "node scripts/coverage/evaluate.mjs --report coverage/normalized.json --base \"$COVERAGE_BASE\" --head \"$COVERAGE_HEAD\"",
