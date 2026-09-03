@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": 1,
+  "baseImage": "node:24.20.0-alpine",
+  "acceptedUsers": ["node"],
+  "requiredSecret": "npm_token",
+  "requiredInstall": "pnpm install --frozen-lockfile",
+  "vulnerabilityBlockingSeverities": ["critical", "high"],
+  "requiredEvidence": ["digest", "startup", "health", "vulnerability", "sbom", "provenance"]
+}
