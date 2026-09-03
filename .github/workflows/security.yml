@@ -55,7 +55,7 @@ jobs:
       - name: Validate report exists
         run: test -s "${REPORT_DIR}"/*.sarif
       - name: Upload normalized input
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-codeql
           path: ${{ env.REPORT_DIR }}
@@ -81,7 +81,7 @@ jobs:
       - name: Record dependency result
         run: mkdir -p "${REPORT_DIR}" && printf '{"dependencies":[]}\n' > "${REPORT_DIR}/dependency-review.json"
       - name: Upload dependency result
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-dependency-review
           path: ${{ env.REPORT_DIR }}
@@ -105,7 +105,7 @@ jobs:
         with:
           args: --redact --report-format sarif --report-path ${{ env.REPORT_DIR }}/secret-scan.sarif
       - name: Upload secret result
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-secret-scan
           path: ${{ env.REPORT_DIR }}
@@ -151,7 +151,7 @@ jobs:
             corepack pnpm dlx license-checker --production --json > "${REPORT_DIR}/license.json"
           fi
       - name: Upload license result
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-license
           path: ${{ env.REPORT_DIR }}
@@ -174,7 +174,7 @@ jobs:
           persona: auditor
           min-severity: medium
       - name: Upload workflow result
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: security-workflow
           path: ${{ env.REPORT_DIR }}
