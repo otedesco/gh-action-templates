@@ -10,7 +10,7 @@
   "scripts": {
     "format": "prettier \"**/*.{js,mjs,cjs,json}\" --write",
     "format:check": "prettier \"**/*.{js,mjs,cjs,json}\" --check",
-    "lint:workflows": "ACTIONLINT_CACHE_DIR=tmp/actionlint github-actionlint .github/workflows/*.yml",
+    "lint:workflows": "node-actionlint .github/workflows/*.yml",
     "lint:js": "eslint \"**/*.{js,mjs,cjs}\"",
     "lint:json": "node scripts/check-json.mjs",
     "lint:check": "pnpm run lint:js && pnpm run lint:json",
@@ -37,8 +37,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
+    "@tktco/node-actionlint": "1.6.0",
     "eslint": "^9.35.0",
-    "github-actionlint": "1.7.12",
     "globals": "^16.3.0",
     "prettier": "^3.6.2"
   }
