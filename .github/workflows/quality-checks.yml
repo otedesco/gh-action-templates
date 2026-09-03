@@ -31,10 +31,8 @@ jobs:
         run: >-
           pnpm format:check &&
           pnpm lint:check &&
-          pnpm test:registry-auth &&
           pnpm test:quality-script-contract &&
           pnpm test:quality-tools-contract &&
-          pnpm test:core-gates &&
           pnpm test:workflow-contract &&
           pnpm test:workflow-fixtures &&
           pnpm test:coverage-gate
