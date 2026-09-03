@@ -96,7 +96,7 @@
       "owner": "otedesco",
       "repository": "gh-action-templates",
       "path": ".github/actions/coverage-gate",
-      "reference": "93379e36e551d3642c961a25b724a61c15b14421",
+      "reference": "5ab71f71d175fba93b5459f77afba14e816c7a18",
       "release": "central-pre-OPS-182",
       "reviewedAt": "2026-09-02",
       "purpose": "Shared changed-code coverage gate",
