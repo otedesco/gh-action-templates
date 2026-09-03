@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "rule": "untrusted-expression",
+      "severity": "high",
+      "path": ".github/workflows/unsafe.yml",
+      "fingerprint": "sha256:workflow"
+    }
+  ]
+}

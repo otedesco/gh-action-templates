@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "owner", "rationale", "scope", "compensatingControl", "approvedBy", "expiresAt"],
+    "additionalProperties": false,
+    "properties": {
+      "id": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]+$" },
+      "owner": { "type": "string", "minLength": 1 },
+      "rationale": { "type": "string", "minLength": 1 },
+      "scope": {
+        "type": "object",
+        "required": ["tool", "rule", "subject"],
+        "minProperties": 3,
+        "maxProperties": 3,
+        "additionalProperties": false,
+        "properties": {
+          "tool": { "type": "string", "minLength": 1 },
+          "rule": { "type": "string", "minLength": 1 },
+          "subject": { "type": "string", "minLength": 1 }
+        }
+      },
+      "compensatingControl": { "type": "string", "minLength": 1 },
+      "approvedBy": { "type": "string", "minLength": 1 },
+      "expiresAt": { "type": "string", "format": "date-time" }
+    }
+  }
+}

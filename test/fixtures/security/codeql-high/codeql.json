@@ -1,0 +1,15 @@
+{
+  "version": "2.1.0",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "js/example-high",
+          "level": "error",
+          "locations": [{ "physicalLocation": { "artifactLocation": { "uri": "src/example.js" } } }],
+          "partialFingerprints": { "primary": "sha256:codeql" }
+        }
+      ]
+    }
+  ]
+}

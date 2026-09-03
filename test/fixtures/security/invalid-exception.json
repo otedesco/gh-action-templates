@@ -1,0 +1,9 @@
+{
+  "id": "bad exception",
+  "owner": "",
+  "rationale": "",
+  "scope": { "tool": "dependency-review", "rule": "CVE-2026-0001" },
+  "compensatingControl": "",
+  "approvedBy": "security-admin",
+  "expiresAt": "not-a-date"
+}
