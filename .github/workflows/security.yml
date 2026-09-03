@@ -141,9 +141,11 @@ jobs:
           NPM_TOKEN: ${{ github.token }}
         run: npm ci
       - name: Check licenses
+        env:
+          PACKAGE_MANAGER: ${{ inputs.package-manager }}
         run: |
           mkdir -p "${REPORT_DIR}"
-          if [[ "${{ inputs.package-manager }}" == "npm" ]]; then
+          if [[ "$PACKAGE_MANAGER" == "npm" ]]; then
             npx --yes license-checker --production --json > "${REPORT_DIR}/license.json"
           else
             corepack pnpm dlx license-checker --production --json > "${REPORT_DIR}/license.json"
