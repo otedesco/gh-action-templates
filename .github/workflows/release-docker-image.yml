@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup environment and validate private registry credentials
-        uses: otedesco/gh-action-templates/.github/actions/setup-environment@091ae85019ee71d8aefbfca32e02cb4d670feae1 # central-pre-OPS-182
+        uses: otedesco/gh-action-templates/.github/actions/setup-environment@3105868fc19ef2bc4969b38d3803ea13a907d1aa # OPS-182 consumer compatibility fix
         with:
           registry-auth-required: "true"
           npm-token: ${{ secrets.NPM_TOKEN }}
