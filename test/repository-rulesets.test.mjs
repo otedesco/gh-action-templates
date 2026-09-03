@@ -23,7 +23,7 @@ const validRepository = {
       observed: true,
     },
   ],
-  bypassActors: [{ type: "User", identifier: "otedesco", mode: "pull_request" }],
+  bypassActors: [{ type: "User", identifier: "otedesco", actorId: 137359101, mode: "pull_request" }],
 };
 
 const validInventory = {
@@ -56,6 +56,7 @@ const validPolicy = {
     {
       type: "User",
       identifier: "otedesco",
+      actorId: 137359101,
       mode: "pull_request",
     },
   ],
@@ -107,6 +108,20 @@ test("rejects wildcard and unsupported bypass actors", () => {
   assert.deepEqual(
     findings.map(({ rule }) => rule),
     ["wildcard-bypass-actor", "unsupported-bypass-actor"],
+  );
+});
+
+test("rejects a bypass actor without a positive server-side ID", () => {
+  const findings = validateRepositoryInventory({
+    version: 1,
+    repositories: [
+      { ...validRepository, bypassActors: [{ type: "User", identifier: "otedesco", mode: "pull_request" }] },
+    ],
+  });
+
+  assert.deepEqual(
+    findings.map(({ rule }) => rule),
+    ["invalid-bypass-actor-id"],
   );
 });
 

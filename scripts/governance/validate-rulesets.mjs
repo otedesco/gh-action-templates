@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const supportedActorTypes = new Set(["User", "Team", "RepositoryRole", "OrganizationAdmin", "Integration"]);
+const actorTypesRequiringId = new Set(["User", "Team", "RepositoryRole", "Integration"]);
 const supportedBypassModes = new Set(["pull_request", "always"]);
 const requiredRepositoryScope = new Set([
   "otedesco/gh-action-templates",
@@ -35,6 +36,9 @@ function actorFindings(actor, repository) {
   }
   if (!actor?.identifier || actor.identifier === "missing") {
     findings.push(finding("missing-bypass-identifier", "missing", "named actor", repository));
+  }
+  if (actorTypesRequiringId.has(actor?.type) && (!Number.isInteger(actor?.actorId) || actor.actorId <= 0)) {
+    findings.push(finding("invalid-bypass-actor-id", actor?.actorId ?? "missing", "positive integer", repository));
   }
   if (!supportedBypassModes.has(actor?.mode)) {
     findings.push(finding("unsupported-bypass-mode", actor?.mode ?? "missing", [...supportedBypassModes], repository));

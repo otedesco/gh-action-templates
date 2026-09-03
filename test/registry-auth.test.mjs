@@ -57,10 +57,11 @@ test("reusable workflows declare named secrets and frozen installs", async () =>
   const release = await readFile(new URL("../.github/workflows/release-package.yml", import.meta.url), "utf8");
   for (const content of [lint, release]) {
     assert.match(content, /NPM_TOKEN:\s*\n\s+required:/);
-    assert.match(content, /npm-token: \$\{\{ secrets\.NPM_TOKEN \}\}/);
     assert.match(content, /pnpm install --frozen-lockfile/);
     assert.doesNotMatch(content, /secrets:\s*inherit|Creating \.npmrc|\$HOME\/\.npmrc/);
   }
+  assert.match(lint, /npm-token: \$\{\{ secrets\.NPM_TOKEN \|\| github\.token \}\}/);
+  assert.match(release, /npm-token: \$\{\{ secrets\.NPM_TOKEN \}\}/);
   assert.doesNotMatch(release, /GH_TOKEN:\s*\n\s+required: true/);
   assert.match(release, /GITHUB_TOKEN: \$\{\{ github\.token \}\}/);
   assert.match(release, /registry-auth-required: "true"/);
