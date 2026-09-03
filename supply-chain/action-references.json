@@ -120,7 +120,17 @@
       "release": "central-2026-09-02",
       "reviewedAt": "2026-09-02",
       "purpose": "Shared quality workflow consumed by product repositories",
-      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
+      "repositories": ["hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/lint-and-test.yml",
+      "reference": "b31a412a635636c20e9e026bd85e345880a5c3a5",
+      "release": "OPS-182-consumer-compatibility",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Shared quality workflow with compatible coverage normalization and side-effect-free runtime setup",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus"]
     },
     {
       "owner": "otedesco",
@@ -130,7 +140,17 @@
       "release": "central-2026-09-02",
       "reviewedAt": "2026-09-02",
       "purpose": "Shared package release workflow consumed by product repositories",
-      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
+      "repositories": ["hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/release-package.yml",
+      "reference": "b31a412a635636c20e9e026bd85e345880a5c3a5",
+      "release": "OPS-182-consumer-compatibility",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Shared package release workflow using side-effect-free runtime setup",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus"]
     },
     {
       "owner": "otedesco",
@@ -140,7 +160,17 @@
       "release": "central-2026-09-02",
       "reviewedAt": "2026-09-02",
       "purpose": "Shared Docker release workflow consumed by product repositories",
-      "repositories": ["cerberus", "hermes"]
+      "repositories": ["hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/release-docker-image.yml",
+      "reference": "b31a412a635636c20e9e026bd85e345880a5c3a5",
+      "release": "OPS-182-consumer-compatibility",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Shared Docker release workflow using side-effect-free runtime setup",
+      "repositories": ["cerberus"]
     }
   ]
 }
