@@ -8,6 +8,11 @@ on:
         required: false
         type: boolean
         default: false
+      package-manager:
+        description: Package manager used by the repository
+        required: false
+        type: string
+        default: pnpm
       policy-ref:
         description: Immutable gh-action-templates commit containing the policy evaluator
         required: false
@@ -122,17 +127,26 @@ jobs:
         with:
           node-version: 24.20.0
       - name: Install dependencies
-        if: ${{ inputs.registry-auth-required }}
+        if: ${{ inputs.registry-auth-required && inputs.package-manager == 'pnpm' }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: corepack pnpm install --frozen-lockfile
       - name: Install public dependencies
-        if: ${{ !inputs.registry-auth-required }}
+        if: ${{ !inputs.registry-auth-required && inputs.package-manager == 'pnpm' }}
         run: corepack pnpm install --frozen-lockfile
+      - name: Install dependencies with npm
+        if: ${{ inputs.package-manager == 'npm' }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm ci
       - name: Check licenses
         run: |
           mkdir -p "${REPORT_DIR}"
-          corepack pnpm dlx license-checker --production --json > "${REPORT_DIR}/license.json"
+          if [[ "${{ inputs.package-manager }}" == "npm" ]]; then
+            npx --yes license-checker --production --json > "${REPORT_DIR}/license.json"
+          else
+            corepack pnpm dlx license-checker --production --json > "${REPORT_DIR}/license.json"
+          fi
       - name: Upload license result
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
