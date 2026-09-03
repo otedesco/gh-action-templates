@@ -40,19 +40,19 @@ jobs:
         uses: otedesco/gh-action-templates/.github/actions/setup-environment@fde909e293173d95848d993528821a315e3b2059 # OPS-182 consumer compatibility fix
         with:
           registry-auth-required: ${{ inputs.registry-auth-required }}
-          npm-token: ${{ github.token }}
+          npm-token: ${{ secrets.NPM_TOKEN || github.token }}
 
       - name: Install dependencies with pnpm
         if: ${{ inputs.package-manager == 'pnpm' }}
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN || github.token }}
         run: |
           pnpm install --frozen-lockfile --prefer-offline
 
       - name: Install dependencies with npm
         if: ${{ inputs.package-manager == 'npm' }}
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN || github.token }}
         run: npm ci --prefer-offline
 
       - name: Format check
