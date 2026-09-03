@@ -24,6 +24,10 @@ test("release workflow separates build, verification, attestation, and publicati
   assert.match(workflow, /gh attestation verify/, "provenance must be cryptographically verified");
   assert.match(workflow, /id-token:\s*write/, "attestation requires OIDC signing permission");
   assert.match(workflow, /attestations:\s*write/, "attestation requires persistence permission");
+  assert.match(workflow, /docker\/scout-action@/, "scanner tooling must be explicitly provisioned");
+  assert.match(workflow, /actions\/download-artifact@/, "publish must consume uploaded evidence artifacts");
+  assert.match(workflow, /build-release-evidence\.mjs/, "publish must build evidence from artifact contents");
+  assert.match(workflow, /Publish verified digest[\s\S]*docker\/login-action@/, "publish must authenticate to GHCR");
   assert.doesNotMatch(workflow, /publish[\s\S]*docker\/build-push-action/, "publish must not rebuild the image");
 });
 

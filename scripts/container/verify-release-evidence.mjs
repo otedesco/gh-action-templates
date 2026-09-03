@@ -1,4 +1,5 @@
-import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
+import { access, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const REQUIRED_JOBS = ["build", "smoke", "vulnerability", "sbom", "provenance"];
@@ -6,6 +7,17 @@ const REQUIRED_JOBS = ["build", "smoke", "vulnerability", "sbom", "provenance"];
 function required(value, name) {
   if (typeof value !== "string" || value.trim() === "") throw new Error(`${name} is required`);
   return value.trim();
+}
+
+async function verifyArtifact(result, job) {
+  const artifact = required(result.artifact, `${job}.artifact`);
+  await access(artifact);
+  const checksum = required(result.sha256, `${job}.sha256`);
+  if (!/^[0-9a-f]{64}$/.test(checksum)) throw new Error(`${job}.sha256 must be a SHA-256 hex digest`);
+  const actual = createHash("sha256")
+    .update(await readFile(artifact))
+    .digest("hex");
+  if (actual !== checksum) throw new Error(`${job}: artifact checksum does not match evidence`);
 }
 
 export function validateReleaseEvidence(evidence) {
@@ -24,12 +36,15 @@ export function validateReleaseEvidence(evidence) {
     }
     if (result.status !== "success") failures.push(`${job}: status must be success`);
     if (result.digest !== digest) failures.push(`${job}: digest does not match build digest`);
-    required(result.artifact, `${job}.artifact`);
+    if (!result.artifact || !result.sha256) failures.push(`${job}: artifact path and checksum are required`);
   }
   if (!evidence.sbom?.subject || evidence.sbom.subject !== digest)
     failures.push("sbom: subject does not match build digest");
   if (!evidence.provenance?.subject || evidence.provenance.subject !== digest)
     failures.push("provenance: subject does not match build digest");
+  if (!evidence.sbom?.artifact || !evidence.sbom?.sha256) failures.push("sbom: artifact and checksum are required");
+  if (!evidence.provenance?.artifact || !evidence.provenance?.sha256)
+    failures.push("provenance: artifact and checksum are required");
   if (failures.length) throw new Error(failures.sort().join("\n"));
   return { digest, jobs: REQUIRED_JOBS };
 }
@@ -37,7 +52,12 @@ export function validateReleaseEvidence(evidence) {
 async function main() {
   const path = process.argv[2];
   if (!path) throw new Error("usage: node scripts/container/verify-release-evidence.mjs <evidence.json>");
-  const result = validateReleaseEvidence(JSON.parse(await readFile(path, "utf8")));
+  const evidence = JSON.parse(await readFile(path, "utf8"));
+  const result = validateReleaseEvidence(evidence);
+  for (const job of [...REQUIRED_JOBS, "sbom", "provenance"]) {
+    const target = job === "sbom" || job === "provenance" ? evidence[job] : evidence.jobs[job];
+    await verifyArtifact(target, job);
+  }
   console.log(JSON.stringify(result));
 }
 

@@ -55,6 +55,17 @@ jobs:
           outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
           secrets: |
             npm_token=${{ secrets.NPM_TOKEN }}
+      - name: Record build evidence
+        env:
+          IMAGE: ${{ env.IMAGE }}
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: printf '{"image":"%s","digest":"%s"}\n' "${IMAGE}" "${DIGEST}" > build.json
+      - name: Upload build evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: container-build-${{ github.sha }}
+          path: build.json
+          retention-days: 5
 
   smoke:
     name: Smoke and health verification
@@ -78,11 +89,22 @@ jobs:
           docker pull "${IMAGE}@${DIGEST}"
           docker run -d --rm --name mls185-smoke "${IMAGE}@${DIGEST}"
           for attempt in $(seq 1 30); do
-            [ "$(docker inspect --format '{{.State.Health.Status}}' mls185-smoke 2>/dev/null)" = healthy ] && exit 0
+            if [ "$(docker inspect --format '{{.State.Health.Status}}' mls185-smoke 2>/dev/null)" = healthy ]; then
+              printf '{"digest":"%s","health":"healthy"}\n' "${DIGEST}" > smoke.json
+              exit 0
+            fi
             sleep 2
           done
           docker logs mls185-smoke
           exit 1
+      - name: Upload smoke evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: container-smoke-${{ github.sha }}
+          path: smoke.json
+          if-no-files-found: ignore
+          retention-days: 5
 
   vulnerability:
     name: Vulnerability verification
@@ -102,9 +124,22 @@ jobs:
         env:
           IMAGE: ${{ needs.build.outputs.image }}
           DIGEST: ${{ needs.build.outputs.digest }}
-        run: |
-          docker pull "${IMAGE}@${DIGEST}"
-          docker scout cves "${IMAGE}@${DIGEST}" --only-severity critical,high --exit-code
+        uses: docker/scout-action@bacf462e8d090c09660de30a6ccc718035f961e3 # v1.20.4
+        with:
+          command: cves
+          image: ${{ needs.build.outputs.image }}@${{ needs.build.outputs.digest }}
+          only-severities: critical,high
+          sarif-file: vulnerability.sarif
+          exit-code: true
+          write-comment: false
+      - name: Upload vulnerability evidence
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: container-vulnerability-${{ github.sha }}
+          path: vulnerability.sarif
+          if-no-files-found: ignore
+          retention-days: 5
 
   sbom:
     name: SBOM verification
@@ -121,14 +156,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
       - name: Generate SBOM for verified digest
-        env:
-          IMAGE: ${{ needs.build.outputs.image }}
-          DIGEST: ${{ needs.build.outputs.digest }}
-        run: |
-          docker pull "${IMAGE}@${DIGEST}"
-          docker sbom "${IMAGE}@${DIGEST}" --format spdx-json > sbom.json
-          test -s sbom.json
+        uses: docker/scout-action@bacf462e8d090c09660de30a6ccc718035f961e3 # v1.20.4
+        with:
+          command: sbom
+          image: ${{ needs.build.outputs.image }}@${{ needs.build.outputs.digest }}
+          format: spdx
+          output: sbom.json
+      - name: Verify SBOM output
+        run: test -s sbom.json
       - name: Upload SBOM
+        if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: container-sbom-${{ github.sha }}
@@ -172,6 +209,7 @@ jobs:
             --format json > provenance.json
           node -e 'const fs=require("node:fs"); const digest=process.env.DIGEST; const records=JSON.parse(fs.readFileSync("provenance.json", "utf8")); const subjects=records.flatMap((record) => record.verificationResult?.statement?.subject ?? []); if (!subjects.some((subject) => subject.digest?.sha256 === digest.replace(/^sha256:/, ""))) { throw new Error(`verified attestation does not contain ${digest}`); }'
       - name: Upload provenance evidence
+        if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: container-provenance-${{ github.sha }}
@@ -194,6 +232,17 @@ jobs:
           ref: ${{ github.workflow_sha }}
           path: central-policy
           persist-credentials: false
+      - name: Download release evidence
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: container-*-${{ github.sha }}
+          path: evidence
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
       - name: Generate and validate release evidence
         env:
           DIGEST: ${{ needs.build.outputs.digest }}
@@ -203,7 +252,7 @@ jobs:
           SBOM: ${{ needs.sbom.result }}
           PROVENANCE: ${{ needs.provenance.result }}
         run: |
-          node -e 'const fs=require("node:fs"); const d=process.env.DIGEST; const jobs={build:{status:process.env.BUILD,digest:d,artifact:"build"},smoke:{status:process.env.SMOKE,digest:d,artifact:"smoke"},vulnerability:{status:process.env.VULNERABILITY,digest:d,artifact:"vulnerability"},sbom:{status:process.env.SBOM,digest:d,artifact:"sbom"},provenance:{status:process.env.PROVENANCE,digest:d,artifact:"provenance"}}; fs.writeFileSync("release-evidence.json", JSON.stringify({digest:d,jobs,sbom:{subject:d},provenance:{subject:d}}));'
+          node central-policy/scripts/container/build-release-evidence.mjs evidence release-evidence.json
           node central-policy/scripts/container/verify-release-evidence.mjs release-evidence.json
       - name: Reject incomplete verification
         env:

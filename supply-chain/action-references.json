@@ -83,6 +83,15 @@
       "repositories": ["gh-action-templates"]
     },
     {
+      "owner": "docker",
+      "repository": "scout-action",
+      "reference": "bacf462e8d090c09660de30a6ccc718035f961e3",
+      "release": "v1.20.4",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Provision pinned Docker vulnerability and SBOM scanners",
+      "repositories": ["gh-action-templates"]
+    },
+    {
       "owner": "changesets",
       "repository": "action",
       "reference": "746c25e23caa47dceb6a48ee85b4cbc5a9f5f293",
