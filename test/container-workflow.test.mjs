@@ -19,6 +19,11 @@ test("release workflow separates build, verification, attestation, and publicati
     "publish must require every verification job",
   );
   assert.match(workflow, /github\.token/, "attestation and registry access must use the scoped GitHub token");
+  assert.match(workflow, /actions\/attest@/, "provenance must be generated with GitHub artifact attestations");
+  assert.match(workflow, /subject-digest:/, "provenance must bind to the built digest");
+  assert.match(workflow, /gh attestation verify/, "provenance must be cryptographically verified");
+  assert.match(workflow, /id-token:\s*write/, "attestation requires OIDC signing permission");
+  assert.match(workflow, /attestations:\s*write/, "attestation requires persistence permission");
   assert.doesNotMatch(workflow, /publish[\s\S]*docker\/build-push-action/, "publish must not rebuild the image");
 });
 

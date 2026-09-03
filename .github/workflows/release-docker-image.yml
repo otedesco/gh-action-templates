@@ -140,17 +140,37 @@ jobs:
     needs: [build]
     permissions:
       contents: read
-      packages: read
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     runs-on: ubuntu-latest
     steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Generate signed provenance attestation
+        uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763 # v4.1.1
+        with:
+          subject-name: ${{ needs.build.outputs.image }}
+          subject-digest: ${{ needs.build.outputs.digest }}
+          push-to-registry: true
       - name: Verify image digest identity
         env:
           IMAGE: ${{ needs.build.outputs.image }}
           DIGEST: ${{ needs.build.outputs.digest }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           test -n "${DIGEST}"
           docker buildx imagetools inspect "${IMAGE}@${DIGEST}"
-          printf '{"image":"%s","digest":"%s","provenance":"pending-attestation"}\n' "${IMAGE}" "${DIGEST}" > provenance.json
+          gh attestation verify "oci://${IMAGE}@${DIGEST}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --signer-repo otedesco/gh-action-templates \
+            --format json > provenance.json
+          node -e 'const fs=require("node:fs"); const digest=process.env.DIGEST; const records=JSON.parse(fs.readFileSync("provenance.json", "utf8")); const subjects=records.flatMap((record) => record.verificationResult?.statement?.subject ?? []); if (!subjects.some((subject) => subject.digest?.sha256 === digest.replace(/^sha256:/, ""))) { throw new Error(`verified attestation does not contain ${digest}`); }'
       - name: Upload provenance evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
