@@ -21,6 +21,7 @@
     "test:workflow-contract": "node test/workflow-contract.test.mjs",
     "test:workflow-permissions": "node --test test/workflow-permissions.test.mjs",
     "test:security-policy": "node --test test/security-policy.test.mjs",
+    "test:security-fixtures": "node --test test/security-fixtures.test.mjs",
     "test:core-gates": "node --test test/core-gates.test.mjs",
     "test:coverage-gate": "node --test test/coverage-normalize.test.mjs test/coverage-changed.test.mjs test/coverage-ratchet.test.mjs",
     "coverage:source": "node scripts/coverage/source-inventory.mjs > coverage/source-inventory.json",

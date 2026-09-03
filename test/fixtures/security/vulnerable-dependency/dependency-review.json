@@ -1,0 +1,10 @@
+{
+  "dependencies": [
+    {
+      "advisory": "CVE-2026-0001",
+      "severity": "critical",
+      "package": "@example/fake",
+      "fingerprint": "sha256:dependency"
+    }
+  ]
+}
