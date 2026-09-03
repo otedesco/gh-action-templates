@@ -1,6 +1,6 @@
 # OPS-186 Repository Ruleset Rollout
 
-**Status:** Prepared; live application is pending administrator approval and required-check observation.
+**Status:** Active on all eight repositories; the reviewed solo-maintainer bypass update is pending.
 
 ## Purpose
 
