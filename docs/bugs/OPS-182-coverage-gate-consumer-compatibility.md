@@ -1,6 +1,6 @@
 # OPS-182: Coverage-gate compatibility bug
 
-Status: fixed in central PR #20; hosted consumer verification in progress
+Status: fixed and verified in all affected hosted consumer workflows
 
 Related:
 
@@ -147,7 +147,7 @@ The failures were verified from the authenticated GitHub Actions job logs. Artif
 2. The coverage command and gate pass locally for Commons, Cache, Server Utils, Notify, and Cerberus using each recorded PR base and branch head.
 3. Central PR #20 publishes workflow commit `b31a412a635636c20e9e026bd85e345880a5c3a5`, which pins its composite actions to implementation commit `3105868fc19ef2bc4969b38d3803ea13a907d1aa`.
 4. The five consumer PR branches are pinned to workflow commit `b31a412a635636c20e9e026bd85e345880a5c3a5`.
-5. Hosted checks must pass before the consumer PRs are merged.
+5. Hosted checks passed: Commons `33708541437`, Cache `33708541607`, Server Utils `33708541295`, Notify `33708540767`, and Cerberus `33708541222`.
 
 ## Useful local reproductions
 
