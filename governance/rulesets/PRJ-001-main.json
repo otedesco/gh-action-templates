@@ -7,416 +7,592 @@
   "repositories": [
     {
       "repository": "otedesco/cache",
-      "payload": {
-        "name": "PRJ-001 main protection",
-        "target": "branch",
-        "enforcement": "active",
-        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
-        "conditions": {
-          "ref_name": {
-            "include": ["refs/heads/main"],
-            "exclude": []
-          }
+      "payloads": [
+        {
+          "name": "PRJ-001 review protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [
+            {
+              "actor_id": 137359101,
+              "actor_type": "User",
+              "bypass_mode": "pull_request"
+            }
+          ],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
+            }
+          },
+          "rules": [
+            {
+              "type": "pull_request",
+              "parameters": {
+                "allowed_merge_methods": ["squash", "rebase"],
+                "dismiss_stale_reviews_on_push": true,
+                "require_code_owner_review": true,
+                "require_last_push_approval": false,
+                "required_approving_review_count": 1,
+                "required_review_thread_resolution": true
+              }
+            }
+          ]
         },
-        "rules": [
-          {
-            "type": "pull_request",
-            "parameters": {
-              "allowed_merge_methods": ["squash", "rebase"],
-              "dismiss_stale_reviews_on_push": true,
-              "require_code_owner_review": true,
-              "require_last_push_approval": false,
-              "required_approving_review_count": 1,
-              "required_review_thread_resolution": true
+        {
+          "name": "PRJ-001 main protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
             }
           },
-          {
-            "type": "required_status_checks",
-            "parameters": {
-              "do_not_enforce_on_create": false,
-              "required_status_checks": [
-                {
-                  "context": "Quality / core"
-                },
-                {
-                  "context": "Security / aggregate / Security / aggregate"
-                }
-              ],
-              "strict_required_status_checks_policy": true
+          "rules": [
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "do_not_enforce_on_create": false,
+                "required_status_checks": [
+                  {
+                    "context": "Quality / core"
+                  },
+                  {
+                    "context": "Security / aggregate / Security / aggregate"
+                  }
+                ],
+                "strict_required_status_checks_policy": true
+              }
+            },
+            {
+              "type": "required_linear_history"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "deletion"
             }
-          },
-          {
-            "type": "required_linear_history"
-          },
-          {
-            "type": "non_fast_forward"
-          },
-          {
-            "type": "deletion"
-          }
-        ]
-      }
+          ]
+        }
+      ]
     },
     {
       "repository": "otedesco/cerberus",
-      "payload": {
-        "name": "PRJ-001 main protection",
-        "target": "branch",
-        "enforcement": "active",
-        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
-        "conditions": {
-          "ref_name": {
-            "include": ["refs/heads/main"],
-            "exclude": []
-          }
+      "payloads": [
+        {
+          "name": "PRJ-001 review protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [
+            {
+              "actor_id": 137359101,
+              "actor_type": "User",
+              "bypass_mode": "pull_request"
+            }
+          ],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
+            }
+          },
+          "rules": [
+            {
+              "type": "pull_request",
+              "parameters": {
+                "allowed_merge_methods": ["squash", "rebase"],
+                "dismiss_stale_reviews_on_push": true,
+                "require_code_owner_review": true,
+                "require_last_push_approval": false,
+                "required_approving_review_count": 1,
+                "required_review_thread_resolution": true
+              }
+            }
+          ]
         },
-        "rules": [
-          {
-            "type": "pull_request",
-            "parameters": {
-              "allowed_merge_methods": ["squash", "rebase"],
-              "dismiss_stale_reviews_on_push": true,
-              "require_code_owner_review": true,
-              "require_last_push_approval": false,
-              "required_approving_review_count": 1,
-              "required_review_thread_resolution": true
+        {
+          "name": "PRJ-001 main protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
             }
           },
-          {
-            "type": "required_status_checks",
-            "parameters": {
-              "do_not_enforce_on_create": false,
-              "required_status_checks": [
-                {
-                  "context": "Quality / core"
-                },
-                {
-                  "context": "Security / aggregate / Security / aggregate"
-                }
-              ],
-              "strict_required_status_checks_policy": true
+          "rules": [
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "do_not_enforce_on_create": false,
+                "required_status_checks": [
+                  {
+                    "context": "Quality / core"
+                  },
+                  {
+                    "context": "Security / aggregate / Security / aggregate"
+                  }
+                ],
+                "strict_required_status_checks_policy": true
+              }
+            },
+            {
+              "type": "required_linear_history"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "deletion"
             }
-          },
-          {
-            "type": "required_linear_history"
-          },
-          {
-            "type": "non_fast_forward"
-          },
-          {
-            "type": "deletion"
-          }
-        ]
-      }
+          ]
+        }
+      ]
     },
     {
       "repository": "otedesco/commons",
-      "payload": {
-        "name": "PRJ-001 main protection",
-        "target": "branch",
-        "enforcement": "active",
-        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
-        "conditions": {
-          "ref_name": {
-            "include": ["refs/heads/main"],
-            "exclude": []
-          }
+      "payloads": [
+        {
+          "name": "PRJ-001 review protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [
+            {
+              "actor_id": 137359101,
+              "actor_type": "User",
+              "bypass_mode": "pull_request"
+            }
+          ],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
+            }
+          },
+          "rules": [
+            {
+              "type": "pull_request",
+              "parameters": {
+                "allowed_merge_methods": ["squash", "rebase"],
+                "dismiss_stale_reviews_on_push": true,
+                "require_code_owner_review": true,
+                "require_last_push_approval": false,
+                "required_approving_review_count": 1,
+                "required_review_thread_resolution": true
+              }
+            }
+          ]
         },
-        "rules": [
-          {
-            "type": "pull_request",
-            "parameters": {
-              "allowed_merge_methods": ["squash", "rebase"],
-              "dismiss_stale_reviews_on_push": true,
-              "require_code_owner_review": true,
-              "require_last_push_approval": false,
-              "required_approving_review_count": 1,
-              "required_review_thread_resolution": true
+        {
+          "name": "PRJ-001 main protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
             }
           },
-          {
-            "type": "required_status_checks",
-            "parameters": {
-              "do_not_enforce_on_create": false,
-              "required_status_checks": [
-                {
-                  "context": "Quality / core"
-                },
-                {
-                  "context": "Security / aggregate / Security / aggregate"
-                }
-              ],
-              "strict_required_status_checks_policy": true
+          "rules": [
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "do_not_enforce_on_create": false,
+                "required_status_checks": [
+                  {
+                    "context": "Quality / core"
+                  },
+                  {
+                    "context": "Security / aggregate / Security / aggregate"
+                  }
+                ],
+                "strict_required_status_checks_policy": true
+              }
+            },
+            {
+              "type": "required_linear_history"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "deletion"
             }
-          },
-          {
-            "type": "required_linear_history"
-          },
-          {
-            "type": "non_fast_forward"
-          },
-          {
-            "type": "deletion"
-          }
-        ]
-      }
+          ]
+        }
+      ]
     },
     {
       "repository": "otedesco/gh-action-templates",
-      "payload": {
-        "name": "PRJ-001 main protection",
-        "target": "branch",
-        "enforcement": "active",
-        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
-        "conditions": {
-          "ref_name": {
-            "include": ["refs/heads/main"],
-            "exclude": []
-          }
+      "payloads": [
+        {
+          "name": "PRJ-001 review protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [
+            {
+              "actor_id": 137359101,
+              "actor_type": "User",
+              "bypass_mode": "pull_request"
+            }
+          ],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
+            }
+          },
+          "rules": [
+            {
+              "type": "pull_request",
+              "parameters": {
+                "allowed_merge_methods": ["squash", "rebase"],
+                "dismiss_stale_reviews_on_push": true,
+                "require_code_owner_review": true,
+                "require_last_push_approval": false,
+                "required_approving_review_count": 1,
+                "required_review_thread_resolution": true
+              }
+            }
+          ]
         },
-        "rules": [
-          {
-            "type": "pull_request",
-            "parameters": {
-              "allowed_merge_methods": ["squash", "rebase"],
-              "dismiss_stale_reviews_on_push": true,
-              "require_code_owner_review": true,
-              "require_last_push_approval": false,
-              "required_approving_review_count": 1,
-              "required_review_thread_resolution": true
+        {
+          "name": "PRJ-001 main protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
             }
           },
-          {
-            "type": "required_status_checks",
-            "parameters": {
-              "do_not_enforce_on_create": false,
-              "required_status_checks": [
-                {
-                  "context": "Quality / core"
-                },
-                {
-                  "context": "Security / aggregate"
-                }
-              ],
-              "strict_required_status_checks_policy": true
+          "rules": [
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "do_not_enforce_on_create": false,
+                "required_status_checks": [
+                  {
+                    "context": "Quality / core"
+                  },
+                  {
+                    "context": "Security / aggregate"
+                  }
+                ],
+                "strict_required_status_checks_policy": true
+              }
+            },
+            {
+              "type": "required_linear_history"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "deletion"
             }
-          },
-          {
-            "type": "required_linear_history"
-          },
-          {
-            "type": "non_fast_forward"
-          },
-          {
-            "type": "deletion"
-          }
-        ]
-      }
+          ]
+        }
+      ]
     },
     {
       "repository": "otedesco/hermes",
-      "payload": {
-        "name": "PRJ-001 main protection",
-        "target": "branch",
-        "enforcement": "active",
-        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
-        "conditions": {
-          "ref_name": {
-            "include": ["refs/heads/main"],
-            "exclude": []
-          }
+      "payloads": [
+        {
+          "name": "PRJ-001 review protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [
+            {
+              "actor_id": 137359101,
+              "actor_type": "User",
+              "bypass_mode": "pull_request"
+            }
+          ],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
+            }
+          },
+          "rules": [
+            {
+              "type": "pull_request",
+              "parameters": {
+                "allowed_merge_methods": ["squash", "rebase"],
+                "dismiss_stale_reviews_on_push": true,
+                "require_code_owner_review": true,
+                "require_last_push_approval": false,
+                "required_approving_review_count": 1,
+                "required_review_thread_resolution": true
+              }
+            }
+          ]
         },
-        "rules": [
-          {
-            "type": "pull_request",
-            "parameters": {
-              "allowed_merge_methods": ["squash", "rebase"],
-              "dismiss_stale_reviews_on_push": true,
-              "require_code_owner_review": true,
-              "require_last_push_approval": false,
-              "required_approving_review_count": 1,
-              "required_review_thread_resolution": true
+        {
+          "name": "PRJ-001 main protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
             }
           },
-          {
-            "type": "required_status_checks",
-            "parameters": {
-              "do_not_enforce_on_create": false,
-              "required_status_checks": [
-                {
-                  "context": "Quality / core"
-                },
-                {
-                  "context": "Security / aggregate / Security / aggregate"
-                }
-              ],
-              "strict_required_status_checks_policy": true
+          "rules": [
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "do_not_enforce_on_create": false,
+                "required_status_checks": [
+                  {
+                    "context": "Quality / core"
+                  },
+                  {
+                    "context": "Security / aggregate / Security / aggregate"
+                  }
+                ],
+                "strict_required_status_checks_policy": true
+              }
+            },
+            {
+              "type": "required_linear_history"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "deletion"
             }
-          },
-          {
-            "type": "required_linear_history"
-          },
-          {
-            "type": "non_fast_forward"
-          },
-          {
-            "type": "deletion"
-          }
-        ]
-      }
+          ]
+        }
+      ]
     },
     {
       "repository": "otedesco/notify",
-      "payload": {
-        "name": "PRJ-001 main protection",
-        "target": "branch",
-        "enforcement": "active",
-        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
-        "conditions": {
-          "ref_name": {
-            "include": ["refs/heads/main"],
-            "exclude": []
-          }
+      "payloads": [
+        {
+          "name": "PRJ-001 review protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [
+            {
+              "actor_id": 137359101,
+              "actor_type": "User",
+              "bypass_mode": "pull_request"
+            }
+          ],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
+            }
+          },
+          "rules": [
+            {
+              "type": "pull_request",
+              "parameters": {
+                "allowed_merge_methods": ["squash", "rebase"],
+                "dismiss_stale_reviews_on_push": true,
+                "require_code_owner_review": true,
+                "require_last_push_approval": false,
+                "required_approving_review_count": 1,
+                "required_review_thread_resolution": true
+              }
+            }
+          ]
         },
-        "rules": [
-          {
-            "type": "pull_request",
-            "parameters": {
-              "allowed_merge_methods": ["squash", "rebase"],
-              "dismiss_stale_reviews_on_push": true,
-              "require_code_owner_review": true,
-              "require_last_push_approval": false,
-              "required_approving_review_count": 1,
-              "required_review_thread_resolution": true
+        {
+          "name": "PRJ-001 main protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
             }
           },
-          {
-            "type": "required_status_checks",
-            "parameters": {
-              "do_not_enforce_on_create": false,
-              "required_status_checks": [
-                {
-                  "context": "Quality / core"
-                },
-                {
-                  "context": "Security / aggregate / Security / aggregate"
-                }
-              ],
-              "strict_required_status_checks_policy": true
+          "rules": [
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "do_not_enforce_on_create": false,
+                "required_status_checks": [
+                  {
+                    "context": "Quality / core"
+                  },
+                  {
+                    "context": "Security / aggregate / Security / aggregate"
+                  }
+                ],
+                "strict_required_status_checks_policy": true
+              }
+            },
+            {
+              "type": "required_linear_history"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "deletion"
             }
-          },
-          {
-            "type": "required_linear_history"
-          },
-          {
-            "type": "non_fast_forward"
-          },
-          {
-            "type": "deletion"
-          }
-        ]
-      }
+          ]
+        }
+      ]
     },
     {
       "repository": "otedesco/server-utils",
-      "payload": {
-        "name": "PRJ-001 main protection",
-        "target": "branch",
-        "enforcement": "active",
-        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
-        "conditions": {
-          "ref_name": {
-            "include": ["refs/heads/main"],
-            "exclude": []
-          }
+      "payloads": [
+        {
+          "name": "PRJ-001 review protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [
+            {
+              "actor_id": 137359101,
+              "actor_type": "User",
+              "bypass_mode": "pull_request"
+            }
+          ],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
+            }
+          },
+          "rules": [
+            {
+              "type": "pull_request",
+              "parameters": {
+                "allowed_merge_methods": ["squash", "rebase"],
+                "dismiss_stale_reviews_on_push": true,
+                "require_code_owner_review": true,
+                "require_last_push_approval": false,
+                "required_approving_review_count": 1,
+                "required_review_thread_resolution": true
+              }
+            }
+          ]
         },
-        "rules": [
-          {
-            "type": "pull_request",
-            "parameters": {
-              "allowed_merge_methods": ["squash", "rebase"],
-              "dismiss_stale_reviews_on_push": true,
-              "require_code_owner_review": true,
-              "require_last_push_approval": false,
-              "required_approving_review_count": 1,
-              "required_review_thread_resolution": true
+        {
+          "name": "PRJ-001 main protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
             }
           },
-          {
-            "type": "required_status_checks",
-            "parameters": {
-              "do_not_enforce_on_create": false,
-              "required_status_checks": [
-                {
-                  "context": "Quality / core"
-                },
-                {
-                  "context": "Security / aggregate / Security / aggregate"
-                }
-              ],
-              "strict_required_status_checks_policy": true
+          "rules": [
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "do_not_enforce_on_create": false,
+                "required_status_checks": [
+                  {
+                    "context": "Quality / core"
+                  },
+                  {
+                    "context": "Security / aggregate / Security / aggregate"
+                  }
+                ],
+                "strict_required_status_checks_policy": true
+              }
+            },
+            {
+              "type": "required_linear_history"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "deletion"
             }
-          },
-          {
-            "type": "required_linear_history"
-          },
-          {
-            "type": "non_fast_forward"
-          },
-          {
-            "type": "deletion"
-          }
-        ]
-      }
+          ]
+        }
+      ]
     },
     {
       "repository": "otedesco/web-app",
-      "payload": {
-        "name": "PRJ-001 main protection",
-        "target": "branch",
-        "enforcement": "active",
-        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
-        "conditions": {
-          "ref_name": {
-            "include": ["refs/heads/main"],
-            "exclude": []
-          }
+      "payloads": [
+        {
+          "name": "PRJ-001 review protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [
+            {
+              "actor_id": 137359101,
+              "actor_type": "User",
+              "bypass_mode": "pull_request"
+            }
+          ],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
+            }
+          },
+          "rules": [
+            {
+              "type": "pull_request",
+              "parameters": {
+                "allowed_merge_methods": ["squash", "rebase"],
+                "dismiss_stale_reviews_on_push": true,
+                "require_code_owner_review": true,
+                "require_last_push_approval": false,
+                "required_approving_review_count": 1,
+                "required_review_thread_resolution": true
+              }
+            }
+          ]
         },
-        "rules": [
-          {
-            "type": "pull_request",
-            "parameters": {
-              "allowed_merge_methods": ["squash", "rebase"],
-              "dismiss_stale_reviews_on_push": true,
-              "require_code_owner_review": true,
-              "require_last_push_approval": false,
-              "required_approving_review_count": 1,
-              "required_review_thread_resolution": true
+        {
+          "name": "PRJ-001 main protection",
+          "target": "branch",
+          "enforcement": "active",
+          "bypass_actors": [],
+          "conditions": {
+            "ref_name": {
+              "include": ["refs/heads/main"],
+              "exclude": []
             }
           },
-          {
-            "type": "required_status_checks",
-            "parameters": {
-              "do_not_enforce_on_create": false,
-              "required_status_checks": [
-                {
-                  "context": "Security / aggregate / Security / aggregate"
-                }
-              ],
-              "strict_required_status_checks_policy": true
+          "rules": [
+            {
+              "type": "required_status_checks",
+              "parameters": {
+                "do_not_enforce_on_create": false,
+                "required_status_checks": [
+                  {
+                    "context": "Security / aggregate / Security / aggregate"
+                  }
+                ],
+                "strict_required_status_checks_policy": true
+              }
+            },
+            {
+              "type": "required_linear_history"
+            },
+            {
+              "type": "non_fast_forward"
+            },
+            {
+              "type": "deletion"
             }
-          },
-          {
-            "type": "required_linear_history"
-          },
-          {
-            "type": "non_fast_forward"
-          },
-          {
-            "type": "deletion"
-          }
-        ]
-      }
+          ]
+        }
+      ]
     }
   ]
 }

@@ -4,7 +4,7 @@
 
 ## Purpose
 
-Apply the generated `PRJ-001 main protection` ruleset to the eight repositories in the inventory. The ruleset targets only `refs/heads/main` and requires pull requests, one approval, CODEOWNERS review, stale-review dismissal, conversation resolution, strict status checks, linear history, no force pushes, and no branch deletion. Because `otedesco` is currently the sole maintainer and cannot approve an owner-authored pull request, the policy names that exact GitHub user as a `pull_request`-only bypass actor. This removes the review deadlock while preserving the pull-request record and keeping direct pushes subject to the ruleset. The checked-in payload is the desired state, not proof that the server currently enforces it.
+Apply two generated, layered rulesets to the eight repositories in the inventory. `PRJ-001 review protection` requires pull requests, one approval, CODEOWNERS review, stale-review dismissal, and conversation resolution. Because `otedesco` is currently the sole maintainer and cannot approve an owner-authored pull request, only that review ruleset names the exact GitHub user as a `pull_request`-only bypass actor. `PRJ-001 main protection` has no bypass actors and separately enforces strict status checks, linear history, no force pushes, and no branch deletion. Both rulesets target only `refs/heads/main`. This removes the review deadlock while ensuring the bypass cannot skip CI or history controls, preserving the pull-request record, and keeping direct pushes blocked. The checked-in payload is the desired state, not proof that the server currently enforces it.
 
 The enforcement tool is the GitHub Repository Rulesets REST API, invoked through `gh api` by an administrator. The GitHub Codex app is the read-back and review source of truth for repository state, pull requests, check runs, and the resulting `main` commits. GitHub documents that creating or updating a repository ruleset requires repository Administration write permission, and that active rulesets take effect immediately; therefore this runbook deliberately separates read-only preparation from the write step. See the [REST rules API](https://docs.github.com/en/rest/repos/rules) and [ruleset creation guide](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/creating-rulesets-for-a-repository).
 
@@ -71,7 +71,7 @@ Use the fail-closed rollout script to execute the checks above against each repo
   --report /tmp/ops-186-ruleset-verification.json
 ```
 
-The first command is read-only. The second command creates only missing `PRJ-001 main protection` rulesets. The third command may update an existing ruleset only when that exact name occurs once and both write flags are explicit. Every write path reads the ruleset back, compares its normalized policy with the generated payload, confirms that GitHub reports `main` as protected, and writes a sanitized report. The script never deletes a ruleset and stops on unexpected policy layering or any mismatch. The live verification still requires independent GitHub Codex app read-back and controlled positive and negative pull-request tests.
+The first command is read-only. The second command creates only missing `PRJ-001 review protection` and `PRJ-001 main protection` rulesets. The third command may update either existing ruleset only when each expected name occurs at most once and both write flags are explicit. During migration, the script creates the review layer before removing review rules from the no-bypass main layer, so a partial run cannot expose an unprotected direct-push window. Every write path reads each ruleset back, compares its normalized policy with the generated payload, confirms that GitHub reports `main` as protected, and writes a sanitized report. The script never deletes a ruleset and stops on unexpected policy layering or any mismatch. The live verification still requires independent GitHub Codex app read-back and controlled positive and negative pull-request tests.
 
 Apply one repository at a time in this order:
 
@@ -81,20 +81,20 @@ Apply one repository at a time in this order:
 4. `cerberus` and `hermes`
 5. `web-app`
 
-For each repository, extract that repository's `payload` object from the reviewed generated file and send it with an administrator credential:
+For each repository, extract each object in that repository's `payloads` array from the reviewed generated file and send it with an administrator credential, creating review protection before changing main protection:
 
 ```bash
 gh api --method POST repos/otedesco/REPOSITORY/rulesets \
   --input /path/to/repository-payload.json
 ```
 
-Do not use an ad hoc `--method PUT` or `DELETE` unless the administrator has identified the exact existing ruleset ID and approved the change. Prefer the guarded `--apply --update-existing` path for a reviewed policy update. If a ruleset already exists, compare it first and update only the uniquely named ruleset after confirming that layering will not create a more restrictive unintended policy. Never apply a payload with wildcard bypasses, an `always` bypass, a missing check, `enforcement: evaluate`, or a target other than `refs/heads/main`.
+Do not use an ad hoc `--method PUT` or `DELETE` unless the administrator has identified the exact existing ruleset ID and approved the change. Prefer the guarded `--apply --update-existing` path for a reviewed policy update. If a ruleset already exists, compare it first and update only the uniquely named ruleset after confirming that layering will not create an unintended policy. Never put required checks or history rules in a ruleset with bypass actors. Never apply a payload with wildcard bypasses, an `always` bypass, a missing check, `enforcement: evaluate`, or a target other than `refs/heads/main`.
 
 After each write, read the returned ruleset and then read it again through the GitHub Codex app. Compare target, enforcement, pull-request parameters, required contexts, history rules, and bypass actors with the generated payload. Stop immediately on any mismatch, unexpected inherited rule, failed workflow, or inability to prove the required check provenance.
 
 ## Verification and rollback
 
-For each repository, use a controlled pull request that changes a harmless tracked file and verify the normal path is possible only with the required review, resolved conversations, current base, and passing required checks. When the pull-request author is the sole named CODEOWNER, wait for every required check to pass and resolve every review conversation before explicitly choosing the ruleset bypass to merge. Never use the bypass to ignore a failed, pending, or missing check. GitHub records the bypass on the pull request, while `pull_request` mode does not permit a direct push to `main`. Use separate controlled evidence for failed status checks and stale approvals. Do not test direct pushes or branch deletion destructively on a production branch; the ruleset configuration and the GitHub app's read-only rule evaluation are the safe evidence for those controls.
+For each repository, use a controlled pull request that changes a harmless tracked file and verify the normal path is possible only with the required review, resolved conversations, current base, and passing required checks. When the pull-request author is the sole named CODEOWNER, explicitly bypass only the review-protection layer. The separate no-bypass main-protection layer must still reject a failed, pending, or missing check and prohibited history changes. GitHub records the review bypass on the pull request, while `pull_request` mode does not permit a direct push to `main`. Use separate controlled evidence for failed status checks and stale approvals. Do not test direct pushes or branch deletion destructively on a production branch; the ruleset configuration and the GitHub app's read-only rule evaluation are the safe evidence for those controls.
 
 If the ruleset blocks an expected valid pull request, pause the rollout, capture the PR/check URL and ruleset read-back, and disable or update only the exact ruleset with administrator approval. Re-run the read-back before resuming. A rollback is not complete until the server state, the evidence record, and the Linear issue reflect the same result.
 

@@ -19,24 +19,36 @@ function bypassActor(actor) {
   };
 }
 
-export function renderRuleset(repository, policy) {
+export function renderReviewRuleset(repository, policy) {
+  return {
+    name: "PRJ-001 review protection",
+    target: "branch",
+    enforcement: policy.enforcement,
+    bypass_actors: (repository.bypassActors ?? []).map(bypassActor),
+    conditions: { ref_name: { include: [`refs/heads/${repository.protectedBranch}`], exclude: [] } },
+    rules: [
+      {
+        type: "pull_request",
+        parameters: {
+          allowed_merge_methods: policy.history.requireLinearHistory
+            ? ["squash", "rebase"]
+            : ["merge", "squash", "rebase"],
+          dismiss_stale_reviews_on_push: policy.pullRequest.dismissStaleReviews,
+          require_code_owner_review: policy.pullRequest.requireCodeOwnerReview,
+          require_last_push_approval: policy.pullRequest.requireLastPushApproval,
+          required_approving_review_count: policy.pullRequest.requiredApprovingReviewCount,
+          required_review_thread_resolution: policy.pullRequest.requireConversationResolution,
+        },
+      },
+    ],
+  };
+}
+
+export function renderEnforcementRuleset(repository, policy) {
   const requiredChecks = [...repository.requiredChecks].sort((left, right) =>
     left.context.localeCompare(right.context),
   );
   const rules = [
-    {
-      type: "pull_request",
-      parameters: {
-        allowed_merge_methods: policy.history.requireLinearHistory
-          ? ["squash", "rebase"]
-          : ["merge", "squash", "rebase"],
-        dismiss_stale_reviews_on_push: policy.pullRequest.dismissStaleReviews,
-        require_code_owner_review: policy.pullRequest.requireCodeOwnerReview,
-        require_last_push_approval: policy.pullRequest.requireLastPushApproval,
-        required_approving_review_count: policy.pullRequest.requiredApprovingReviewCount,
-        required_review_thread_resolution: policy.pullRequest.requireConversationResolution,
-      },
-    },
     {
       type: "required_status_checks",
       parameters: {
@@ -54,10 +66,14 @@ export function renderRuleset(repository, policy) {
     name: "PRJ-001 main protection",
     target: "branch",
     enforcement: policy.enforcement,
-    bypass_actors: (repository.bypassActors ?? []).map(bypassActor),
+    bypass_actors: [],
     conditions: { ref_name: { include: [`refs/heads/${repository.protectedBranch}`], exclude: [] } },
     rules,
   };
+}
+
+export function renderRulesets(repository, policy) {
+  return [renderReviewRuleset(repository, policy), renderEnforcementRuleset(repository, policy)];
 }
 
 export function renderPayload(inventory, policy) {
@@ -74,7 +90,7 @@ export function renderPayload(inventory, policy) {
     },
     repositories: [...inventory.repositories]
       .sort((left, right) => left.fullName.localeCompare(right.fullName))
-      .map((repository) => ({ repository: repository.fullName, payload: renderRuleset(repository, policy) })),
+      .map((repository) => ({ repository: repository.fullName, payloads: renderRulesets(repository, policy) })),
   };
 }
 
