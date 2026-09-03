@@ -23,7 +23,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
 
       - name: Setup environment
-        uses: otedesco/gh-action-templates/.github/actions/setup-environment@5bea937db0a84a0d74e9ed017ef28f54132c7c82 # OPS-182 consumer compatibility fix
+        uses: otedesco/gh-action-templates/.github/actions/setup-environment@fde909e293173d95848d993528821a315e3b2059 # OPS-182 consumer compatibility fix
         with:
           registry-auth-required: "true"
           npm-token: ${{ secrets.NPM_TOKEN }}

@@ -2,7 +2,7 @@
 
 Reviewed date: 2026-09-02
 
-Hermes uses the original immutable workflow release `b0bd33051b7b5b8ebe0a8f5a1c588ea0d466ed2d`. The five still-open consumer PRs use follow-up workflow commit `0a9c7f317a2e922aed37b526918fa16d51b8041e`, which includes the OPS-182 compatibility fixes and pins its composite actions to implementation commit `5bea937db0a84a0d74e9ed017ef28f54132c7c82`.
+Hermes uses the original immutable workflow release `b0bd33051b7b5b8ebe0a8f5a1c588ea0d466ed2d`. The five still-open consumer PRs use the OPS-182 follow-up release, which includes the compatibility fixes and pins its composite actions to implementation commit `fde909e293173d95848d993528821a315e3b2059`.
 
 | Repository | Rollout commit | Workflows | Validation |
 | --- | --- | --- | --- |
