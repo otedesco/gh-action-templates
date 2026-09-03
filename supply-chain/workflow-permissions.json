@@ -19,6 +19,49 @@
           },
           "remediation": "Keep quality checks read-only and pass NPM_TOKEN only for private dependency installation."
         },
+        ".github/workflows/security.yml": {
+          "events": ["workflow_call", "pull_request"],
+          "workflowPermissions": {},
+          "declaredSecrets": ["NPM_TOKEN"],
+          "jobs": {
+            "codeql": {
+              "permissions": { "contents": "read" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "dependency-review": {
+              "permissions": { "contents": "read", "pull-requests": "read" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "secret-scan": {
+              "permissions": { "contents": "read" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "license": {
+              "permissions": { "contents": "read" },
+              "allowedSecrets": ["NPM_TOKEN"],
+              "forbiddenSecrets": ["GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "workflow-security": {
+              "permissions": { "contents": "read" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "sarif-upload": {
+              "permissions": { "contents": "read", "security-events": "write" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "aggregate": {
+              "permissions": { "contents": "read" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            }
+          },
+          "remediation": "Keep scanner jobs read-only; grant security-events: write only to SARIF upload and use NPM_TOKEN only for authenticated dependency installation."
+        },
         ".github/workflows/release-package.yml": {
           "events": ["workflow_call"],
           "workflowPermissions": {},

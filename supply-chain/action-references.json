@@ -113,6 +113,91 @@
       "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
     },
     {
+      "owner": "github",
+      "repository": "codeql-action",
+      "path": "init",
+      "reference": "ff0a06e83cb2de871e5a09832bc6a81e7276941f",
+      "release": "v3.28.18",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Run CodeQL analysis and publish SARIF",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "github",
+      "repository": "codeql-action",
+      "path": "autobuild",
+      "reference": "ff0a06e83cb2de871e5a09832bc6a81e7276941f",
+      "release": "v3.28.18",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Build CodeQL-supported source",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "github",
+      "repository": "codeql-action",
+      "path": "analyze",
+      "reference": "ff0a06e83cb2de871e5a09832bc6a81e7276941f",
+      "release": "v3.28.18",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Analyze source with CodeQL",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "github",
+      "repository": "codeql-action",
+      "path": "upload-sarif",
+      "reference": "ff0a06e83cb2de871e5a09832bc6a81e7276941f",
+      "release": "v3.28.18",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Publish CodeQL SARIF results",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "actions",
+      "repository": "dependency-review-action",
+      "reference": "ce3cf9537a52e8119d91fd484ab5b8a807627bf8",
+      "release": "v4.6.0",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Review dependency changes for vulnerable additions",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "gitleaks",
+      "repository": "gitleaks-action",
+      "reference": "ff98106e4c7b2bc287b24eaf42907196329070c7",
+      "release": "v2.3.9",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Scan repository history for leaked secrets",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "zizmorcore",
+      "repository": "zizmor-action",
+      "reference": "f52a838cfabf134edcbaa7c8b3677dde20045018",
+      "release": "v0.1.1",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Audit GitHub Actions workflow security",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "actions",
+      "repository": "setup-node",
+      "reference": "49933ea5288caeca8642d1e84afbd3f7d6820020",
+      "release": "v4.4.0",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Install the supported Node runtime for license scanning",
+      "repositories": ["gh-action-templates"]
+    },
+    {
+      "owner": "actions",
+      "repository": "download-artifact",
+      "reference": "d3f86a106a0bac45b974a628896c90dbdf5c8093",
+      "release": "v4.3.0",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Transfer scanner evidence to the SARIF upload job",
+      "repositories": ["gh-action-templates"]
+    },
+    {
       "owner": "otedesco",
       "repository": "gh-action-templates",
       "path": ".github/workflows/release-package.yml",
