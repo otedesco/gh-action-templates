@@ -1,0 +1,1 @@
+{"files":{"src/a.ts":{"statements":{"covered":2,"total":2},"branches":{"covered":1,"total":1},"functions":{"covered":1,"total":1},"lines":{"covered":2,"total":2}},"src/b.ts":{"statements":{"covered":1,"total":2},"branches":{"covered":0,"total":1},"functions":{"covered":0,"total":1},"lines":{"covered":1,"total":2}}}}
