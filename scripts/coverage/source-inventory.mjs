@@ -2,7 +2,7 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 
 const extensions = new Set([".cjs", ".js", ".mjs", ".ts", ".tsx"]);
-const excluded = new Set(["node_modules", "dist", "build", "coverage", ".next", "test", "tests", "__tests__"]);
+const excluded = new Set(["node_modules", "dist", "build", "coverage", ".next", "test", "tests", "__tests__", "interfaces"]);
 
 export async function inventoryExecutableSource(root, { directories = ["src"] } = {}) {
   const result = [];

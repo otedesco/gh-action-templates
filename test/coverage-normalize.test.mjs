@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { normalizeCoverage, readCoverageReport } from "../scripts/coverage/normalize.mjs";
-import { validateSourceCoverage } from "../scripts/coverage/source-inventory.mjs";
+import { inventoryExecutableSource, validateSourceCoverage } from "../scripts/coverage/source-inventory.mjs";
 
 const root = new URL(".", import.meta.url).pathname;
 const fixture = async (name) =>
@@ -45,12 +45,14 @@ test("normalizes raw Istanbul files with zero function and branch sites", () => 
         s: { 0: 1 },
         f: {},
         b: {},
+        l: {},
       },
     },
     { root },
   );
   assert.deepEqual(report.files["src/constants.ts"].functions, { covered: 0, total: 0 });
   assert.deepEqual(report.files["src/constants.ts"].branches, { covered: 0, total: 0 });
+  assert.deepEqual(report.files["src/constants.ts"].lines, { covered: 1, total: 1 });
 });
 
 test("normalizes per-file summary reports with a total entry", () => {
@@ -102,4 +104,12 @@ test("treats executable source omitted from coverage as uncovered", async () => 
       remediation: "Include this executable source file in the coverage report.",
     },
   ]);
+});
+
+test("excludes nested type-only interface directories from executable source", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "source-inventory-"));
+  await mkdir(path.join(directory, "src/components/interfaces"), { recursive: true });
+  await writeFile(path.join(directory, "src/app.ts"), "export const app = true;\n");
+  await writeFile(path.join(directory, "src/components/interfaces/Type.ts"), "export interface Type {}\n");
+  assert.deepEqual(await inventoryExecutableSource(directory), ["src/app.ts"]);
 });
