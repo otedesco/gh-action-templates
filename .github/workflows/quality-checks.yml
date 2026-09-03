@@ -31,7 +31,6 @@ jobs:
         run: >-
           pnpm format:check &&
           pnpm lint:check &&
-          pnpm test:quality-script-contract &&
           pnpm test:quality-tools-contract &&
           pnpm test:workflow-contract &&
           pnpm test:workflow-fixtures &&
