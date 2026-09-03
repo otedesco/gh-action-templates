@@ -13,7 +13,7 @@ This document records the least-privilege grants enforced by `supply-chain/workf
 
 ## Consumer adoption
 
-The policy covers all eight repositories: `gh-action-templates`, `commons`, `cache`, `server-utils`, `notify`, `cerberus`, `hermes`, and `web-app`. Every configured workflow has an explicit top-level permission declaration and every configured job has an explicit job-level declaration. `web-app` is intentionally represented by a quality-only caller because it has no release workflow.
+The policy covers all eight repositories: `gh-action-templates`, `commons`, `cache`, `server-utils`, `notify`, `cerberus`, `hermes`, and `web-app`. Every configured workflow has an explicit top-level permission declaration and every configured job has an explicit job-level declaration. `web-app` currently has no workflow files, so its empty policy entry fails if an unreviewed workflow appears; OPS-189 owns adding its quality caller.
 
 Private-install consumers declare and map `NPM_TOKEN` only where their existing registry contract requires it: `notify`, `cerberus`, and `hermes`. Public package consumers keep their quality jobs secret-free and map `NPM_TOKEN` only to the package release job. Container release callers map only `NPM_TOKEN`; the automatic `github.token` supplies the narrowly scoped GitHub token permission for GHCR.
 
