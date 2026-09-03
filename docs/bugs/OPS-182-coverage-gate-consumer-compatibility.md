@@ -145,8 +145,8 @@ The failures were verified from the authenticated GitHub Actions job logs. Artif
 
 1. Central tests, formatting, linting, and the immutable-reference audit pass locally.
 2. The coverage command and gate pass locally for Commons, Cache, Server Utils, Notify, and Cerberus using each recorded PR base and branch head.
-3. Central PR #20 publishes workflow commit `b31a412a635636c20e9e026bd85e345880a5c3a5`, which pins its composite actions to implementation commit `3105868fc19ef2bc4969b38d3803ea13a907d1aa`.
-4. The five consumer PR branches are pinned to workflow commit `b31a412a635636c20e9e026bd85e345880a5c3a5`.
+3. The central follow-up publishes workflow commit `0a9c7f317a2e922aed37b526918fa16d51b8041e`, which pins its composite actions to implementation commit `5bea937db0a84a0d74e9ed017ef28f54132c7c82`.
+4. The five consumer PR branches are pinned to workflow commit `0a9c7f317a2e922aed37b526918fa16d51b8041e`.
 5. Hosted checks passed: Commons `33708541437`, Cache `33708541607`, Server Utils `33708541295`, Notify `33708540767`, and Cerberus `33708541222`.
 
 ## Useful local reproductions
