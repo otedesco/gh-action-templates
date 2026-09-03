@@ -68,7 +68,7 @@ jobs:
         run: ${{ inputs.package-manager }} run test:coverage
 
       - name: Evaluate changed-code coverage
-        uses: otedesco/gh-action-templates/.github/actions/coverage-gate@main
+        uses: otedesco/gh-action-templates/.github/actions/coverage-gate@091ae85019ee71d8aefbfca32e02cb4d670feae1 # central coverage gate release 2026-09-02
         with:
           base: ${{ github.event.pull_request.base.sha || github.event.before }}
           head: ${{ github.sha }}
