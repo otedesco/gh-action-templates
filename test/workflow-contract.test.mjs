@@ -91,7 +91,7 @@ for (const [name, expectedPermissions] of [
   ],
   [
     "release-docker-image.yml",
-    /permissions: \{\}\n\njobs:\n[ ]{2}[^\n]+:[\s\S]*?permissions:\n[ ]{6}contents: read\n[ ]{6}packages: write/,
+    /permissions: \{\}[\s\S]*?jobs:\n[ ]{2}[^\n]+:[\s\S]*?permissions:\n[ ]{6}contents: read\n[ ]{6}packages: write/,
   ],
 ]) {
   const releaseWorkflow = await readFile(join(root, `.github/workflows/${name}`), "utf8");

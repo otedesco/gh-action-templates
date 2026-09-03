@@ -10,6 +10,7 @@
   "scripts": {
     "format": "prettier \"**/*.{js,mjs,cjs,json}\" --write",
     "format:check": "prettier \"**/*.{js,mjs,cjs,json}\" --check",
+    "lint:workflows": "node-actionlint .github/workflows/*.yml",
     "lint:js": "eslint \"**/*.{js,mjs,cjs}\"",
     "lint:json": "node scripts/check-json.mjs",
     "lint:check": "pnpm run lint:js && pnpm run lint:json",
@@ -25,6 +26,8 @@
     "test:core-gates": "node --test test/core-gates.test.mjs",
     "test:coverage-gate": "node --test test/coverage-normalize.test.mjs test/coverage-changed.test.mjs test/coverage-ratchet.test.mjs",
     "test:container-contract": "node --test test/container-contract.test.mjs",
+    "test:container-workflow": "node --test test/container-workflow.test.mjs",
+    "test:container-evidence": "node --experimental-test-coverage --test-coverage-lines=100 --test-coverage-functions=100 --test test/container-evidence.test.mjs",
     "coverage:source": "node scripts/coverage/source-inventory.mjs > coverage/source-inventory.json",
     "coverage:normalize": "node scripts/coverage/normalize.mjs --report coverage/coverage-summary.json --output coverage/normalized.json",
     "coverage:changed": "node scripts/coverage/evaluate.mjs --report coverage/normalized.json --base \"$COVERAGE_BASE\" --head \"$COVERAGE_HEAD\"",
@@ -35,6 +38,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
+    "@tktco/node-actionlint": "1.6.0",
     "eslint": "^9.35.0",
     "globals": "^16.3.0",
     "prettier": "^3.6.2"
