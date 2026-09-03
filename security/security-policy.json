@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "blockingSeverities": ["critical", "high"],
+  "allowedSeverities": ["critical", "high", "medium", "low", "info"],
+  "tools": ["codeql", "dependency-review", "secret-scan", "license", "workflow-security"],
+  "requiredExceptionFields": ["id", "owner", "rationale", "scope", "compensatingControl", "approvedBy", "expiresAt"],
+  "reportVersions": {
+    "sarif": ["2.1.0"],
+    "normalized": [1]
+  }
+}
