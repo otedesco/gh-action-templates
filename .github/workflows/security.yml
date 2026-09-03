@@ -115,6 +115,7 @@ jobs:
     name: License policy
     permissions:
       contents: read
+      packages: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -129,7 +130,7 @@ jobs:
       - name: Install dependencies
         if: ${{ inputs.registry-auth-required && inputs.package-manager == 'pnpm' }}
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ github.token }}
         run: corepack pnpm install --frozen-lockfile
       - name: Install public dependencies
         if: ${{ !inputs.registry-auth-required && inputs.package-manager == 'pnpm' }}
@@ -137,7 +138,7 @@ jobs:
       - name: Install dependencies with npm
         if: ${{ inputs.package-manager == 'npm' }}
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_TOKEN: ${{ github.token }}
         run: npm ci
       - name: Check licenses
         run: |

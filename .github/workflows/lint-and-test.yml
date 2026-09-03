@@ -25,6 +25,7 @@ jobs:
     name: Test on the supported runtime
     permissions:
       contents: read
+      packages: read
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -39,7 +40,7 @@ jobs:
         uses: otedesco/gh-action-templates/.github/actions/setup-environment@fde909e293173d95848d993528821a315e3b2059 # OPS-182 consumer compatibility fix
         with:
           registry-auth-required: ${{ inputs.registry-auth-required }}
-          npm-token: ${{ secrets.NPM_TOKEN }}
+          npm-token: ${{ github.token }}
 
       - name: Install dependencies with pnpm
         if: ${{ inputs.package-manager == 'pnpm' }}
