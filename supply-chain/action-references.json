@@ -97,7 +97,7 @@
       "repository": "gh-action-templates",
       "path": ".github/actions/coverage-gate",
       "reference": "091ae85019ee71d8aefbfca32e02cb4d670feae1",
-      "release": "central-pre-OPS-182",
+      "release": "central coverage gate release 2026-09-02",
       "reviewedAt": "2026-09-02",
       "purpose": "Shared changed-code coverage gate",
       "repositories": ["gh-action-templates"]
