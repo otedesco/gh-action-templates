@@ -61,7 +61,7 @@ export function renderRuleset(repository, policy) {
 }
 
 export function renderPayload(inventory, policy) {
-  const findings = [...validateRepositoryInventory(inventory), ...validateRulesetPolicy(policy)];
+  const findings = [...validateRepositoryInventory(inventory, { enforceScope: true }), ...validateRulesetPolicy(policy)];
   if (findings.length) throw new Error(formatFindings(findings));
   return {
     version: 1,
