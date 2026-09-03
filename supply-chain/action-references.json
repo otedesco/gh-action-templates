@@ -105,72 +105,32 @@
     {
       "owner": "otedesco",
       "repository": "gh-action-templates",
-      "path": ".github/actions/notify-status",
-      "reference": "091ae85019ee71d8aefbfca32e02cb4d670feae1",
-      "release": "central-pre-OPS-182",
-      "reviewedAt": "2026-09-02",
-      "purpose": "Report quality workflow status",
-      "repositories": ["gh-action-templates"]
-    },
-    {
-      "owner": "otedesco",
-      "repository": "gh-action-templates",
       "path": ".github/workflows/lint-and-test.yml",
-      "reference": "b0bd33051b7b5b8ebe0a8f5a1c588ea0d466ed2d",
-      "release": "central-2026-09-02",
+      "reference": "528e0d92182a23a12f9d6d4dae67c4b0e98fcffb",
+      "release": "OPS-183-least-privilege",
       "reviewedAt": "2026-09-02",
-      "purpose": "Shared quality workflow consumed by product repositories",
-      "repositories": ["hermes"]
-    },
-    {
-      "owner": "otedesco",
-      "repository": "gh-action-templates",
-      "path": ".github/workflows/lint-and-test.yml",
-      "reference": "9282fc2387d782afa7d461afbd51c89a1918abdb",
-      "release": "OPS-182-consumer-compatibility",
-      "reviewedAt": "2026-09-03",
-      "purpose": "Shared quality workflow with compatible coverage normalization and side-effect-free runtime setup",
-      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus"]
+      "purpose": "Shared read-only quality workflow",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
     },
     {
       "owner": "otedesco",
       "repository": "gh-action-templates",
       "path": ".github/workflows/release-package.yml",
-      "reference": "b0bd33051b7b5b8ebe0a8f5a1c588ea0d466ed2d",
-      "release": "central-2026-09-02",
+      "reference": "528e0d92182a23a12f9d6d4dae67c4b0e98fcffb",
+      "release": "OPS-183-least-privilege",
       "reviewedAt": "2026-09-02",
-      "purpose": "Shared package release workflow consumed by product repositories",
-      "repositories": ["hermes"]
-    },
-    {
-      "owner": "otedesco",
-      "repository": "gh-action-templates",
-      "path": ".github/workflows/release-package.yml",
-      "reference": "9282fc2387d782afa7d461afbd51c89a1918abdb",
-      "release": "OPS-182-consumer-compatibility",
-      "reviewedAt": "2026-09-03",
-      "purpose": "Shared package release workflow using side-effect-free runtime setup",
-      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus"]
+      "purpose": "Shared package release workflow with minimum GitHub token authority",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
     },
     {
       "owner": "otedesco",
       "repository": "gh-action-templates",
       "path": ".github/workflows/release-docker-image.yml",
-      "reference": "b0bd33051b7b5b8ebe0a8f5a1c588ea0d466ed2d",
-      "release": "central-2026-09-02",
+      "reference": "528e0d92182a23a12f9d6d4dae67c4b0e98fcffb",
+      "release": "OPS-183-least-privilege",
       "reviewedAt": "2026-09-02",
-      "purpose": "Shared Docker release workflow consumed by product repositories",
-      "repositories": ["hermes"]
-    },
-    {
-      "owner": "otedesco",
-      "repository": "gh-action-templates",
-      "path": ".github/workflows/release-docker-image.yml",
-      "reference": "9282fc2387d782afa7d461afbd51c89a1918abdb",
-      "release": "OPS-182-consumer-compatibility",
-      "reviewedAt": "2026-09-03",
-      "purpose": "Shared Docker release workflow using side-effect-free runtime setup",
-      "repositories": ["cerberus"]
+      "purpose": "Shared container release workflow with minimum GHCR authority",
+      "repositories": ["cerberus", "hermes"]
     }
   ]
 }
