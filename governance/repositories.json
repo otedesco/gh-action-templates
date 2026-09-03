@@ -43,8 +43,8 @@
         },
         {
           "context": "Security / aggregate",
-          "workflow": ".github/workflows/quality-checks.yml",
-          "job": "security-gate",
+          "workflow": ".github/workflows/security.yml",
+          "job": "aggregate",
           "observed": false
         }
       ],
