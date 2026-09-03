@@ -39,4 +39,23 @@ test("rejects an unsupported base image and mutable install", () => {
   );
 });
 
+for (const [name, port, command] of [
+  ["cerberus", 3000, "dist/index.js"],
+  ["hermes", 4000, "dist/index-server.js"],
+]) {
+  test(`${name} production image satisfies the container contract`, async () => {
+    const dockerfile = await readFile(join(root, "..", name, "Dockerfile"), "utf8");
+    assert.deepEqual(validateDockerfile(dockerfile, policy), []);
+    assert.match(dockerfile, new RegExp(`127\\.0\\.0\\.1:${port}`));
+    assert.match(dockerfile, new RegExp(command.replace(".", "\\.")));
+  });
+}
+
+test("Hermes worker image satisfies the container contract", async () => {
+  const dockerfile = await readFile(join(root, "..", "hermes", "Dockerfile.worker"), "utf8");
+  assert.deepEqual(validateDockerfile(dockerfile, policy), []);
+  assert.match(dockerfile, /127\.0\.0\.1:4000/);
+  assert.match(dockerfile, /dist\/index-worker\.js/);
+});
+
 console.log("container contract: runtime, secret, install, and health requirements verified");
