@@ -43,8 +43,16 @@ function normalizeMetric(metric, file, name) {
   return { metric: { covered, total: locations.length }, locations };
 }
 
+function coverageFiles(summary) {
+  if (summary?.files && typeof summary.files === "object" && !Array.isArray(summary.files)) return summary.files;
+  const entries = Object.entries(summary ?? {}).filter(
+    ([name, file]) => name !== "total" && file && typeof file === "object" && (file.statementMap || file.fnMap || file.branchMap),
+  );
+  return entries.length ? Object.fromEntries(entries) : undefined;
+}
+
 export function normalizeCoverage(summary, { root = process.cwd() } = {}) {
-  const files = summary?.files;
+  const files = coverageFiles(summary);
   if (!files || typeof files !== "object" || Array.isArray(files)) fail("Coverage report must contain a files object", { code: "missing-files" });
   const normalized = {};
   for (const [rawName, file] of Object.entries(files)) {
