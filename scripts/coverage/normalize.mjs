@@ -43,8 +43,17 @@ function detailedMetric(metric, file) {
   return locations.filter(({ line }) => Number.isInteger(line)).sort((a, b) => a.line - b.line);
 }
 
+function rawMetric(metric, file) {
+  const values = metric === "statements" ? file?.s : metric === "functions" ? file?.f : metric === "branches" ? Object.values(file?.b ?? {}).flat() : undefined;
+  if (!values) return undefined;
+  const counts = Object.values(values);
+  return { covered: counts.filter((value) => value > 0).length, total: counts.length };
+}
+
 function normalizeMetric(metric, file, name) {
   if (file?.[metric]?.total !== undefined) return { metric: countMetric(metric, file, name), locations: [] };
+  const raw = rawMetric(metric, file);
+  if (raw) return { metric: raw, locations: detailedMetric(metric, file) };
   const locations = detailedMetric(metric, file);
   if (!locations.length) fail(`Missing ${metric} coverage for ${name}`, { code: "missing-coverage-metric", metric });
   const covered = locations.filter(({ covered }) => covered > 0).length;
@@ -54,7 +63,7 @@ function normalizeMetric(metric, file, name) {
 function coverageFiles(summary) {
   if (summary?.files && typeof summary.files === "object" && !Array.isArray(summary.files)) return summary.files;
   const entries = Object.entries(summary ?? {}).filter(
-    ([name, file]) => name !== "total" && file && typeof file === "object" && (file.statementMap || file.fnMap || file.branchMap),
+    ([name, file]) => name !== "total" && file && typeof file === "object" && (file.statementMap || file.fnMap || file.branchMap || METRICS.some((metric) => file[metric]?.total !== undefined)),
   );
   return entries.length ? Object.fromEntries(entries) : undefined;
 }
@@ -76,6 +85,15 @@ export function normalizeCoverage(summary, { root = process.cwd() } = {}) {
 
 export async function readAndNormalize(file, options) {
   return normalizeCoverage(JSON.parse(await readFile(file, "utf8")), options);
+}
+
+export async function readCoverageReport(file, options) {
+  try {
+    return await readAndNormalize(file, options);
+  } catch (error) {
+    if (error.code !== "missing-files" || path.basename(file) !== "coverage-final.json") throw error;
+    return readAndNormalize(path.join(path.dirname(file), "coverage-summary.json"), options);
+  }
 }
 
 export function globalMetrics(report) {
