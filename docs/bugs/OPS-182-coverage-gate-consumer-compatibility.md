@@ -7,7 +7,7 @@ Related:
 - [Linear OPS-182](https://linear.app/opspace/issue/OPS-182/replace-mutable-reusable-workflow-references-and-pin-actions)
 - [OPS-182 implementation plan](../plans/2026-09-02-ops-182-immutable-workflow-action-references.md)
 - [gh-action-templates PR #19](https://github.com/otedesco/gh-action-templates/pull/19)
-- [gh-action-templates PR #20](https://github.com/otedesco/gh-action-templates/pull/20)
+- [gh-action-templates PR #21](https://github.com/otedesco/gh-action-templates/pull/21)
 
 ## Executive summary
 
@@ -15,7 +15,7 @@ OPS-182 required the repositories to stop using mutable workflow/action referenc
 
 The central action assumed one coverage-report schema and one coverage workflow contract, while the consumers produced several Istanbul/Jest/Vitest variants. GitHub Actions job logs from the latest five consumer runs exposed three remaining causes: valid empty function/branch maps were rejected, an empty Jest `coverage-final.json` prevented use of its valid summary, and Volta setup modified consumer manifests before the generated-file drift check.
 
-PR #20 fixes all three causes. The five coverage commands and central gate were replayed locally against the recorded PR base/head scope and passed.
+PR #21 fixes all causes. The five coverage commands and central gate were replayed locally against the recorded PR base/head scope and the final hosted matrix passed.
 
 ## Scope
 
@@ -130,7 +130,9 @@ The failures were verified from the authenticated GitHub Actions job logs. Artif
 ## Final fix
 
 - Treat present empty Istanbul `f` and `b` maps as valid zero-total metrics.
+- Derive line coverage from statement locations when Node 24 produces an empty `l` map.
 - When `coverage-final.json` is present but contains no files, read the sibling `coverage-summary.json`.
+- Exclude nested type-only `interfaces` directories from executable source inventory.
 - Configure `volta-cli/action` to install only Volta, then run `volta install` for Node/npm. Do not pass its `node-version` or `npm-version` inputs because those inputs run `volta pin` and edit the caller's package manifest.
 - Pin the reusable workflow and all five open consumers to the reviewed compatibility commits.
 
@@ -147,7 +149,7 @@ The failures were verified from the authenticated GitHub Actions job logs. Artif
 2. The coverage command and gate pass locally for Commons, Cache, Server Utils, Notify, and Cerberus using each recorded PR base and branch head.
 3. The central follow-up pins its composite actions to implementation commit `fde909e293173d95848d993528821a315e3b2059`.
 4. The five consumer PR branches are pinned to workflow commit `9282fc2387d782afa7d461afbd51c89a1918abdb`.
-5. Hosted checks passed: Commons `33708541437`, Cache `33708541607`, Server Utils `33708541295`, Notify `33708540767`, and Cerberus `33708541222`.
+5. Final hosted checks passed: Commons `33709173437`, Cache `33709173519`, Server Utils `33709173779`, Notify `33709173449`, and Cerberus `33709173406`.
 
 ## Useful local reproductions
 
