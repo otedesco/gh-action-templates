@@ -127,3 +127,32 @@ git commit -m "ci: verify containers before digest publication"
 - Only the verified digest is publishable.
 - Evidence is linked to `OPS-185`.
 
+## Completion record — 2026-09-03
+
+**Status:** Complete — implementation and all scoped implementation pull requests are merged into repository `main` branches.
+
+### Merged changes
+
+- [gh-action-templates#29](https://github.com/otedesco/gh-action-templates/pull/29) — central container release contract; merged as `3914f0e`.
+- [gh-action-templates#30](https://github.com/otedesco/gh-action-templates/pull/30) — build-once digest verification, security gates, evidence validation, SBOM/provenance checks, and digest promotion; head `3a09fc6`, merged as `f0cc792`.
+- [hermes#21](https://github.com/otedesco/hermes/pull/21) — non-root production and worker images with bounded health checks; merged as `cdc5d15`.
+- [cerberus#53](https://github.com/otedesco/cerberus/pull/53) — non-root production image with a bounded health check; merged as `f44096e`.
+
+GitHub verification confirmed each pull request is merged and each listed merge commit exists in its repository. Affected repositories are `otedesco/gh-action-templates`, `otedesco/hermes`, and `otedesco/cerberus`.
+
+### Delivered implementation
+
+The reusable Docker workflow now builds one immutable image digest, runs smoke/health and vulnerability verification against that digest, generates and verifies SBOM and signed provenance evidence, validates downloaded artifact presence/checksums/subjects, and promotes only the verified digest. Build, verification, provenance, and publish jobs use explicit least-privilege permissions; the publish job authenticates independently to GHCR and rejects caller-supplied image targets outside `ghcr.io/${GITHUB_REPOSITORY}`. Product images run as the accepted non-root user and expose bounded health checks. Evidence tooling validates SPDX JSON envelopes, provenance subjects, duplicate/missing artifacts, digest mismatches, and checksum integrity.
+
+Materially changed files and contracts include `.github/workflows/release-docker-image.yml`, `scripts/container/build-release-evidence.mjs`, `scripts/container/verify-release-evidence.mjs`, `test/container-workflow.test.mjs`, `test/container-evidence.test.mjs`, the container policy/fixtures from #29, product Dockerfiles, workflow contract tests, and the pinned action-reference/developer-tool manifests.
+
+### Validation and evidence
+
+- Full `pnpm test` passed, including workflow contracts, 16 workflow fixtures, coverage-gate tests, and registry-auth tests.
+- Evidence tests passed with enforced 100% line and function coverage for the changed evidence scripts; the test report recorded 76.40% branch coverage.
+- `pnpm run lint:check`, `pnpm run format:check`, `pnpm run lint:workflows`, `pnpm run test:action-references`, and `git diff --check` passed; 77 immutable action references were audited.
+- Hosted Security validation reported green for run `33725129671` during PR review, and PR #30 merged after the release-blocking review findings were addressed.
+
+### Outcome, limitations, and follow-up
+
+The team delivered a build-once, verify-by-digest container release path with auditable release evidence and protected registry publication boundaries. Local validation used the available Node runtimes rather than the repository’s exact Node `24.20.0` contract, and no Docker-capable local run recorded image history/layer inspection or a live product-image smoke dispatch; those remain hosted operational evidence to retain when consumer release workflows are exercised. Consumer repositories still need to adopt the updated reusable workflow permissions/references, and OPS-186 owns live protected-branch ruleset enforcement. The task’s implementation is complete; these operational follow-ups do not reopen the merged implementation scope.

@@ -2,9 +2,9 @@
 
 - **Project:** `PRJ-001` — Quality Gates & CI Foundation
 - **Linear milestone:** M3 — Security, release, and branch enforcement
-- **Status:** In progress — OPS-184 complete
+- **Status:** In progress — OPS-184 and OPS-185 complete; OPS-186 remains
 - **Target date:** 2026-10-23
-- **Linear progress at documentation time:** 33% (1 of 3 tasks complete)
+- **Progress:** 81.25% (13 of 16 points complete; OPS-184 and OPS-185 complete)
 - **Owner:** Oswaldo Tedesco
 
 ## Purpose
@@ -15,9 +15,10 @@ The milestone closes the gap between having reliable workflows and enforcing the
 
 ## Delivery progress
 
-OPS-184 is complete. It delivered the central blocking security policy and reusable workflow, then adopted the immutable caller across all eight repositories. The remaining milestone scope is container release verification (OPS-185) and live protected-branch ruleset enforcement (OPS-186).
+OPS-184 and OPS-185 are complete. OPS-184 delivered the central blocking security policy and reusable workflow, then adopted the immutable caller across all eight repositories. OPS-185 now adds build-once container release verification, digest-bound SBOM/provenance evidence, least-privilege registry publication, and hardened Cerberus/Hermes production images. The remaining milestone scope is live protected-branch ruleset enforcement (OPS-186).
 
 See the [OPS-184 completion record](tasks/OPS-184-security-gates.md) for merged pull requests, commit references, validation, limitations, and follow-up ownership.
+See the [OPS-185 completion record](tasks/OPS-185-container-release-gates.md#completion-record--2026-09-03) for the container implementation, merged repositories, validation, and limitations.
 
 ## Entry criteria
 
@@ -45,7 +46,7 @@ Before security and repository enforcement begins:
 | Issue | Title | Estimate | Current state | Due date | Plan |
 |---|---|---:|---|---|---|
 | `OPS-184` | Add CodeQL, dependency review, secret, license, and workflow security gates | 5 | Complete — 2026-09-03 | [Completion record](tasks/OPS-184-security-gates.md) |
-| `OPS-185` | Add container build, scan, smoke, SBOM, and provenance gates | 8 | Backlog | 2026-10-04 | [Implementation plan](tasks/OPS-185-container-release-gates.md) |
+| `OPS-185` | Add container build, scan, smoke, SBOM, and provenance gates | 8 | Complete — 2026-09-03 | 2026-10-04 | [Completion record](tasks/OPS-185-container-release-gates.md#completion-record--2026-09-03) |
 | `OPS-186` | Add repository rulesets and required checks on main | 3 | Backlog | 2026-10-11 | [Implementation plan](tasks/OPS-186-repository-rulesets.md) |
 
 Total estimated scope: 16 points.
