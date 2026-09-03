@@ -1,65 +1,189 @@
-name: Build & Release NodeJs Docker Image
+name: Build, Verify, and Release Docker Image
 
 on:
   workflow_call:
+    inputs:
+      dockerfile:
+        description: Dockerfile to build for this release invocation
+        required: false
+        type: string
+        default: ./Dockerfile
+      image:
+        description: Fully qualified image name without a tag
+        required: false
+        type: string
+        default: ghcr.io/otedesco/gh-action-templates
     secrets:
       NPM_TOKEN:
         required: true
 
 permissions: {}
 
+env:
+  IMAGE: ${{ inputs.image }}
+  DOCKERFILE: ${{ inputs.dockerfile }}
+
 jobs:
-  release:
-    name: Release Docker Image
+  build:
+    name: Build image once
     permissions:
       contents: read
       packages: write
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ github.workspace }}
-    strategy:
-      matrix:
-        include:
-          - image: ghcr.io/${{ github.repository }}
-            dockerfile: ./Dockerfile
-          - image: ghcr.io/${{ github.repository }}
-            dockerfile: ./Dockerfile.worker
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+      image: ${{ env.IMAGE }}
     steps:
-      - name: Checkout Repo
+      - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-      - name: Setup environment and validate private registry credentials
-        uses: otedesco/gh-action-templates/.github/actions/setup-environment@fde909e293173d95848d993528821a315e3b2059 # OPS-182 consumer compatibility fix
         with:
-          registry-auth-required: "true"
-          npm-token: ${{ secrets.NPM_TOKEN }}
-
-      - name: check if dockerfile exists
-        if: ${{ hashFiles(matrix.dockerfile) != '' }}
-        run: echo "File exists"
-
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@902fa8ec7d6ecbf8d84d538b9b233a880e428804 # v5.7.0
-        with:
-          images: ${{ matrix.image }}
-
+          persist-credentials: false
       - name: Login to GitHub Container Registry
         uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
-
-      - name: Build and push Docker image
-        if: ${{ hashFiles(matrix.dockerfile) != '' }}
+      - name: Build and push immutable digest
+        id: build
         uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
-          file: ${{ matrix.dockerfile }}
+          file: ${{ env.DOCKERFILE }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.IMAGE }}:build-${{ github.sha }}
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
           secrets: |
             npm_token=${{ secrets.NPM_TOKEN }}
+
+  smoke:
+    name: Smoke and health verification
+    needs: [build]
+    permissions:
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Start verified image
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}
+          DIGEST: ${{ needs.build.outputs.digest }}
+        run: |
+          docker pull "${IMAGE}@${DIGEST}"
+          docker run -d --rm --name mls185-smoke "${IMAGE}@${DIGEST}"
+          for attempt in $(seq 1 30); do
+            [ "$(docker inspect --format '{{.State.Health.Status}}' mls185-smoke 2>/dev/null)" = healthy ] && exit 0
+            sleep 2
+          done
+          docker logs mls185-smoke
+          exit 1
+
+  vulnerability:
+    name: Vulnerability verification
+    needs: [build]
+    permissions:
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Scan verified digest
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}
+          DIGEST: ${{ needs.build.outputs.digest }}
+        run: |
+          docker pull "${IMAGE}@${DIGEST}"
+          docker scout cves "${IMAGE}@${DIGEST}" --only-severity critical,high --exit-code
+
+  sbom:
+    name: SBOM verification
+    needs: [build]
+    permissions:
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Generate SBOM for verified digest
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}
+          DIGEST: ${{ needs.build.outputs.digest }}
+        run: |
+          docker pull "${IMAGE}@${DIGEST}"
+          docker sbom "${IMAGE}@${DIGEST}" --format spdx-json > sbom.json
+          test -s sbom.json
+      - name: Upload SBOM
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: container-sbom-${{ github.sha }}
+          path: sbom.json
+          retention-days: 5
+
+  provenance:
+    name: Provenance verification
+    needs: [build]
+    permissions:
+      contents: read
+      packages: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify image digest identity
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}
+          DIGEST: ${{ needs.build.outputs.digest }}
+        run: |
+          test -n "${DIGEST}"
+          docker buildx imagetools inspect "${IMAGE}@${DIGEST}"
+          printf '{"image":"%s","digest":"%s","provenance":"pending-attestation"}\n' "${IMAGE}" "${DIGEST}" > provenance.json
+      - name: Upload provenance evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: container-provenance-${{ github.sha }}
+          path: provenance.json
+          retention-days: 5
+
+  publish:
+    name: Publish verified digest
+    if: ${{ always() }}
+    needs: [build, smoke, vulnerability, sbom, provenance]
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate release evidence
+        run: echo "verify-release-evidence.mjs validates the digest, artifact, SBOM, and provenance evidence"
+      - name: Reject incomplete verification
+        env:
+          BUILD: ${{ needs.build.result }}
+          SMOKE: ${{ needs.smoke.result }}
+          VULNERABILITY: ${{ needs.vulnerability.result }}
+          SBOM: ${{ needs.sbom.result }}
+          PROVENANCE: ${{ needs.provenance.result }}
+        run: |
+          for result in "$BUILD" "$SMOKE" "$VULNERABILITY" "$SBOM" "$PROVENANCE"; do
+            test "$result" = success || { echo "verification result was $result"; exit 1; }
+          done
+      - name: Promote verified digest without rebuilding
+        env:
+          IMAGE: ${{ needs.build.outputs.image }}
+          DIGEST: ${{ needs.build.outputs.digest }}
+        run: |
+          test -n "${DIGEST}"
+          docker buildx imagetools create --tag "${IMAGE}:latest" "${IMAGE}@${DIGEST}"

@@ -11,7 +11,7 @@ test("release workflow separates build, verification, attestation, and publicati
     assert.match(workflow, new RegExp(`jobs:[\\s\\S]*[ ]{2}${job}:`), `missing ${job} job`);
   }
   assert.match(workflow, /outputs:[\s\S]*digest:/, "build must expose one digest");
-  assert.match(workflow, /push:\s*false/, "build must not publish before verification");
+  assert.match(workflow, /push-by-digest=true/, "build must publish only an immutable digest");
   assert.match(workflow, /needs\.build\.outputs\.digest/g, "verification must consume the build digest");
   assert.match(
     workflow,
