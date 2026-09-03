@@ -21,3 +21,7 @@ Active implementation plans follow the canonical Linear hierarchy:
 - [OPS-178 — Check-only quality scripts](projects/PRJ-001-quality-gates-ci-foundation/milestones/MLS-001-foundation-contract/tasks/OPS-178-standardize-check-only-quality-scripts.md)
 
 The order is intentional: understand the evidence, accept the policy, implement the gates, characterize behavior, and only then authorize refactoring.
+
+## Onboarding
+
+- [Project 1 tooling and new-repository configuration](tools/project-1-new-repository-configuration.md)

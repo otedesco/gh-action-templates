@@ -1,0 +1,4 @@
+# Project 1 policy, workflow, security, release, and source changes require the
+# repository owner to review the change.
+* @otedesco
+/.github/** @otedesco

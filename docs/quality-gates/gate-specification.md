@@ -158,3 +158,4 @@ Exceptions are rare, explicit records—not inline `continue-on-error` flags. Ea
 - Maximum duration of seven days for test quarantine and 30 days for non-test tooling exceptions.
 
 Expired exceptions fail the gate automatically.
+For new repositories, use the [Project 1 tooling and new-repository configuration guide](../tools/project-1-new-repository-configuration.md) to select and configure the approved runtime, quality, security, container, release, and governance tools.

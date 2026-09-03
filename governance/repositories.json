@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "owner": "otedesco",
+  "defaultBranch": "main",
+  "repositories": [
+    {
+      "name": "gh-action-templates",
+      "fullName": "otedesco/gh-action-templates",
+      "localPath": ".",
+      "defaultBranch": "main",
+      "protectedBranch": "main",
+      "codeowners": ".github/CODEOWNERS",
+      "owners": ["otedesco"],
+      "requiredPaths": [
+        ".github/**",
+        "governance/**",
+        "quality-gates/**",
+        "security/**",
+        "package.json",
+        "pnpm-lock.yaml"
+      ],
+      "workflows": [
+        ".github/workflows/quality-checks.yml",
+        ".github/workflows/security.yml",
+        ".github/workflows/lint-and-test.yml"
+      ],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "observed": false
+        },
+        {
+          "context": "Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security-gate",
+          "observed": false
+        }
+      ],
+      "bypassActors": []
+    },
+    {
+      "name": "commons",
+      "fullName": "otedesco/commons",
+      "localPath": "../commons",
+      "defaultBranch": "main",
+      "protectedBranch": "main",
+      "codeowners": ".github/CODEOWNERS",
+      "owners": ["otedesco"],
+      "requiredPaths": [".github/**", "package.json", "pnpm-lock.yaml", "src/**"],
+      "workflows": [".github/workflows/quality-checks.yml"],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "observed": false
+        },
+        {
+          "context": "Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security-gate",
+          "observed": false
+        }
+      ],
+      "bypassActors": []
+    },
+    {
+      "name": "cache",
+      "fullName": "otedesco/cache",
+      "localPath": "../cache",
+      "defaultBranch": "main",
+      "protectedBranch": "main",
+      "codeowners": ".github/CODEOWNERS",
+      "owners": ["otedesco"],
+      "requiredPaths": [".github/**", "package.json", "pnpm-lock.yaml", "src/**"],
+      "workflows": [".github/workflows/quality-checks.yml"],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "observed": false
+        },
+        {
+          "context": "Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security-gate",
+          "observed": false
+        }
+      ],
+      "bypassActors": []
+    },
+    {
+      "name": "server-utils",
+      "fullName": "otedesco/server-utils",
+      "localPath": "../server-utils",
+      "defaultBranch": "main",
+      "protectedBranch": "main",
+      "codeowners": ".github/CODEOWNERS",
+      "owners": ["otedesco"],
+      "requiredPaths": [".github/**", "package.json", "pnpm-lock.yaml", "src/**"],
+      "workflows": [".github/workflows/quality-checks.yml"],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "observed": false
+        },
+        {
+          "context": "Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security-gate",
+          "observed": false
+        }
+      ],
+      "bypassActors": []
+    },
+    {
+      "name": "notify",
+      "fullName": "otedesco/notify",
+      "localPath": "../notify",
+      "defaultBranch": "main",
+      "protectedBranch": "main",
+      "codeowners": ".github/CODEOWNERS",
+      "owners": ["otedesco"],
+      "requiredPaths": [".github/**", "package.json", "pnpm-lock.yaml", "src/**"],
+      "workflows": [".github/workflows/quality-checks.yml"],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "observed": false
+        },
+        {
+          "context": "Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security-gate",
+          "observed": false
+        }
+      ],
+      "bypassActors": []
+    },
+    {
+      "name": "cerberus",
+      "fullName": "otedesco/cerberus",
+      "localPath": "../cerberus",
+      "defaultBranch": "main",
+      "protectedBranch": "main",
+      "codeowners": ".github/CODEOWNERS",
+      "owners": ["otedesco"],
+      "requiredPaths": [".github/**", "Dockerfile", "package.json", "pnpm-lock.yaml", "src/**"],
+      "workflows": [".github/workflows/quality-checks.yml"],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "observed": false
+        },
+        {
+          "context": "Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security-gate",
+          "observed": false
+        }
+      ],
+      "bypassActors": []
+    },
+    {
+      "name": "hermes",
+      "fullName": "otedesco/hermes",
+      "localPath": "../hermes",
+      "defaultBranch": "main",
+      "protectedBranch": "main",
+      "codeowners": ".github/CODEOWNERS",
+      "owners": ["otedesco"],
+      "requiredPaths": [".github/**", "Dockerfile", "Dockerfile.worker", "package.json", "pnpm-lock.yaml", "src/**"],
+      "workflows": [".github/workflows/quality-checks.yml"],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "observed": false
+        },
+        {
+          "context": "Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security-gate",
+          "observed": false
+        }
+      ],
+      "bypassActors": []
+    },
+    {
+      "name": "web-app",
+      "fullName": "otedesco/web-app",
+      "localPath": "../web-app",
+      "defaultBranch": "main",
+      "protectedBranch": "main",
+      "codeowners": ".github/CODEOWNERS",
+      "owners": ["otedesco"],
+      "requiredPaths": [".github/**", "package.json", "package-lock.json", "src/**"],
+      "workflows": [".github/workflows/security.yml"],
+      "requiredChecks": [
+        {
+          "context": "Security / aggregate",
+          "workflow": ".github/workflows/security.yml",
+          "job": "security-gate",
+          "observed": false
+        }
+      ],
+      "bypassActors": []
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+name: Quality checks
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  quality-workflow:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/lint-and-test.yml
+
+  quality-gate:
+    name: Quality / core
+    if: ${{ always() }}
+    needs: [quality-workflow]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require quality workflow
+        env:
+          QUALITY_RESULT: ${{ needs.quality-workflow.result }}
+        run: test "$QUALITY_RESULT" = success
+
+  security-workflow:
+    permissions:
+      contents: read
+      pull-requests: read
+    uses: ./.github/workflows/security.yml
+
+  security-gate:
+    name: Security / aggregate
+    if: ${{ always() }}
+    needs: [security-workflow]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require security workflow
+        env:
+          SECURITY_RESULT: ${{ needs.security-workflow.result }}
+        run: test "$SECURITY_RESULT" = success

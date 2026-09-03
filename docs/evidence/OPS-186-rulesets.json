@@ -1,0 +1,66 @@
+{
+  "issue": "OPS-186",
+  "status": "pending-administrator-application",
+  "capturedOn": "2026-09-03",
+  "source": "GitHub Codex app read-only inspection",
+  "repositories": [
+    {
+      "repository": "otedesco/gh-action-templates",
+      "defaultBranch": "main",
+      "rulesets": { "status": "read", "count": 0 },
+      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+    },
+    {
+      "repository": "otedesco/commons",
+      "defaultBranch": "main",
+      "rulesets": { "status": "read", "count": 0 },
+      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+    },
+    {
+      "repository": "otedesco/cache",
+      "defaultBranch": "main",
+      "rulesets": { "status": "read", "count": 0 },
+      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+    },
+    {
+      "repository": "otedesco/server-utils",
+      "defaultBranch": "main",
+      "rulesets": { "status": "read", "count": 0 },
+      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+    },
+    {
+      "repository": "otedesco/notify",
+      "defaultBranch": "main",
+      "rulesets": { "status": "read", "count": 0 },
+      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+    },
+    {
+      "repository": "otedesco/cerberus",
+      "defaultBranch": "main",
+      "rulesets": { "status": "read", "count": 0 },
+      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+    },
+    {
+      "repository": "otedesco/hermes",
+      "defaultBranch": "main",
+      "rulesets": { "status": "read", "count": 0 },
+      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+    },
+    {
+      "repository": "otedesco/web-app",
+      "defaultBranch": "main",
+      "rulesets": { "status": "read", "count": 0 },
+      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+    }
+  ],
+  "requiredChecks": {
+    "status": "pending-observation",
+    "observed": false,
+    "note": "The inventory contains candidate contexts. Update observed=true only after GitHub check-run provenance and controlled success/failure behavior are recorded."
+  },
+  "limitations": [
+    "The GitHub Codex app could list repository rulesets but could not read branch protection endpoints because the integration returned HTTP 403.",
+    "No live ruleset write or destructive enforcement test was performed.",
+    "Administrator identity/team verification and live ruleset application remain outstanding."
+  ]
+}
