@@ -39,8 +39,8 @@ assert.match(workflow, /git diff --exit-code/, "workflow must fail on generated-
 assert.match(workflow, /fetch-depth: 0/, "coverage evaluation requires complete history");
 assert.match(
   workflow,
-  /uses: otedesco\/gh-action-templates\/\.github\/actions\/coverage-gate@main/,
-  "workflow must use the central coverage action",
+  /uses: otedesco\/gh-action-templates\/\.github\/actions\/coverage-gate@[0-9a-f]{40}/,
+  "workflow must use an immutable central coverage action",
 );
 assert.match(workflow, /base:/, "workflow must provide an explicit coverage base");
 assert.match(workflow, /head:/, "workflow must provide an explicit coverage head");

@@ -2,7 +2,7 @@ import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { changedLines } from "../../../scripts/coverage/changed-lines.mjs";
 import { evaluateChangedCoverage } from "../../../scripts/coverage/evaluate.mjs";
-import { readAndNormalize } from "../../../scripts/coverage/normalize.mjs";
+import { readCoverageReport } from "../../../scripts/coverage/normalize.mjs";
 import { evaluateRatchet } from "../../../scripts/coverage/ratchet.mjs";
 import { inventoryExecutableSource, validateSourceCoverage } from "../../../scripts/coverage/source-inventory.mjs";
 
@@ -15,7 +15,7 @@ try {
   if (error.code !== "ENOENT") throw error;
   reportPath = path.resolve(root, "coverage/coverage-summary.json");
 }
-const report = await readAndNormalize(reportPath, { root });
+const report = await readCoverageReport(reportPath, { root });
 const sourceFiles = await inventoryExecutableSource(root);
 const sourceErrors = validateSourceCoverage(report, sourceFiles);
 const changed = await changedLines({ cwd: root, base: process.env.COVERAGE_BASE, head: process.env.COVERAGE_HEAD });
