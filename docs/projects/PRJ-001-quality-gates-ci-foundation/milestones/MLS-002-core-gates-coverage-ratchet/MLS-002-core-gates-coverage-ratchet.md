@@ -2,9 +2,9 @@
 
 - **Project:** `PRJ-001` — Quality Gates & CI Foundation
 - **Linear milestone:** M2 — Core gates and coverage ratchet
-- **Status:** Planned
+- **Status:** Complete — 2026-09-02
 - **Target date:** 2026-10-02
-- **Linear progress at documentation time:** 0%
+- **Linear progress at completion:** 100%
 - **Owner:** Oswaldo Tedesco
 
 ## Purpose
@@ -12,6 +12,19 @@
 `MLS-002` turns the interfaces accepted in `MLS-001` into mandatory, truthful core quality gates. It ensures formatting, linting, type checking, unit tests, coverage, and builds fail for the defects they claim to detect. It also introduces 100% changed-code coverage, a non-decreasing global coverage ratchet, immutable workflow references, and explicit least-privilege secret handling.
 
 The milestone separates gate correctness from broader security and release enforcement. Its outcome is a deterministic merge contract that every repository can adopt without relying on mutable shared workflows or ambiguous credentials.
+
+## Completion summary
+
+MLS-002 delivered the complete core quality-gate contract across its four issues:
+
+- OPS-180 made formatting, lint, type checking, unit testing, coverage, and build commands truthful and fail-closed, backed by stable positive and negative workflow fixtures.
+- OPS-181 added 100% changed-code enforcement for statements, branches, functions, and lines; complete executable-source inventory; a non-decreasing global coverage ratchet; and actionable failures for missing, malformed, or incomparable evidence.
+- OPS-182 replaced mutable workflow/action references with reviewed commit SHAs, introduced a machine-audited reference allowlist, enabled reviewed Dependabot updates, and completed consumer compatibility fixes for coverage normalization and side-effect-free setup.
+- OPS-183 established explicit event-aware workflow permissions and named secret flows, removed broad secret inheritance and custom GitHub PAT mappings, and isolated package/container release authority from ordinary and fork pull-request checks.
+
+The work affected `gh-action-templates`, `commons`, `cache`, `server-utils`, `notify`, `cerberus`, `hermes`, and the documented `web-app` adoption boundary. The resulting foundation provides deterministic core gates, coverage enforcement, immutable supply-chain references, and auditable least-privilege workflow credentials.
+
+Completion evidence includes the central contract/unit/fixture suites, repository-wide action-reference and workflow-permission audits, coverage decision artifacts and baselines, merged rollout pull requests, and successful hosted quality runs across the active consumers. Known product test-harness blockers remain explicitly owned by OPS-217 and OPS-228; broader security/release enforcement moves to MLS-003, while full product adoption and stability evidence move to MLS-004.
 
 ## Entry criteria
 
@@ -36,10 +49,10 @@ Before enforcement work begins:
 
 | Issue | Title | Estimate | Current state | Due date | Plan |
 |---|---|---:|---|---|---|
-| `OPS-180` | Make lint, formatting, type, unit, coverage, and build gates truthful | 5 | Todo | 2026-09-13 | [Implementation plan](tasks/OPS-180-truthful-core-quality-gates.md) |
-| `OPS-181` | Implement 100% changed-code coverage and non-decreasing global ratchet | 8 | Todo | 2026-09-13 | [Implementation plan](tasks/OPS-181-changed-code-coverage-ratchet.md) |
-| `OPS-182` | Replace mutable reusable workflow references and pin actions | 3 | Backlog | 2026-09-20 | [Implementation plan](tasks/OPS-182-pin-workflow-action-references.md) |
-| `OPS-183` | Apply least-privilege workflow permissions and explicit secrets | 3 | Backlog | 2026-09-20 | [Implementation plan](tasks/OPS-183-least-privilege-workflow-secrets.md) |
+| `OPS-180` | Make lint, formatting, type, unit, coverage, and build gates truthful | 5 | Complete | 2026-09-13 | [Plan and completion report](tasks/OPS-180-truthful-core-quality-gates.md) |
+| `OPS-181` | Implement 100% changed-code coverage and non-decreasing global ratchet | 8 | Complete | 2026-09-13 | [Implementation record](tasks/OPS-181-changed-code-coverage-ratchet.md) |
+| `OPS-182` | Replace mutable reusable workflow references and pin actions | 3 | Complete | 2026-09-20 | [Implementation record](tasks/OPS-182-pin-workflow-action-references.md) |
+| `OPS-183` | Apply least-privilege workflow permissions and explicit secrets | 3 | Complete | 2026-09-20 | [Plan and completion report](tasks/OPS-183-least-privilege-workflow-secrets.md) |
 
 Total estimated scope: 19 points.
 
