@@ -78,3 +78,36 @@ test("maps SARIF levels and fingerprints findings deterministically", () => {
   );
   assert.notEqual(findings[0].fingerprint, findings[1].fingerprint);
 });
+
+test("keeps fallback fingerprints stable when SARIF runs are reordered", () => {
+  const runs = [
+    {
+      tool: { driver: { name: "codeql", version: "1" } },
+      results: [
+        {
+          ruleId: "rule-a",
+          level: "warning",
+          locations: [{ physicalLocation: { artifactLocation: { uri: "a.js" }, region: { startLine: 1 } } }],
+          message: { text: "one" },
+        },
+      ],
+    },
+    {
+      tool: { driver: { name: "codeql", version: "1" } },
+      results: [
+        {
+          ruleId: "rule-b",
+          level: "note",
+          locations: [{ physicalLocation: { artifactLocation: { uri: "b.js" }, region: { startLine: 2 } } }],
+          message: { text: "two" },
+        },
+      ],
+    },
+  ];
+  const first = normalizeReport("codeql", { version: "2.1.0", runs });
+  const reordered = normalizeReport("codeql", { version: "2.1.0", runs: [...runs].reverse() });
+  assert.deepEqual(
+    first.map(({ rule, fingerprint }) => [rule, fingerprint]).sort(),
+    reordered.map(({ rule, fingerprint }) => [rule, fingerprint]).sort(),
+  );
+});

@@ -30,7 +30,7 @@ function finding(tool, rule, level, subject, fingerprint) {
 function normalizeSarif(tool, report) {
   if (report.version !== "2.1.0") throw new Error(`unsupported SARIF version: ${report.version ?? "missing"}`);
   if (!Array.isArray(report.runs)) throw new Error("runs is required");
-  return report.runs.flatMap((run, runIndex) => {
+  return report.runs.flatMap((run) => {
     if (!Array.isArray(run.results)) throw new Error("results is required");
     return run.results.map((result) => {
       const rule = result.ruleId;
@@ -39,8 +39,9 @@ function normalizeSarif(tool, report) {
       const partial = result.partialFingerprints ?? {};
       const fingerprintValue = knownFingerprintKeys.map((key) => partial[key]).find((value) => value);
       const region = result.locations?.[0]?.physicalLocation?.region ?? {};
+      const driver = run.tool?.driver ?? {};
       const identity = JSON.stringify({
-        run: runIndex,
+        run: { name: driver.name ?? "", version: driver.version ?? "", semanticVersion: driver.semanticVersion ?? "" },
         rule,
         subject,
         region,

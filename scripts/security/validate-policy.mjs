@@ -23,7 +23,8 @@ function text(value) {
 }
 
 function scopeKey(scope = {}) {
-  return SCOPE_FIELDS.map((key) => `${key}=${text(scope[key])}`).join("|");
+  const safeScope = scope && typeof scope === "object" ? scope : {};
+  return SCOPE_FIELDS.map((key) => `${key}=${text(safeScope[key])}`).join("|");
 }
 
 function matchesScope(finding, scope = {}) {
@@ -65,9 +66,11 @@ export function validatePolicy(policy, exceptions = [], now = new Date()) {
       if (field === "scope") continue;
       if (!text(exception?.[field])) errors.push(`exception ${id} missing ${field}`);
     }
-    if (exception?.id && !/^[A-Z0-9][A-Z0-9._-]+$/.test(exception.id)) errors.push(`exception ${id} id has invalid format`);
+    if (exception?.id && !/^[A-Z0-9][A-Z0-9._-]+$/.test(exception.id))
+      errors.push(`exception ${id} id has invalid format`);
     for (const field of ["owner", "rationale", "compensatingControl", "approvedBy"]) {
-      if (exception?.[field] !== undefined && typeof exception[field] !== "string") errors.push(`exception ${id} ${field} must be a string`);
+      if (exception?.[field] !== undefined && typeof exception[field] !== "string")
+        errors.push(`exception ${id} ${field} must be a string`);
     }
     const scope = exception?.scope;
     const scopeKeys = scope && typeof scope === "object" && !Array.isArray(scope) ? Object.keys(scope) : [];

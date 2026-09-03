@@ -92,6 +92,11 @@ test("rejects the malformed exception fixture against the schema contract", asyn
   assert.match(errors.join("\n"), /invalid format|missing owner|scope|expiry/);
 });
 
+test("returns structured errors for null exception scopes", () => {
+  assert.doesNotThrow(() => validatePolicy(policy, [{ ...validException, scope: null }]));
+  assert.match(validatePolicy(policy, [{ ...validException, scope: null }]).join("\n"), /scope/);
+});
+
 test("sorts diagnostics deterministically and never formats secret snippets", () => {
   const findings = [
     { ...highFinding, rule: "z-rule", fingerprint: "sha256:z", secret: "SENTINEL-SHOULD-NOT-PRINT" },
