@@ -26,8 +26,11 @@ runs:
     - name: Set node/npm versions using volta
       uses: volta-cli/action@615a78f6c83e116339c53b94f3f82b4d6c0b7d18 # v5.0.0
       with:
-        node-version: "24.20.0"
-        npm-version: "10.8.2"
+        volta-version: "2.0.2"
+
+    - name: Install node/npm versions without modifying package.json
+      shell: bash
+      run: volta install node@24.20.0 npm@10.8.2
 
     - name: Install PNPM
       uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.2.0

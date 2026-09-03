@@ -86,9 +86,9 @@
       "owner": "otedesco",
       "repository": "gh-action-templates",
       "path": ".github/actions/setup-environment",
-      "reference": "091ae85019ee71d8aefbfca32e02cb4d670feae1",
-      "release": "central-pre-OPS-182",
-      "reviewedAt": "2026-09-02",
+      "reference": "fde909e293173d95848d993528821a315e3b2059",
+      "release": "OPS-182-consumer-compatibility",
+      "reviewedAt": "2026-09-03",
       "purpose": "Shared runtime setup composite action",
       "repositories": ["gh-action-templates"]
     },
@@ -96,9 +96,9 @@
       "owner": "otedesco",
       "repository": "gh-action-templates",
       "path": ".github/actions/coverage-gate",
-      "reference": "091ae85019ee71d8aefbfca32e02cb4d670feae1",
-      "release": "central coverage gate release 2026-09-02",
-      "reviewedAt": "2026-09-02",
+      "reference": "fde909e293173d95848d993528821a315e3b2059",
+      "release": "OPS-182-consumer-compatibility",
+      "reviewedAt": "2026-09-03",
       "purpose": "Shared changed-code coverage gate",
       "repositories": ["gh-action-templates"]
     },
@@ -120,7 +120,17 @@
       "release": "central-2026-09-02",
       "reviewedAt": "2026-09-02",
       "purpose": "Shared quality workflow consumed by product repositories",
-      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
+      "repositories": ["hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/lint-and-test.yml",
+      "reference": "9282fc2387d782afa7d461afbd51c89a1918abdb",
+      "release": "OPS-182-consumer-compatibility",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Shared quality workflow with compatible coverage normalization and side-effect-free runtime setup",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus"]
     },
     {
       "owner": "otedesco",
@@ -130,7 +140,17 @@
       "release": "central-2026-09-02",
       "reviewedAt": "2026-09-02",
       "purpose": "Shared package release workflow consumed by product repositories",
-      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus", "hermes"]
+      "repositories": ["hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/release-package.yml",
+      "reference": "9282fc2387d782afa7d461afbd51c89a1918abdb",
+      "release": "OPS-182-consumer-compatibility",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Shared package release workflow using side-effect-free runtime setup",
+      "repositories": ["commons", "cache", "server-utils", "notify", "cerberus"]
     },
     {
       "owner": "otedesco",
@@ -140,7 +160,17 @@
       "release": "central-2026-09-02",
       "reviewedAt": "2026-09-02",
       "purpose": "Shared Docker release workflow consumed by product repositories",
-      "repositories": ["cerberus", "hermes"]
+      "repositories": ["hermes"]
+    },
+    {
+      "owner": "otedesco",
+      "repository": "gh-action-templates",
+      "path": ".github/workflows/release-docker-image.yml",
+      "reference": "9282fc2387d782afa7d461afbd51c89a1918abdb",
+      "release": "OPS-182-consumer-compatibility",
+      "reviewedAt": "2026-09-03",
+      "purpose": "Shared Docker release workflow using side-effect-free runtime setup",
+      "repositories": ["cerberus"]
     }
   ]
 }

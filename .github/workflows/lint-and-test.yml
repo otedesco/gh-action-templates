@@ -32,7 +32,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup environment
-        uses: otedesco/gh-action-templates/.github/actions/setup-environment@091ae85019ee71d8aefbfca32e02cb4d670feae1 # central-pre-OPS-182
+        uses: otedesco/gh-action-templates/.github/actions/setup-environment@fde909e293173d95848d993528821a315e3b2059 # OPS-182 consumer compatibility fix
         with:
           registry-auth-required: ${{ inputs.registry-auth-required }}
           npm-token: ${{ secrets.NPM_TOKEN }}
@@ -68,7 +68,7 @@ jobs:
         run: ${{ inputs.package-manager }} run test:coverage
 
       - name: Evaluate changed-code coverage
-        uses: otedesco/gh-action-templates/.github/actions/coverage-gate@091ae85019ee71d8aefbfca32e02cb4d670feae1 # central coverage gate release 2026-09-02
+        uses: otedesco/gh-action-templates/.github/actions/coverage-gate@fde909e293173d95848d993528821a315e3b2059 # OPS-182 consumer compatibility fix
         with:
           base: ${{ github.event.pull_request.base.sha || github.event.before }}
           head: ${{ github.sha }}

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import test from "node:test";
 
@@ -44,8 +44,7 @@ for (const [repository, expected] of repositories) {
     }
     const repositoryRoot = join(root, "..", repository);
     await readFile(join(repositoryRoot, expected.lockfile));
-    const lockfiles = (await import("node:fs/promises")).readdir(repositoryRoot);
-    const names = await lockfiles;
+    const names = await readdir(repositoryRoot);
     assert.equal(
       names.filter((name) => /^(?:pnpm-lock\.yaml|package-lock\.json|yarn\.lock)$/.test(name)).length,
       1,
@@ -65,8 +64,15 @@ test("the shared setup action has authoritative exact defaults", async () => {
   const action = await readFile(join(root, ".github/actions/setup-environment/action.yml"), "utf8");
   assert.match(action, new RegExp(`default: "${contract.nodeVersion.replaceAll(".", "\\.")}"`));
   assert.match(action, new RegExp(`default: "${contract.packageManagers.pnpm.replaceAll(".", "\\.")}"`));
-  assert.match(action, new RegExp(`node-version: "${contract.nodeVersion.replaceAll(".", "\\.")}"`));
-  assert.match(action, new RegExp(`npm-version: "${contract.packageManagers.npm.replaceAll(".", "\\.")}"`));
+  assert.match(action, /volta-version: "2\.0\.2"/);
+  assert.match(
+    action,
+    new RegExp(
+      `run: volta install node@${contract.nodeVersion.replaceAll(".", "\\.")} npm@${contract.packageManagers.npm.replaceAll(".", "\\.")}`,
+    ),
+  );
+  assert.doesNotMatch(action, /^ {8}node-version:/m, "setup must not run volta pin against the consumer manifest");
+  assert.doesNotMatch(action, /^ {8}npm-version:/m, "setup must not run volta pin against the consumer manifest");
   assert.match(action, new RegExp(`version: "${contract.packageManagers.pnpm.replaceAll(".", "\\.")}"`));
   assert.doesNotMatch(action, /inputs\.(?:node-version|npm-version|pnpm-version)/);
   assert.doesNotMatch(action, /setup-bun|oven-sh\/setup-bun/);
