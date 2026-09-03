@@ -25,7 +25,6 @@ test("normalizes raw Istanbul coverage-final reports", () => {
         s: { "0": 1 },
         f: { "0": 1 },
         b: { "0": [1] },
-        l: { "4": 1 },
       },
     },
     { root },

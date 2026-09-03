@@ -31,6 +31,14 @@ function detailedMetric(metric, file) {
     }
   } else if (metric === "lines" && file.l) {
     for (const [line, covered] of Object.entries(file.l)) locations.push({ line: Number(line), covered });
+  } else if (metric === "lines" && file.statementMap && file.s) {
+    const lineCoverage = new Map();
+    for (const [id, location] of Object.entries(file.statementMap)) {
+      const line = location.start?.line;
+      if (!Number.isInteger(line)) continue;
+      lineCoverage.set(line, Math.max(lineCoverage.get(line) ?? 0, file.s[id] ?? 0));
+    }
+    for (const [line, covered] of lineCoverage) locations.push({ line, covered });
   }
   return locations.filter(({ line }) => Number.isInteger(line)).sort((a, b) => a.line - b.line);
 }
