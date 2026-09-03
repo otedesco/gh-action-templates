@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { renderPayload, renderRuleset } from "../scripts/governance/render-rulesets.mjs";
+import {
+  renderEnforcementRuleset,
+  renderPayload,
+  renderReviewRuleset,
+  renderRulesets,
+} from "../scripts/governance/render-rulesets.mjs";
 
 const policy = {
   version: 1,
@@ -26,19 +31,31 @@ const repository = {
   bypassActors: [],
 };
 
-test("renders a deterministic main ruleset payload", () => {
-  const payload = renderRuleset(repository, policy);
-  assert.deepEqual(payload.conditions, { ref_name: { include: ["refs/heads/main"], exclude: [] } });
-  assert.deepEqual(payload.bypass_actors, []);
+test("renders separate review-bypass and non-bypass enforcement rulesets", () => {
+  const repositoryWithBypass = {
+    ...repository,
+    bypassActors: [{ type: "User", identifier: "otedesco", actorId: 137359101, mode: "pull_request" }],
+  };
+  const review = renderReviewRuleset(repositoryWithBypass, policy);
+  const enforcement = renderEnforcementRuleset(repositoryWithBypass, policy);
+
+  assert.deepEqual(review.conditions, { ref_name: { include: ["refs/heads/main"], exclude: [] } });
+  assert.deepEqual(review.bypass_actors, [{ actor_id: 137359101, actor_type: "User", bypass_mode: "pull_request" }]);
   assert.deepEqual(
-    payload.rules.map(({ type }) => type),
-    ["pull_request", "required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+    review.rules.map(({ type }) => type),
+    ["pull_request"],
   );
-  assert.deepEqual(payload.rules[1].parameters.required_status_checks, [
+  assert.deepEqual(review.rules[0].parameters.allowed_merge_methods, ["squash", "rebase"]);
+
+  assert.deepEqual(enforcement.bypass_actors, []);
+  assert.deepEqual(
+    enforcement.rules.map(({ type }) => type),
+    ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+  );
+  assert.deepEqual(enforcement.rules[0].parameters.required_status_checks, [
     { context: "Quality / core" },
     { context: "Security / aggregate" },
   ]);
-  assert.deepEqual(payload.rules[0].parameters.allowed_merge_methods, ["squash", "rebase"]);
 });
 
 test("renders all repositories in stable order", () => {
@@ -88,12 +105,25 @@ test("renders all repositories in stable order", () => {
 test("rejects bypass actors without server-side IDs", () => {
   assert.throws(
     () =>
-      renderRuleset(
+      renderReviewRuleset(
         { ...repository, bypassActors: [{ type: "User", identifier: "otedesco", mode: "pull_request" }] },
         policy,
       ),
     /numeric actorId/,
   );
+});
+
+test("keeps bypass permission out of required checks and history", () => {
+  const rulesets = renderRulesets(
+    {
+      ...repository,
+      bypassActors: [{ type: "User", identifier: "otedesco", actorId: 137359101, mode: "pull_request" }],
+    },
+    policy,
+  );
+  const enforcement = rulesets.find(({ name }) => name === "PRJ-001 main protection");
+  assert.deepEqual(enforcement.bypass_actors, []);
+  assert.doesNotMatch(JSON.stringify(enforcement), /137359101|pull_request/);
 });
 
 test("keeps the checked-in payload synchronized with the renderer", async () => {

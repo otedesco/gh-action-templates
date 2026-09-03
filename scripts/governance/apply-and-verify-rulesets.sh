@@ -5,7 +5,8 @@ set -Eeuo pipefail
 readonly SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly REPOSITORY_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 readonly PAYLOAD_FILE="${REPOSITORY_ROOT}/governance/rulesets/PRJ-001-main.json"
-readonly RULESET_NAME="PRJ-001 main protection"
+readonly REVIEW_RULESET_NAME="PRJ-001 review protection"
+readonly ENFORCEMENT_RULESET_NAME="PRJ-001 main protection"
 readonly OWNER="otedesco"
 
 APPLY=false
@@ -26,8 +27,8 @@ Options:
   --report FILE   Write sanitized verification evidence to FILE (default: /tmp/...).
   -h, --help      Show this help.
 
-The script never deletes a ruleset. Existing rulesets are changed only when the
-expected name is unique and both --apply and --update-existing are explicit.
+The script never deletes a ruleset. Existing rulesets are changed only when each
+of the two expected names is unique and both write flags are explicit.
 EOF
 }
 
@@ -271,14 +272,25 @@ for repository in "${REPOSITORIES[@]}"; do
   [[ "$(gh api "repos/${OWNER}/${repository}" --jq '.permissions.admin')" == 'true' ]] || \
     fail "the authenticated identity does not have administration access to ${OWNER}/${repository}"
 
-  desired_file="${TEMP_DIRECTORY}/${repository}-desired.json"
+  desired_bundle_file="${TEMP_DIRECTORY}/${repository}-desired-bundle.json"
+  review_desired_file="${TEMP_DIRECTORY}/${repository}-review-desired.json"
+  enforcement_desired_file="${TEMP_DIRECTORY}/${repository}-enforcement-desired.json"
   jq --arg repository "${OWNER}/${repository}" -e \
-    '.repositories[] | select(.repository == $repository) | .payload' \
-    "${PAYLOAD_FILE}" >"${desired_file}" || \
+    '.repositories[] | select(.repository == $repository)' \
+    "${PAYLOAD_FILE}" >"${desired_bundle_file}" || \
     fail "no desired payload found for ${OWNER}/${repository}"
 
+  jq --arg name "${REVIEW_RULESET_NAME}" -e \
+    '.payloads[] | select(.name == $name)' \
+    "${desired_bundle_file}" >"${review_desired_file}" || \
+    fail "no review ruleset payload found for ${OWNER}/${repository}"
+  jq --arg name "${ENFORCEMENT_RULESET_NAME}" -e \
+    '.payloads[] | select(.name == $name)' \
+    "${desired_bundle_file}" >"${enforcement_desired_file}" || \
+    fail "no enforcement ruleset payload found for ${OWNER}/${repository}"
+
   jq -e '
-    .name == "PRJ-001 main protection" and
+    .name == "PRJ-001 review protection" and
     .target == "branch" and
     .enforcement == "active" and
     .bypass_actors == [{
@@ -288,10 +300,20 @@ for repository in "${REPOSITORIES[@]}"; do
     }] and
     .conditions.ref_name.include == ["refs/heads/main"] and
     .conditions.ref_name.exclude == [] and
-    ([.rules[].type] | sort) == (["deletion", "non_fast_forward", "pull_request", "required_linear_history", "required_status_checks"] | sort)
-  ' "${desired_file}" >/dev/null || fail "unsafe or incomplete desired payload for ${OWNER}/${repository}"
+    [.rules[].type] == ["pull_request"]
+  ' "${review_desired_file}" >/dev/null || fail "unsafe or incomplete review payload for ${OWNER}/${repository}"
 
-  verify_required_contexts "${repository}" "${desired_file}"
+  jq -e '
+    .name == "PRJ-001 main protection" and
+    .target == "branch" and
+    .enforcement == "active" and
+    .bypass_actors == [] and
+    .conditions.ref_name.include == ["refs/heads/main"] and
+    .conditions.ref_name.exclude == [] and
+    ([.rules[].type] | sort) == (["deletion", "non_fast_forward", "required_linear_history", "required_status_checks"] | sort)
+  ' "${enforcement_desired_file}" >/dev/null || fail "unsafe or incomplete enforcement payload for ${OWNER}/${repository}"
+
+  verify_required_contexts "${repository}" "${enforcement_desired_file}"
   printf '  verified preconditions for %s/%s\n' "${OWNER}" "${repository}"
 done
 
@@ -305,50 +327,63 @@ info 'Applying and reading back rulesets in the approved rollout order'
 : >"${REPORT_ENTRIES}"
 
 for repository in "${REPOSITORIES[@]}"; do
-  desired_file="${TEMP_DIRECTORY}/${repository}-desired.json"
   rulesets_file="${TEMP_DIRECTORY}/${repository}-rulesets.json"
-  live_file="${TEMP_DIRECTORY}/${repository}-live.json"
 
   gh api \
     "repos/${OWNER}/${repository}/rulesets?includes_parents=true&per_page=100" \
     >"${rulesets_file}"
 
-  unexpected_count="$(jq --arg name "${RULESET_NAME}" '[.[] | select(.name != $name)] | length' "${rulesets_file}")"
+  unexpected_count="$(jq \
+    --arg review_name "${REVIEW_RULESET_NAME}" \
+    --arg enforcement_name "${ENFORCEMENT_RULESET_NAME}" \
+    '[.[] | select(.name != $review_name and .name != $enforcement_name)] | length' \
+    "${rulesets_file}")"
   [[ "${unexpected_count}" == '0' ]] || \
     fail "unexpected repository ruleset layering exists on ${OWNER}/${repository}; review it manually"
 
-  matching_count="$(jq --arg name "${RULESET_NAME}" '[.[] | select(.name == $name)] | length' "${rulesets_file}")"
-  [[ "${matching_count}" == '0' || "${matching_count}" == '1' ]] || \
-    fail "more than one ruleset named '${RULESET_NAME}' exists on ${OWNER}/${repository}"
+  ruleset_ids='[]'
+  for ruleset_kind in review enforcement; do
+    desired_file="${TEMP_DIRECTORY}/${repository}-${ruleset_kind}-desired.json"
+    live_file="${TEMP_DIRECTORY}/${repository}-${ruleset_kind}-live.json"
+    ruleset_name="$(jq -r '.name' "${desired_file}")"
+    matching_count="$(jq --arg name "${ruleset_name}" '[.[] | select(.name == $name)] | length' "${rulesets_file}")"
+    [[ "${matching_count}" == '0' || "${matching_count}" == '1' ]] || \
+      fail "more than one ruleset named '${ruleset_name}' exists on ${OWNER}/${repository}"
 
-  if [[ "${matching_count}" == '1' ]]; then
-    ruleset_id="$(jq -r --arg name "${RULESET_NAME}" '.[] | select(.name == $name) | .id' "${rulesets_file}")"
-    gh api "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" >"${live_file}"
-    if live_ruleset_matches "${repository}" "${desired_file}" "${live_file}"; then
-      printf '  existing ruleset %s already matches %s/%s\n' "${ruleset_id}" "${OWNER}" "${repository}"
-    elif [[ "${UPDATE_EXISTING}" == true ]]; then
-      gh api --method PUT \
-        -H 'Accept: application/vnd.github+json' \
-        "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" \
-        --input "${desired_file}" >"${live_file}"
+    if [[ "${matching_count}" == '1' ]]; then
+      ruleset_id="$(jq -r --arg name "${ruleset_name}" '.[] | select(.name == $name) | .id' "${rulesets_file}")"
       gh api "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" >"${live_file}"
-      verify_live_ruleset "${repository}" "${desired_file}" "${live_file}"
-      printf '  updated and verified ruleset %s on %s/%s\n' "${ruleset_id}" "${OWNER}" "${repository}"
+      if live_ruleset_matches "${repository}-${ruleset_kind}" "${desired_file}" "${live_file}"; then
+        printf '  existing ruleset %s (%s) already matches %s/%s\n' \
+          "${ruleset_id}" "${ruleset_name}" "${OWNER}" "${repository}"
+      elif [[ "${UPDATE_EXISTING}" == true ]]; then
+        gh api --method PUT \
+          -H 'Accept: application/vnd.github+json' \
+          "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" \
+          --input "${desired_file}" >"${live_file}"
+        gh api "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" >"${live_file}"
+        verify_live_ruleset "${repository}-${ruleset_kind}" "${desired_file}" "${live_file}"
+        printf '  updated and verified ruleset %s (%s) on %s/%s\n' \
+          "${ruleset_id}" "${ruleset_name}" "${OWNER}" "${repository}"
+      else
+        verify_live_ruleset "${repository}-${ruleset_kind}" "${desired_file}" "${live_file}"
+      fi
     else
-      verify_live_ruleset "${repository}" "${desired_file}" "${live_file}"
-    fi
-  else
-    gh api --method POST \
-      -H 'Accept: application/vnd.github+json' \
-      "repos/${OWNER}/${repository}/rulesets" \
-      --input "${desired_file}" >"${live_file}"
-    ruleset_id="$(jq -r '.id' "${live_file}")"
-    [[ "${ruleset_id}" =~ ^[0-9]+$ ]] || fail "GitHub did not return a valid ruleset ID for ${OWNER}/${repository}"
+      gh api --method POST \
+        -H 'Accept: application/vnd.github+json' \
+        "repos/${OWNER}/${repository}/rulesets" \
+        --input "${desired_file}" >"${live_file}"
+      ruleset_id="$(jq -r '.id' "${live_file}")"
+      [[ "${ruleset_id}" =~ ^[0-9]+$ ]] || fail "GitHub did not return a valid ruleset ID for ${OWNER}/${repository}"
 
-    gh api "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" >"${live_file}"
-    verify_live_ruleset "${repository}" "${desired_file}" "${live_file}"
-    printf '  created and verified ruleset %s on %s/%s\n' "${ruleset_id}" "${OWNER}" "${repository}"
-  fi
+      gh api "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" >"${live_file}"
+      verify_live_ruleset "${repository}-${ruleset_kind}" "${desired_file}" "${live_file}"
+      printf '  created and verified ruleset %s (%s) on %s/%s\n' \
+        "${ruleset_id}" "${ruleset_name}" "${OWNER}" "${repository}"
+    fi
+    ruleset_ids="$(jq -cn --argjson current "${ruleset_ids}" --arg name "${ruleset_name}" --argjson id "${ruleset_id}" \
+      '$current + [{name: $name, id: $id}]')"
+  done
 
   protected="$(gh api "repos/${OWNER}/${repository}/branches/main" --jq '.protected')"
   [[ "${protected}" == 'true' ]] || fail "GitHub does not report ${OWNER}/${repository}:main as protected after rollout"
@@ -356,20 +391,17 @@ for repository in "${REPOSITORIES[@]}"; do
   main_commit="$(gh api "repos/${OWNER}/${repository}/git/ref/heads/main" --jq '.object.sha')"
   jq -cn \
     --arg repository "${OWNER}/${repository}" \
-    --argjson ruleset_id "${ruleset_id}" \
+    --argjson rulesets "${ruleset_ids}" \
     --arg main_commit "${main_commit}" \
     --arg captured_at "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-    --arg source_url "https://api.github.com/repos/${OWNER}/${repository}/rulesets/${ruleset_id}" \
     '{
       repository: $repository,
       branch: "main",
       protected: true,
-      ruleset: {
-        id: $ruleset_id,
-        name: "PRJ-001 main protection",
+      rulesets: ($rulesets | map(. + {
         enforcement: "active",
-        sourceUrl: $source_url
-      },
+        sourceUrl: ("https://api.github.com/repos/" + $repository + "/rulesets/" + (.id | tostring))
+      })),
       mainCommit: $main_commit,
       requiredContextsObservedOnRecentMergedPullRequests: true,
       capturedAt: $captured_at
@@ -382,6 +414,6 @@ jq -s \
   '{issue: $issue, generatedAt: $generated_at, repositories: .}' \
   "${REPORT_ENTRIES}" >"${REPORT_FILE}"
 
-info 'All eight live rulesets match the desired policy'
+info 'Both layered live rulesets match the desired policy in all eight repositories'
 printf 'Sanitized verification report: %s\n' "${REPORT_FILE}"
 printf '%s\n' 'Remaining completion evidence: controlled positive/negative PR tests and independent GitHub Codex app read-back.'
