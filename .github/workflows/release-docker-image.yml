@@ -65,7 +65,7 @@ jobs:
           DIGEST: ${{ steps.build.outputs.digest }}
         run: printf '{"image":"%s","digest":"%s"}\n' "${IMAGE}" "${DIGEST}" > build.json
       - name: Upload build evidence
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: container-build-${{ github.sha }}
           path: build.json
@@ -103,7 +103,7 @@ jobs:
           exit 1
       - name: Upload smoke evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: container-smoke-${{ github.sha }}
           path: smoke.json
@@ -138,7 +138,7 @@ jobs:
           write-comment: false
       - name: Upload vulnerability evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: container-vulnerability-${{ github.sha }}
           path: vulnerability.sarif
@@ -177,7 +177,7 @@ jobs:
           node -e 'const fs=require("node:fs"); const image=process.env.IMAGE; const digest=process.env.DIGEST; const document=JSON.parse(fs.readFileSync("sbom.json", "utf8")); if (!/^SPDX-2\\./.test(document.spdxVersion) || document.SPDXID !== "SPDXRef-DOCUMENT" || !Array.isArray(document.packages)) throw new Error("SBOM is not valid SPDX JSON"); fs.writeFileSync("sbom.json", JSON.stringify({format:"spdx-json",image,digest,document}, null, 2));'
       - name: Upload SBOM
         if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: container-sbom-${{ github.sha }}
           path: sbom.json
@@ -221,7 +221,7 @@ jobs:
           node -e 'const fs=require("node:fs"); const digest=process.env.DIGEST; const records=JSON.parse(fs.readFileSync("provenance.json", "utf8")); const subjects=records.flatMap((record) => record.verificationResult?.statement?.subject ?? []); if (!subjects.some((subject) => subject.digest?.sha256 === digest.replace(/^sha256:/, ""))) { throw new Error(`verified attestation does not contain ${digest}`); }'
       - name: Upload provenance evidence
         if: ${{ always() }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: container-provenance-${{ github.sha }}
           path: provenance.json
