@@ -3,6 +3,16 @@ import { fileURLToPath } from "node:url";
 
 const supportedActorTypes = new Set(["User", "Team", "RepositoryRole", "OrganizationAdmin", "Integration"]);
 const supportedBypassModes = new Set(["pull_request", "always"]);
+const requiredRepositoryScope = new Set([
+  "otedesco/gh-action-templates",
+  "otedesco/commons",
+  "otedesco/cache",
+  "otedesco/server-utils",
+  "otedesco/notify",
+  "otedesco/cerberus",
+  "otedesco/hermes",
+  "otedesco/web-app",
+]);
 
 function finding(rule, actual, expected, repository = "policy") {
   return {
@@ -23,6 +33,9 @@ function actorFindings(actor, repository) {
   if (!supportedActorTypes.has(actor?.type)) {
     findings.push(finding("unsupported-bypass-actor", actor?.type ?? "missing", [...supportedActorTypes], repository));
   }
+  if (!actor?.identifier || actor.identifier === "missing") {
+    findings.push(finding("missing-bypass-identifier", "missing", "named actor", repository));
+  }
   if (!supportedBypassModes.has(actor?.mode)) {
     findings.push(finding("unsupported-bypass-mode", actor?.mode ?? "missing", [...supportedBypassModes], repository));
   }
@@ -32,9 +45,30 @@ function actorFindings(actor, repository) {
   return findings;
 }
 
-export function validateRepositoryInventory(inventory) {
+export function validateRepositoryInventory(inventory, { enforceScope = false } = {}) {
   const findings = [];
   const repositories = Array.isArray(inventory?.repositories) ? inventory.repositories : [];
+  if (enforceScope) {
+    const expectedRepositories = Array.isArray(inventory?.expectedRepositories) ? inventory.expectedRepositories : [];
+    const actualRepositories = repositories.map((repository) => repository?.fullName).filter(Boolean);
+    if (expectedRepositories.length !== 8) {
+      findings.push(finding("repository-scope", expectedRepositories.length, 8));
+    }
+    if (
+      new Set(expectedRepositories).size !== requiredRepositoryScope.size ||
+      expectedRepositories.some((repository) => !requiredRepositoryScope.has(repository))
+    ) {
+      findings.push(finding("repository-scope-definition", expectedRepositories, [...requiredRepositoryScope]));
+    }
+    for (const expected of requiredRepositoryScope) {
+      if (!actualRepositories.includes(expected))
+        findings.push(finding("missing-scoped-repository", "missing", expected));
+    }
+    for (const actual of actualRepositories) {
+      if (!requiredRepositoryScope.has(actual))
+        findings.push(finding("out-of-scope-repository", actual, [...requiredRepositoryScope]));
+    }
+  }
   const names = repositories.map((repository) => repository?.name).filter(Boolean);
   for (const name of new Set(names)) {
     if (names.filter((candidate) => candidate === name).length > 1) {
@@ -44,6 +78,9 @@ export function validateRepositoryInventory(inventory) {
 
   for (const repository of repositories) {
     const name = repository?.name ?? "missing";
+    if (!repository?.fullName) {
+      findings.push(finding("repository-identity", "missing", "owner/name", name));
+    }
     if (repository?.defaultBranch !== "main") {
       findings.push(finding("default-branch", repository?.defaultBranch ?? "missing", "main", name));
     }
@@ -104,6 +141,11 @@ export function validateRulesetPolicy(policy) {
   }
   if (policy?.statusChecks?.strict !== true) {
     findings.push(finding("strict-status-checks", policy?.statusChecks?.strict ?? "missing", true));
+  }
+  if (policy?.statusChecks?.requireObservedContextsBeforeApply !== true) {
+    findings.push(
+      finding("unobserved-checks-allowed", policy?.statusChecks?.requireObservedContextsBeforeApply ?? "missing", true),
+    );
   }
   if (policy?.history?.denyForcePush !== true) {
     findings.push(finding("force-push-allowed", policy?.history?.denyForcePush ?? "missing", true));
@@ -198,7 +240,10 @@ async function main() {
     readJson(new URL("../../governance/repositories.json", import.meta.url)),
     readJson(new URL("../../governance/repository-ruleset-policy.json", import.meta.url)),
   ]);
-  const findings = [...validateRepositoryInventory(inventory), ...validateRulesetPolicy(policy)];
+  const findings = [
+    ...validateRepositoryInventory(inventory, { enforceScope: true }),
+    ...validateRulesetPolicy(policy),
+  ];
   if (findings.length) {
     console.error(formatFindings(findings));
     process.exitCode = 1;

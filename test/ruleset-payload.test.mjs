@@ -15,7 +15,7 @@ const policy = {
     requiredApprovingReviewCount: 1,
     requireConversationResolution: true,
   },
-  statusChecks: { strict: true, required: true },
+  statusChecks: { strict: true, required: true, requireObservedContextsBeforeApply: true },
   history: { denyForcePush: true, denyDeletion: true, requireLinearHistory: true },
 };
 
@@ -57,19 +57,31 @@ test("renders all repositories in stable order", () => {
     })),
     bypassActors: [],
   };
+  const expectedRepositories = [
+    "otedesco/gh-action-templates",
+    "otedesco/commons",
+    "otedesco/cache",
+    "otedesco/server-utils",
+    "otedesco/notify",
+    "otedesco/cerberus",
+    "otedesco/hermes",
+    "otedesco/web-app",
+  ];
   const inventory = {
     version: 1,
-    repositories: [
-      { ...inventoryRepository, name: "z" },
-      { ...inventoryRepository, name: "a", fullName: "otedesco/aaa" },
-    ],
+    expectedRepositories,
+    repositories: [...expectedRepositories].reverse().map((fullName) => ({
+      ...inventoryRepository,
+      name: fullName.split("/")[1],
+      fullName,
+    })),
   };
   const first = renderPayload(inventory, policy);
   const second = renderPayload(inventory, policy);
   assert.deepEqual(first, second);
   assert.deepEqual(
     first.repositories.map(({ repository: name }) => name),
-    ["otedesco/aaa", "otedesco/example"],
+    [...expectedRepositories].sort(),
   );
 });
 

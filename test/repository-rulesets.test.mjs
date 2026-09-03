@@ -9,6 +9,7 @@ import {
 
 const validRepository = {
   name: "example",
+  fullName: "otedesco/example",
   defaultBranch: "main",
   protectedBranch: "main",
   codeowners: ".github/CODEOWNERS",
@@ -44,6 +45,7 @@ const validPolicy = {
   statusChecks: {
     strict: true,
     required: true,
+    requireObservedContextsBeforeApply: true,
   },
   history: {
     denyForcePush: true,
@@ -76,6 +78,25 @@ test("rejects duplicate repositories, non-main targets, and missing checks", () 
   );
 });
 
+test("rejects a scope that omits or adds a repository", () => {
+  const findings = validateRepositoryInventory(
+    {
+      expectedRepositories: ["otedesco/example"],
+      repositories: [{ ...validRepository, fullName: "otedesco/example" }],
+    },
+    { enforceScope: true },
+  );
+  assert.deepEqual(
+    findings.map(({ rule }) => rule),
+    [
+      "repository-scope",
+      "repository-scope-definition",
+      ...Array(8).fill("missing-scoped-repository"),
+      "out-of-scope-repository",
+    ],
+  );
+});
+
 test("rejects wildcard and unsupported bypass actors", () => {
   const findings = validateRepositoryInventory({
     version: 1,
@@ -105,6 +126,7 @@ test("rejects policy bypasses and non-strict required checks", () => {
     [
       "required-status-checks",
       "strict-status-checks",
+      "unobserved-checks-allowed",
       "force-push-allowed",
       "branch-deletion-allowed",
       "linear-history-allowed",

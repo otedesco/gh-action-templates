@@ -2,6 +2,16 @@
   "version": 1,
   "owner": "otedesco",
   "defaultBranch": "main",
+  "expectedRepositories": [
+    "otedesco/gh-action-templates",
+    "otedesco/commons",
+    "otedesco/cache",
+    "otedesco/server-utils",
+    "otedesco/notify",
+    "otedesco/cerberus",
+    "otedesco/hermes",
+    "otedesco/web-app"
+  ],
   "repositories": [
     {
       "name": "gh-action-templates",
