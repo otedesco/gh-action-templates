@@ -175,6 +175,8 @@ Render the repository's desired ruleset from the central policy. An administrato
 - a current, approved, fully green PR can merge normally;
 - only named bypass actors can bypass, and their audit events are recorded.
 
+For a repository with one maintainer who is also its only CODEOWNER, configure that exact GitHub user ID as a `User` bypass actor in `pull_request` mode. This is needed because GitHub does not allow an author to approve their own pull request. The maintainer must still open a pull request, wait for all required checks to pass, and resolve every conversation before explicitly merging with the bypass. Do not use an `always` bypass, a wildcard actor, or a broad role: those would also weaken direct-push protection or grant the exception to more people than necessary. Remove this exception when an independent eligible reviewer becomes available.
+
 The final result must be recorded in sanitized evidence and verified through the GitHub Codex app.
 
 ## Source-of-truth map

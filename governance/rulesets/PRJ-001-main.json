@@ -11,7 +11,7 @@
         "name": "PRJ-001 main protection",
         "target": "branch",
         "enforcement": "active",
-        "bypass_actors": [],
+        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
         "conditions": {
           "ref_name": {
             "include": ["refs/heads/main"],
@@ -63,7 +63,7 @@
         "name": "PRJ-001 main protection",
         "target": "branch",
         "enforcement": "active",
-        "bypass_actors": [],
+        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
         "conditions": {
           "ref_name": {
             "include": ["refs/heads/main"],
@@ -115,7 +115,7 @@
         "name": "PRJ-001 main protection",
         "target": "branch",
         "enforcement": "active",
-        "bypass_actors": [],
+        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
         "conditions": {
           "ref_name": {
             "include": ["refs/heads/main"],
@@ -167,7 +167,7 @@
         "name": "PRJ-001 main protection",
         "target": "branch",
         "enforcement": "active",
-        "bypass_actors": [],
+        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
         "conditions": {
           "ref_name": {
             "include": ["refs/heads/main"],
@@ -219,7 +219,7 @@
         "name": "PRJ-001 main protection",
         "target": "branch",
         "enforcement": "active",
-        "bypass_actors": [],
+        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
         "conditions": {
           "ref_name": {
             "include": ["refs/heads/main"],
@@ -271,7 +271,7 @@
         "name": "PRJ-001 main protection",
         "target": "branch",
         "enforcement": "active",
-        "bypass_actors": [],
+        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
         "conditions": {
           "ref_name": {
             "include": ["refs/heads/main"],
@@ -323,7 +323,7 @@
         "name": "PRJ-001 main protection",
         "target": "branch",
         "enforcement": "active",
-        "bypass_actors": [],
+        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
         "conditions": {
           "ref_name": {
             "include": ["refs/heads/main"],
@@ -375,7 +375,7 @@
         "name": "PRJ-001 main protection",
         "target": "branch",
         "enforcement": "active",
-        "bypass_actors": [],
+        "bypass_actors": [{ "actor_id": 137359101, "actor_type": "User", "bypass_mode": "pull_request" }],
         "conditions": {
           "ref_name": {
             "include": ["refs/heads/main"],

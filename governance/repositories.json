@@ -48,7 +48,7 @@
           "observed": false
         }
       ],
-      "bypassActors": []
+      "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
     },
     {
       "name": "commons",
@@ -74,7 +74,7 @@
           "observed": false
         }
       ],
-      "bypassActors": []
+      "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
     },
     {
       "name": "cache",
@@ -100,7 +100,7 @@
           "observed": false
         }
       ],
-      "bypassActors": []
+      "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
     },
     {
       "name": "server-utils",
@@ -126,7 +126,7 @@
           "observed": false
         }
       ],
-      "bypassActors": []
+      "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
     },
     {
       "name": "notify",
@@ -152,7 +152,7 @@
           "observed": false
         }
       ],
-      "bypassActors": []
+      "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
     },
     {
       "name": "cerberus",
@@ -178,7 +178,7 @@
           "observed": false
         }
       ],
-      "bypassActors": []
+      "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
     },
     {
       "name": "hermes",
@@ -204,7 +204,7 @@
           "observed": false
         }
       ],
-      "bypassActors": []
+      "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
     },
     {
       "name": "web-app",
@@ -224,7 +224,7 @@
           "observed": false
         }
       ],
-      "bypassActors": []
+      "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
     }
   ]
 }

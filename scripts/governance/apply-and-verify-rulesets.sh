@@ -9,6 +9,7 @@ readonly RULESET_NAME="PRJ-001 main protection"
 readonly OWNER="otedesco"
 
 APPLY=false
+UPDATE_EXISTING=false
 REPORT_FILE="/tmp/ops-186-ruleset-verification-$(date -u +%Y%m%dT%H%M%SZ).json"
 
 usage() {
@@ -16,15 +17,17 @@ usage() {
 Apply and verify the OPS-186 main-branch rulesets.
 
 Usage:
-  scripts/governance/apply-and-verify-rulesets.sh [--apply] [--report FILE]
+  scripts/governance/apply-and-verify-rulesets.sh [--apply] [--update-existing] [--report FILE]
 
 Options:
   --apply         Create missing rulesets. Without this flag, perform preflight only.
+  --update-existing
+                  With --apply, update the one expected named ruleset if it differs.
   --report FILE   Write sanitized verification evidence to FILE (default: /tmp/...).
   -h, --help      Show this help.
 
-The script never deletes or overwrites a ruleset. If a ruleset with the expected
-name already exists, it must match the desired payload exactly or the script stops.
+The script never deletes a ruleset. Existing rulesets are changed only when the
+expected name is unique and both --apply and --update-existing are explicit.
 EOF
 }
 
@@ -43,6 +46,10 @@ while (($# > 0)); do
       APPLY=true
       shift
       ;;
+    --update-existing)
+      UPDATE_EXISTING=true
+      shift
+      ;;
     --report)
       (($# >= 2)) || fail '--report requires a value'
       REPORT_FILE="$2"
@@ -57,6 +64,8 @@ while (($# > 0)); do
       ;;
   esac
 done
+
+[[ "${UPDATE_EXISTING}" != true || "${APPLY}" == true ]] || fail '--update-existing requires --apply'
 
 for command_name in gh jq node pnpm git base64; do
   command -v "${command_name}" >/dev/null 2>&1 || fail "required command not found: ${command_name}"
@@ -147,6 +156,18 @@ verify_live_ruleset() {
   if ! diff -u "${desired_normalized}" "${live_normalized}"; then
     fail "live ruleset does not match the desired policy for ${OWNER}/${repository}"
   fi
+}
+
+live_ruleset_matches() {
+  local repository="$1"
+  local desired_file="$2"
+  local live_file="$3"
+  local desired_normalized="${TEMP_DIRECTORY}/${repository}-desired-normalized.json"
+  local live_normalized="${TEMP_DIRECTORY}/${repository}-live-normalized.json"
+
+  normalize_ruleset "${desired_file}" "${desired_normalized}"
+  normalize_ruleset "${live_file}" "${live_normalized}"
+  cmp -s "${desired_normalized}" "${live_normalized}"
 }
 
 verify_required_contexts() {
@@ -260,7 +281,11 @@ for repository in "${REPOSITORIES[@]}"; do
     .name == "PRJ-001 main protection" and
     .target == "branch" and
     .enforcement == "active" and
-    (.bypass_actors | length == 0) and
+    .bypass_actors == [{
+      "actor_id": 137359101,
+      "actor_type": "User",
+      "bypass_mode": "pull_request"
+    }] and
     .conditions.ref_name.include == ["refs/heads/main"] and
     .conditions.ref_name.exclude == [] and
     ([.rules[].type] | sort) == (["deletion", "non_fast_forward", "pull_request", "required_linear_history", "required_status_checks"] | sort)
@@ -299,8 +324,19 @@ for repository in "${REPOSITORIES[@]}"; do
   if [[ "${matching_count}" == '1' ]]; then
     ruleset_id="$(jq -r --arg name "${RULESET_NAME}" '.[] | select(.name == $name) | .id' "${rulesets_file}")"
     gh api "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" >"${live_file}"
-    verify_live_ruleset "${repository}" "${desired_file}" "${live_file}"
-    printf '  existing ruleset %s already matches %s/%s\n' "${ruleset_id}" "${OWNER}" "${repository}"
+    if live_ruleset_matches "${repository}" "${desired_file}" "${live_file}"; then
+      printf '  existing ruleset %s already matches %s/%s\n' "${ruleset_id}" "${OWNER}" "${repository}"
+    elif [[ "${UPDATE_EXISTING}" == true ]]; then
+      gh api --method PUT \
+        -H 'Accept: application/vnd.github+json' \
+        "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" \
+        --input "${desired_file}" >"${live_file}"
+      gh api "repos/${OWNER}/${repository}/rulesets/${ruleset_id}" >"${live_file}"
+      verify_live_ruleset "${repository}" "${desired_file}" "${live_file}"
+      printf '  updated and verified ruleset %s on %s/%s\n' "${ruleset_id}" "${OWNER}" "${repository}"
+    else
+      verify_live_ruleset "${repository}" "${desired_file}" "${live_file}"
+    fi
   else
     gh api --method POST \
       -H 'Accept: application/vnd.github+json' \
