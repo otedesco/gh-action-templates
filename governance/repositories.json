@@ -68,7 +68,7 @@
           "observed": false
         },
         {
-          "context": "Security / aggregate",
+          "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
           "observed": false
@@ -94,7 +94,7 @@
           "observed": false
         },
         {
-          "context": "Security / aggregate",
+          "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
           "observed": false
@@ -120,7 +120,7 @@
           "observed": false
         },
         {
-          "context": "Security / aggregate",
+          "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
           "observed": false
@@ -146,7 +146,7 @@
           "observed": false
         },
         {
-          "context": "Security / aggregate",
+          "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
           "observed": false
@@ -172,7 +172,7 @@
           "observed": false
         },
         {
-          "context": "Security / aggregate",
+          "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
           "observed": false
@@ -198,7 +198,7 @@
           "observed": false
         },
         {
-          "context": "Security / aggregate",
+          "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
           "observed": false
@@ -218,7 +218,7 @@
       "workflows": [".github/workflows/security.yml"],
       "requiredChecks": [
         {
-          "context": "Security / aggregate",
+          "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/security.yml",
           "job": "security",
           "observed": false

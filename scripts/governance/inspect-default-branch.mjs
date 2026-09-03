@@ -132,7 +132,9 @@ export function auditRequiredChecks(repository, workflowTexts, { requireObserved
       findings.push(finding(repository, "missing-check-job", check.job, "job emitted by workflow", check.workflow));
       continue;
     }
-    if (job.name !== check.context) {
+    const reusableWorkflowContext =
+      job.uses && typeof job.name === "string" && check.context.startsWith(`${job.name} / `);
+    if (job.name !== check.context && !reusableWorkflowContext) {
       findings.push(finding(repository, "check-context-mismatch", job.name, check.context, check.workflow));
     }
     if (requireObserved && check.observed !== true) {

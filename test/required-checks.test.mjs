@@ -90,6 +90,23 @@ test("rejects missing jobs and mismatched emitted names", () => {
   );
 });
 
+test("accepts an observed nested context emitted by a reusable workflow", () => {
+  const nestedRepository = {
+    ...validRepository,
+    requiredChecks: [
+      {
+        ...validRepository.requiredChecks[0],
+        context: "Quality / core / Test on the supported runtime",
+      },
+    ],
+  };
+
+  assert.deepEqual(
+    auditRequiredChecks(nestedRepository, { ".github/workflows/quality-checks.yml": validWorkflow }),
+    [],
+  );
+});
+
 test("rejects duplicate direct job keys", () => {
   const duplicate = `${validWorkflow}\n    with:\n      registry-auth-required: true\n    with:\n      registry-auth-required: true`;
   assert.deepEqual(

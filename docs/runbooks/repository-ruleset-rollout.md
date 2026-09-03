@@ -56,6 +56,17 @@ The generated object contains one API payload per repository. The `observed` fla
 
 ## Staged application
 
+Use the fail-closed rollout script to execute the checks above against each repository's live `main`, confirm repository-administrator access, prove the exact required contexts on successful merged pull requests, and reject unexpected inherited or repository rulesets:
+
+```bash
+./scripts/governance/apply-and-verify-rulesets.sh
+./scripts/governance/apply-and-verify-rulesets.sh \
+  --apply \
+  --report /tmp/ops-186-ruleset-verification.json
+```
+
+The first command is read-only. The second command creates only missing `PRJ-001 main protection` rulesets, reads each one back, compares its normalized policy with the generated payload, confirms that GitHub reports `main` as protected, and writes a sanitized report. It never updates or deletes an existing ruleset and stops on unexpected policy layering or any mismatch. The live verification still requires independent GitHub Codex app read-back and controlled positive and negative pull-request tests.
+
 Apply one repository at a time in this order:
 
 1. `gh-action-templates`
