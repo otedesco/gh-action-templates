@@ -2,9 +2,9 @@
 
 - **Project:** `PRJ-001` — Quality Gates & CI Foundation
 - **Linear milestone:** M3 — Security, release, and branch enforcement
-- **Status:** Planned
+- **Status:** In progress — OPS-184 complete
 - **Target date:** 2026-10-23
-- **Linear progress at documentation time:** 0%
+- **Linear progress at documentation time:** 33% (1 of 3 tasks complete)
 - **Owner:** Oswaldo Tedesco
 
 ## Purpose
@@ -12,6 +12,12 @@
 `MLS-003` extends the truthful core gate contract into software-supply-chain security, container release verification, and protected-branch enforcement. It ensures critical or high unapproved risks block merge, production images are verified before publication, and repository policy makes the approved checks mandatory rather than advisory.
 
 The milestone closes the gap between having reliable workflows and enforcing them on every protected delivery path.
+
+## Delivery progress
+
+OPS-184 is complete. It delivered the central blocking security policy and reusable workflow, then adopted the immutable caller across all eight repositories. The remaining milestone scope is container release verification (OPS-185) and live protected-branch ruleset enforcement (OPS-186).
+
+See the [OPS-184 completion record](tasks/OPS-184-security-gates.md) for merged pull requests, commit references, validation, limitations, and follow-up ownership.
 
 ## Entry criteria
 
@@ -38,7 +44,7 @@ Before security and repository enforcement begins:
 
 | Issue | Title | Estimate | Current state | Due date | Plan |
 |---|---|---:|---|---|---|
-| `OPS-184` | Add CodeQL, dependency review, secret, license, and workflow security gates | 5 | Backlog | 2026-09-27 | [Implementation plan](tasks/OPS-184-security-gates.md) |
+| `OPS-184` | Add CodeQL, dependency review, secret, license, and workflow security gates | 5 | Complete — 2026-09-03 | [Completion record](tasks/OPS-184-security-gates.md) |
 | `OPS-185` | Add container build, scan, smoke, SBOM, and provenance gates | 8 | Backlog | 2026-10-04 | [Implementation plan](tasks/OPS-185-container-release-gates.md) |
 | `OPS-186` | Add repository rulesets and required checks on main | 3 | Backlog | 2026-10-11 | [Implementation plan](tasks/OPS-186-repository-rulesets.md) |
 

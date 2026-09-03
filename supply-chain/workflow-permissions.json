@@ -104,6 +104,11 @@
               "permissions": { "contents": "read" },
               "allowedSecrets": [],
               "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "security": {
+              "permissions": { "contents": "read", "pull-requests": "read" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
             }
           },
           "remediation": "Keep public quality checks read-only and do not inherit repository secrets."
@@ -139,6 +144,11 @@
           "jobs": {
             "lint-and-test": {
               "permissions": { "contents": "read" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "security": {
+              "permissions": { "contents": "read", "pull-requests": "read" },
               "allowedSecrets": [],
               "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
             }
@@ -178,6 +188,11 @@
               "permissions": { "contents": "read" },
               "allowedSecrets": [],
               "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "security": {
+              "permissions": { "contents": "read", "pull-requests": "read" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
             }
           },
           "remediation": "Keep public quality checks read-only and do not inherit repository secrets."
@@ -215,6 +230,11 @@
               "permissions": { "contents": "read" },
               "allowedSecrets": ["NPM_TOKEN"],
               "forbiddenSecrets": ["GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "security": {
+              "permissions": { "contents": "read", "pull-requests": "read" },
+              "allowedSecrets": ["NPM_TOKEN"],
+              "forbiddenSecrets": ["GH_TOKEN", "GITHUB_TOKEN"]
             }
           },
           "remediation": "Map only NPM_TOKEN for private dependency installation; keep pull-request authority read-only."
@@ -250,6 +270,11 @@
           "jobs": {
             "lint-and-test": {
               "permissions": { "contents": "read" },
+              "allowedSecrets": ["NPM_TOKEN"],
+              "forbiddenSecrets": ["GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "security": {
+              "permissions": { "contents": "read", "pull-requests": "read" },
               "allowedSecrets": ["NPM_TOKEN"],
               "forbiddenSecrets": ["GH_TOKEN", "GITHUB_TOKEN"]
             }
@@ -308,6 +333,11 @@
               "permissions": { "contents": "read" },
               "allowedSecrets": ["NPM_TOKEN"],
               "forbiddenSecrets": ["GH_TOKEN", "GITHUB_TOKEN"]
+            },
+            "security": {
+              "permissions": { "contents": "read", "pull-requests": "read" },
+              "allowedSecrets": ["NPM_TOKEN"],
+              "forbiddenSecrets": ["GH_TOKEN", "GITHUB_TOKEN"]
             }
           },
           "remediation": "Map only NPM_TOKEN for private dependency installation; keep pull-request authority read-only."
@@ -354,7 +384,21 @@
     },
     "web-app": {
       "path": "../web-app",
-      "workflows": {}
+      "workflows": {
+        ".github/workflows/security.yml": {
+          "events": ["pull_request"],
+          "workflowPermissions": {},
+          "declaredSecrets": [],
+          "jobs": {
+            "security": {
+              "permissions": { "contents": "read", "pull-requests": "read" },
+              "allowedSecrets": [],
+              "forbiddenSecrets": ["NPM_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"]
+            }
+          },
+          "remediation": "Keep the web application security caller read-only and do not pass repository secrets."
+        }
+      }
     }
   }
 }
