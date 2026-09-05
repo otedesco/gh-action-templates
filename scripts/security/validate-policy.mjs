@@ -15,6 +15,7 @@ const REQUIRED_EXCEPTION_FIELDS = [
   "compensatingControl",
   "approvedBy",
   "expiresAt",
+  "remediation",
 ];
 const SCOPE_FIELDS = exceptionSchema.items.properties.scope.required;
 
@@ -63,7 +64,7 @@ export function validatePolicy(policy, exceptions = [], now = new Date()) {
   for (const exception of exceptions) {
     const id = exception?.id ?? "<unknown>";
     for (const field of REQUIRED_EXCEPTION_FIELDS) {
-      if (field === "scope") continue;
+      if (field === "scope" || field === "remediation") continue;
       if (!text(exception?.[field])) errors.push(`exception ${id} missing ${field}`);
     }
     if (exception?.id && !/^[A-Z0-9][A-Z0-9._-]+$/.test(exception.id))
@@ -100,6 +101,22 @@ export function validatePolicy(policy, exceptions = [], now = new Date()) {
     scopes.add(key);
     if (exception?.expiresAt && (!isDateTime(exception.expiresAt) || !isActive(exception, now))) {
       errors.push(`exception ${exception.id} expiry is expired or invalid`);
+    }
+    const remediation = exception?.remediation;
+    if (!remediation || typeof remediation !== "object" || Array.isArray(remediation)) {
+      errors.push(`exception ${id} remediation is required`);
+    } else {
+      if (!text(remediation.issue)) errors.push(`exception ${id} remediation issue is required`);
+      if (!["open", "closed"].includes(remediation.status))
+        errors.push(`exception ${id} remediation status is invalid`);
+      if (remediation.status === "closed")
+        errors.push(`exception ${id} remediation is closed and exception must be removed`);
+      if (remediation.verifiedAt !== null && !isDateTime(remediation.verifiedAt))
+        errors.push(`exception ${id} remediation verifiedAt is invalid`);
+      if (remediation.status === "closed" && !isDateTime(remediation.verifiedAt))
+        errors.push(`exception ${id} closed remediation requires verifiedAt`);
+      if (Object.keys(remediation).some((key) => !["issue", "status", "verifiedAt"].includes(key)))
+        errors.push(`exception ${id} remediation contains unknown fields`);
     }
   }
   return errors.sort();

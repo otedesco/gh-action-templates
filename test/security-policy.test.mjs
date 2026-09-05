@@ -18,6 +18,7 @@ const validException = {
   compensatingControl: "Package is not included in production images.",
   approvedBy: "security-admin",
   expiresAt: "2099-01-02T00:00:00Z",
+  remediation: { issue: "https://linear.app/opspace/issue/OPS-187/example", status: "open", verifiedAt: null },
 };
 
 const highFinding = {
