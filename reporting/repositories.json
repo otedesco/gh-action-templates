@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "repositories": [
+    {
+      "name": "gh-action-templates",
+      "slug": "otedesco/gh-action-templates",
+      "enrolled": true,
+      "enrollmentReason": "Initial OPS-187 reporting source.",
+      "expectedChecks": [
+        { "name": "Quality / core", "family": "core", "required": true },
+        { "name": "Coverage / ratchet", "family": "coverage", "required": true },
+        { "name": "Security / aggregate", "family": "security", "required": true },
+        { "name": "Release / verified", "family": "release", "required": false }
+      ]
+    },
+    {
+      "name": "commons",
+      "slug": "otedesco/commons",
+      "enrolled": false,
+      "enrollmentReason": "Awaiting OPS-189 adoption.",
+      "expectedChecks": [
+        { "name": "Quality / core", "family": "core", "required": true },
+        { "name": "Coverage / ratchet", "family": "coverage", "required": true },
+        { "name": "Security / aggregate", "family": "security", "required": true },
+        { "name": "Release / verified", "family": "release", "required": false }
+      ]
+    },
+    {
+      "name": "cache",
+      "slug": "otedesco/cache",
+      "enrolled": false,
+      "enrollmentReason": "Awaiting OPS-189 adoption.",
+      "expectedChecks": [
+        { "name": "Quality / core", "family": "core", "required": true },
+        { "name": "Coverage / ratchet", "family": "coverage", "required": true },
+        { "name": "Security / aggregate", "family": "security", "required": true },
+        { "name": "Release / verified", "family": "release", "required": false }
+      ]
+    },
+    {
+      "name": "server-utils",
+      "slug": "otedesco/server-utils",
+      "enrolled": false,
+      "enrollmentReason": "Awaiting OPS-189 adoption.",
+      "expectedChecks": [
+        { "name": "Quality / core", "family": "core", "required": true },
+        { "name": "Coverage / ratchet", "family": "coverage", "required": true },
+        { "name": "Security / aggregate", "family": "security", "required": true },
+        { "name": "Release / verified", "family": "release", "required": false }
+      ]
+    },
+    {
+      "name": "notify",
+      "slug": "otedesco/notify",
+      "enrolled": false,
+      "enrollmentReason": "Awaiting OPS-189 adoption.",
+      "expectedChecks": [
+        { "name": "Quality / core", "family": "core", "required": true },
+        { "name": "Coverage / ratchet", "family": "coverage", "required": true },
+        { "name": "Security / aggregate", "family": "security", "required": true },
+        { "name": "Release / verified", "family": "release", "required": false }
+      ]
+    },
+    {
+      "name": "cerberus",
+      "slug": "otedesco/cerberus",
+      "enrolled": false,
+      "enrollmentReason": "Awaiting OPS-189 adoption.",
+      "expectedChecks": [
+        { "name": "Quality / core", "family": "core", "required": true },
+        { "name": "Coverage / ratchet", "family": "coverage", "required": true },
+        { "name": "Security / aggregate", "family": "security", "required": true },
+        { "name": "Release / verified", "family": "release", "required": false }
+      ]
+    },
+    {
+      "name": "hermes",
+      "slug": "otedesco/hermes",
+      "enrolled": false,
+      "enrollmentReason": "Awaiting OPS-189 adoption.",
+      "expectedChecks": [
+        { "name": "Quality / core", "family": "core", "required": true },
+        { "name": "Coverage / ratchet", "family": "coverage", "required": true },
+        { "name": "Security / aggregate", "family": "security", "required": true },
+        { "name": "Release / verified", "family": "release", "required": false }
+      ]
+    },
+    {
+      "name": "web-app",
+      "slug": "otedesco/web-app",
+      "enrolled": false,
+      "enrollmentReason": "Awaiting OPS-189 adoption.",
+      "expectedChecks": [
+        { "name": "Quality / core", "family": "core", "required": true },
+        { "name": "Coverage / ratchet", "family": "coverage", "required": true },
+        { "name": "Security / aggregate", "family": "security", "required": true },
+        { "name": "Release / verified", "family": "release", "required": false }
+      ]
+    }
+  ]
+}

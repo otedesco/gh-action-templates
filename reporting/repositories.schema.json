@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["schemaVersion", "repositories"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "slug", "enrolled", "enrollmentReason", "expectedChecks"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "slug": { "type": "string", "pattern": "^[^/\\s]+/[^/\\s]+$" },
+          "enrolled": { "type": "boolean" },
+          "enrollmentReason": { "type": "string", "minLength": 1 },
+          "expectedChecks": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["name", "family", "required"],
+              "additionalProperties": false,
+              "properties": {
+                "name": { "type": "string", "minLength": 1 },
+                "family": { "enum": ["core", "coverage", "security", "release"] },
+                "required": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
