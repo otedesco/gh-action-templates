@@ -39,13 +39,13 @@
           "context": "Quality / core",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "quality-gate",
-          "observed": false
+          "observed": true
         },
         {
           "context": "Security / aggregate",
           "workflow": ".github/workflows/security.yml",
           "job": "aggregate",
-          "observed": false
+          "observed": true
         }
       ],
       "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
@@ -65,13 +65,13 @@
           "context": "Quality / core",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "quality-gate",
-          "observed": false
+          "observed": true
         },
         {
           "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
-          "observed": false
+          "observed": true
         }
       ],
       "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
@@ -91,13 +91,13 @@
           "context": "Quality / core",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "quality-gate",
-          "observed": false
+          "observed": true
         },
         {
           "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
-          "observed": false
+          "observed": true
         }
       ],
       "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
@@ -117,13 +117,13 @@
           "context": "Quality / core",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "quality-gate",
-          "observed": false
+          "observed": true
         },
         {
           "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
-          "observed": false
+          "observed": true
         }
       ],
       "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
@@ -143,13 +143,13 @@
           "context": "Quality / core",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "quality-gate",
-          "observed": false
+          "observed": true
         },
         {
           "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
-          "observed": false
+          "observed": true
         }
       ],
       "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
@@ -169,13 +169,13 @@
           "context": "Quality / core",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "quality-gate",
-          "observed": false
+          "observed": true
         },
         {
           "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
-          "observed": false
+          "observed": true
         }
       ],
       "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
@@ -195,13 +195,13 @@
           "context": "Quality / core",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "quality-gate",
-          "observed": false
+          "observed": true
         },
         {
           "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/quality-checks.yml",
           "job": "security",
-          "observed": false
+          "observed": true
         }
       ],
       "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]
@@ -221,7 +221,7 @@
           "context": "Security / aggregate / Security / aggregate",
           "workflow": ".github/workflows/security.yml",
           "job": "security",
-          "observed": false
+          "observed": true
         }
       ],
       "bypassActors": [{ "type": "User", "identifier": "otedesco", "actorId": 137359101, "mode": "pull_request" }]

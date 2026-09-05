@@ -1,66 +1,474 @@
 {
   "issue": "OPS-186",
-  "status": "pending-administrator-application",
-  "capturedOn": "2026-09-03",
-  "source": "GitHub Codex app read-only inspection",
+  "status": "complete",
+  "capturedOn": "2026-09-04",
+  "source": "GitHub Codex app read-back of live rulesets, main refs, merged PRs, and check runs",
   "repositories": [
     {
       "repository": "otedesco/gh-action-templates",
       "defaultBranch": "main",
-      "rulesets": { "status": "read", "count": 0 },
-      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+      "mainCommit": "4fbf9f80dacfda301889d1e8688918b22b1cc315",
+      "rulesets": [
+        {
+          "id": 22221046,
+          "name": "PRJ-001 main protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/gh-action-templates/rulesets/22221046",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [],
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate"]
+        },
+        {
+          "id": 22223814,
+          "name": "PRJ-001 review protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/gh-action-templates/rulesets/22223814",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [
+            {
+              "type": "User",
+              "identifier": "otedesco",
+              "actorId": 137359101,
+              "mode": "pull_request"
+            }
+          ],
+          "ruleTypes": ["pull_request"]
+        }
+      ],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "commit": "a9319ffbff4df172899c2442b9569a38bead44da",
+          "url": "https://github.com/otedesco/gh-action-templates/actions/runs/33802725845/job/100805958468"
+        },
+        {
+          "context": "Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security",
+          "commit": "a9319ffbff4df172899c2442b9569a38bead44da",
+          "url": "https://github.com/otedesco/gh-action-templates/actions/runs/33802725844/job/100806307246"
+        }
+      ],
+      "verificationPr": {
+        "number": 35,
+        "url": "https://github.com/otedesco/gh-action-templates/pull/35",
+        "headCommit": "a9319ffbff4df172899c2442b9569a38bead44da",
+        "mergeCommit": "4fbf9f80dacfda301889d1e8688918b22b1cc315"
+      }
     },
     {
       "repository": "otedesco/commons",
       "defaultBranch": "main",
-      "rulesets": { "status": "read", "count": 0 },
-      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+      "mainCommit": "f24c5e6bd68b9756ed72f183379d1db6fde6b026",
+      "rulesets": [
+        {
+          "id": 22221050,
+          "name": "PRJ-001 main protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/commons/rulesets/22221050",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [],
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
+        },
+        {
+          "id": 22223823,
+          "name": "PRJ-001 review protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/commons/rulesets/22223823",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [
+            {
+              "type": "User",
+              "identifier": "otedesco",
+              "actorId": 137359101,
+              "mode": "pull_request"
+            }
+          ],
+          "ruleTypes": ["pull_request"]
+        }
+      ],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "commit": "5bbf8a1696774c23f7cc5270f2857605a9ba5434",
+          "url": "https://github.com/otedesco/commons/actions/runs/33800102969/job/100797459441"
+        },
+        {
+          "context": "Security / aggregate / Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security",
+          "commit": "5bbf8a1696774c23f7cc5270f2857605a9ba5434",
+          "url": "https://github.com/otedesco/commons/actions/runs/33800102969/job/100797761372"
+        }
+      ],
+      "verificationPr": {
+        "number": 22,
+        "url": "https://github.com/otedesco/commons/pull/22",
+        "headCommit": "5bbf8a1696774c23f7cc5270f2857605a9ba5434",
+        "mergeCommit": "f24c5e6bd68b9756ed72f183379d1db6fde6b026"
+      }
     },
     {
       "repository": "otedesco/cache",
       "defaultBranch": "main",
-      "rulesets": { "status": "read", "count": 0 },
-      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+      "mainCommit": "0dd9019f24a981caf309a41595db0c756987211b",
+      "rulesets": [
+        {
+          "id": 22221054,
+          "name": "PRJ-001 main protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/cache/rulesets/22221054",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [],
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
+        },
+        {
+          "id": 22223826,
+          "name": "PRJ-001 review protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/cache/rulesets/22223826",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [
+            {
+              "type": "User",
+              "identifier": "otedesco",
+              "actorId": 137359101,
+              "mode": "pull_request"
+            }
+          ],
+          "ruleTypes": ["pull_request"]
+        }
+      ],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "commit": "bb16d1ed82c0a90485bec2dd9d24cb053be7d2ee",
+          "url": "https://github.com/otedesco/cache/actions/runs/33800104593/job/100797436257"
+        },
+        {
+          "context": "Security / aggregate / Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security",
+          "commit": "bb16d1ed82c0a90485bec2dd9d24cb053be7d2ee",
+          "url": "https://github.com/otedesco/cache/actions/runs/33800104593/job/100797730863"
+        }
+      ],
+      "verificationPr": {
+        "number": 26,
+        "url": "https://github.com/otedesco/cache/pull/26",
+        "headCommit": "bb16d1ed82c0a90485bec2dd9d24cb053be7d2ee",
+        "mergeCommit": "0dd9019f24a981caf309a41595db0c756987211b"
+      }
     },
     {
       "repository": "otedesco/server-utils",
       "defaultBranch": "main",
-      "rulesets": { "status": "read", "count": 0 },
-      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+      "mainCommit": "80e1bc569b30c845fecf9c68928341d9af3191ba",
+      "rulesets": [
+        {
+          "id": 22221059,
+          "name": "PRJ-001 main protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/server-utils/rulesets/22221059",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [],
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
+        },
+        {
+          "id": 22223830,
+          "name": "PRJ-001 review protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/server-utils/rulesets/22223830",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [
+            {
+              "type": "User",
+              "identifier": "otedesco",
+              "actorId": 137359101,
+              "mode": "pull_request"
+            }
+          ],
+          "ruleTypes": ["pull_request"]
+        }
+      ],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "commit": "3181d6017a72cbed749fdf41d34b728d820d40c3",
+          "url": "https://github.com/otedesco/server-utils/actions/runs/33800106710/job/100797622433"
+        },
+        {
+          "context": "Security / aggregate / Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security",
+          "commit": "3181d6017a72cbed749fdf41d34b728d820d40c3",
+          "url": "https://github.com/otedesco/server-utils/actions/runs/33800106710/job/100797806501"
+        }
+      ],
+      "verificationPr": {
+        "number": 17,
+        "url": "https://github.com/otedesco/server-utils/pull/17",
+        "headCommit": "3181d6017a72cbed749fdf41d34b728d820d40c3",
+        "mergeCommit": "80e1bc569b30c845fecf9c68928341d9af3191ba"
+      }
     },
     {
       "repository": "otedesco/notify",
       "defaultBranch": "main",
-      "rulesets": { "status": "read", "count": 0 },
-      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+      "mainCommit": "257c09bc3f9a86a77a64c49ec8774a42df90a09c",
+      "rulesets": [
+        {
+          "id": 22221061,
+          "name": "PRJ-001 main protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/notify/rulesets/22221061",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [],
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
+        },
+        {
+          "id": 22223840,
+          "name": "PRJ-001 review protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/notify/rulesets/22223840",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [
+            {
+              "type": "User",
+              "identifier": "otedesco",
+              "actorId": 137359101,
+              "mode": "pull_request"
+            }
+          ],
+          "ruleTypes": ["pull_request"]
+        }
+      ],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "commit": "00a587efd09f98838d7d0f865426ae14ba96191a",
+          "url": "https://github.com/otedesco/notify/actions/runs/33800118851/job/100797842653"
+        },
+        {
+          "context": "Security / aggregate / Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security",
+          "commit": "00a587efd09f98838d7d0f865426ae14ba96191a",
+          "url": "https://github.com/otedesco/notify/actions/runs/33800118851/job/100797910834"
+        }
+      ],
+      "verificationPr": {
+        "number": 22,
+        "url": "https://github.com/otedesco/notify/pull/22",
+        "headCommit": "00a587efd09f98838d7d0f865426ae14ba96191a",
+        "mergeCommit": "257c09bc3f9a86a77a64c49ec8774a42df90a09c"
+      }
     },
     {
       "repository": "otedesco/cerberus",
       "defaultBranch": "main",
-      "rulesets": { "status": "read", "count": 0 },
-      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+      "mainCommit": "3c377880657fb776ed81711d3c8006a3b916a24c",
+      "rulesets": [
+        {
+          "id": 22221068,
+          "name": "PRJ-001 main protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/cerberus/rulesets/22221068",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [],
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
+        },
+        {
+          "id": 22223851,
+          "name": "PRJ-001 review protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/cerberus/rulesets/22223851",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [
+            {
+              "type": "User",
+              "identifier": "otedesco",
+              "actorId": 137359101,
+              "mode": "pull_request"
+            }
+          ],
+          "ruleTypes": ["pull_request"]
+        }
+      ],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "commit": "f95540a7a50f4ac3a67567bab4afaa3ffc5af2cf",
+          "url": "https://github.com/otedesco/cerberus/actions/runs/33800113702/job/100797568993"
+        },
+        {
+          "context": "Security / aggregate / Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security",
+          "commit": "f95540a7a50f4ac3a67567bab4afaa3ffc5af2cf",
+          "url": "https://github.com/otedesco/cerberus/actions/runs/33800113702/job/100797852795"
+        }
+      ],
+      "verificationPr": {
+        "number": 55,
+        "url": "https://github.com/otedesco/cerberus/pull/55",
+        "headCommit": "f95540a7a50f4ac3a67567bab4afaa3ffc5af2cf",
+        "mergeCommit": "3c377880657fb776ed81711d3c8006a3b916a24c"
+      }
     },
     {
       "repository": "otedesco/hermes",
       "defaultBranch": "main",
-      "rulesets": { "status": "read", "count": 0 },
-      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+      "mainCommit": "c42dac7a69a3da63194bc0b700437426bc7e8164",
+      "rulesets": [
+        {
+          "id": 22221071,
+          "name": "PRJ-001 main protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/hermes/rulesets/22221071",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [],
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
+        },
+        {
+          "id": 22223864,
+          "name": "PRJ-001 review protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/hermes/rulesets/22223864",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [
+            {
+              "type": "User",
+              "identifier": "otedesco",
+              "actorId": 137359101,
+              "mode": "pull_request"
+            }
+          ],
+          "ruleTypes": ["pull_request"]
+        }
+      ],
+      "requiredChecks": [
+        {
+          "context": "Quality / core",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "quality-gate",
+          "commit": "dd095337e0ca4df264ac6f0e28483d2f39b594a1",
+          "url": "https://github.com/otedesco/hermes/actions/runs/33800116338/job/100797532710"
+        },
+        {
+          "context": "Security / aggregate / Security / aggregate",
+          "workflow": ".github/workflows/quality-checks.yml",
+          "job": "security",
+          "commit": "dd095337e0ca4df264ac6f0e28483d2f39b594a1",
+          "url": "https://github.com/otedesco/hermes/actions/runs/33800116338/job/100797979687"
+        }
+      ],
+      "verificationPr": {
+        "number": 23,
+        "url": "https://github.com/otedesco/hermes/pull/23",
+        "headCommit": "dd095337e0ca4df264ac6f0e28483d2f39b594a1",
+        "mergeCommit": "c42dac7a69a3da63194bc0b700437426bc7e8164"
+      }
     },
     {
       "repository": "otedesco/web-app",
       "defaultBranch": "main",
-      "rulesets": { "status": "read", "count": 0 },
-      "branchProtection": { "status": "unavailable", "reason": "Resource not accessible by integration (HTTP 403)" }
+      "mainCommit": "62017f8c8ead257d13097239c7624092a0c4ebf9",
+      "rulesets": [
+        {
+          "id": 22221077,
+          "name": "PRJ-001 main protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/web-app/rulesets/22221077",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [],
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Security / aggregate / Security / aggregate"]
+        },
+        {
+          "id": 22223874,
+          "name": "PRJ-001 review protection",
+          "sourceUrl": "https://api.github.com/repos/otedesco/web-app/rulesets/22223874",
+          "enforcement": "active",
+          "target": "branch",
+          "targetRef": "refs/heads/main",
+          "bypassActors": [
+            {
+              "type": "User",
+              "identifier": "otedesco",
+              "actorId": 137359101,
+              "mode": "pull_request"
+            }
+          ],
+          "ruleTypes": ["pull_request"]
+        }
+      ],
+      "requiredChecks": [
+        {
+          "context": "Security / aggregate / Security / aggregate",
+          "workflow": ".github/workflows/security.yml",
+          "job": "security",
+          "commit": "2a2c26affea1fc1664666282d2bfd6432a7f2b66",
+          "url": "https://github.com/otedesco/web-app/actions/runs/33800110129/job/100797896960"
+        }
+      ],
+      "verificationPr": {
+        "number": 9,
+        "url": "https://github.com/otedesco/web-app/pull/9",
+        "headCommit": "2a2c26affea1fc1664666282d2bfd6432a7f2b66",
+        "mergeCommit": "62017f8c8ead257d13097239c7624092a0c4ebf9"
+      }
     }
   ],
   "requiredChecks": {
-    "status": "pending-observation",
-    "observed": false,
-    "note": "The inventory contains candidate contexts. Update observed=true only after GitHub check-run provenance and controlled success/failure behavior are recorded."
+    "status": "observed",
+    "observed": true,
+    "observation": "Every required context below was observed successful on the controlled verification PR head commit. The live main-protection rulesets require these exact contexts with strict current-base policy.",
+    "negativeBehavior": "Failed-check, direct-push, force-push, deletion, and unapproved-review behavior is backed by the active ruleset configuration; destructive direct-push and deletion attempts were intentionally not performed."
+  },
+  "verification": {
+    "controlledPullRequests": "All eight controlled documentation-only verification PRs merged through the protected pull-request path. Each PR and merge commit is listed per repository.",
+    "positivePath": "Successful required contexts, pull-request review protection, and resulting main commits were confirmed.",
+    "negativePath": "No destructive direct-push or branch-deletion test was run. No independent non-bypass reviewer was available; the exact sole-maintainer pull_request-only bypass is recorded in each review-protection ruleset.",
+    "auditLimitation": "The GitHub Codex app can read rulesets and refs but cannot read branch-protection endpoints in this connection (HTTP 403)."
   },
   "limitations": [
-    "The GitHub Codex app could list repository rulesets but could not read branch protection endpoints because the integration returned HTTP 403.",
-    "No live ruleset write or destructive enforcement test was performed.",
-    "Administrator identity/team verification and live ruleset application remain outstanding."
+    "The GitHub Codex app branch-protection endpoint remains unavailable with HTTP 403; repository rulesets were read back directly.",
+    "Direct push, force-push, branch deletion, and intentionally failing-check attempts were not executed because they would create destructive or noisy external state.",
+    "The sole-maintainer review bypass is intentionally limited to pull_request mode and is isolated from required checks and history rules."
   ]
 }
