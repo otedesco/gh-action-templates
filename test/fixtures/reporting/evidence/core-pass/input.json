@@ -1,0 +1,5 @@
+{
+  "outcome": "success",
+  "completedChecks": ["format", "lint", "type", "unit", "coverage", "build"],
+  "commandOutput": "SENTINEL-CORE-OUTPUT"
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "id",
+      "repository",
+      "check",
+      "owner",
+      "impact",
+      "firstOccurredAt",
+      "latestOccurredAt",
+      "evidenceUrl",
+      "reproduction",
+      "remediationIssue",
+      "status"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "id": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]+$" },
+      "repository": { "type": "string", "minLength": 1 },
+      "check": { "type": "string", "minLength": 1 },
+      "owner": { "type": "string", "minLength": 1 },
+      "impact": { "type": "string", "minLength": 1 },
+      "firstOccurredAt": { "type": "string", "format": "date-time" },
+      "latestOccurredAt": { "type": "string", "format": "date-time" },
+      "evidenceUrl": { "type": "string", "format": "uri" },
+      "reproduction": { "enum": ["reproduced", "not-reproduced", "investigating"] },
+      "remediationIssue": { "type": "string", "format": "uri" },
+      "status": { "enum": ["active", "quarantined", "closed"] },
+      "exceptionId": { "type": "string" },
+      "resolvedAt": { "type": "string", "format": "date-time" }
+    }
+  }
+}

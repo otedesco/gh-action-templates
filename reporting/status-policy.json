@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "freshnessHours": 24,
+  "requiredCheckFamilies": ["core", "coverage", "security"],
+  "statusPrecedence": [
+    "missing",
+    "unavailable",
+    "malformed",
+    "stale",
+    "cancelled",
+    "failing",
+    "excepted",
+    "passing",
+    "unknown"
+  ]
+}

@@ -3,7 +3,7 @@
   "type": "array",
   "items": {
     "type": "object",
-    "required": ["id", "owner", "rationale", "scope", "compensatingControl", "approvedBy", "expiresAt"],
+    "required": ["id", "owner", "rationale", "scope", "compensatingControl", "approvedBy", "expiresAt", "remediation"],
     "additionalProperties": false,
     "properties": {
       "id": { "type": "string", "pattern": "^[A-Z0-9][A-Z0-9._-]+$" },
@@ -23,7 +23,17 @@
       },
       "compensatingControl": { "type": "string", "minLength": 1 },
       "approvedBy": { "type": "string", "minLength": 1 },
-      "expiresAt": { "type": "string", "format": "date-time" }
+      "expiresAt": { "type": "string", "format": "date-time" },
+      "remediation": {
+        "type": "object",
+        "required": ["issue", "status", "verifiedAt"],
+        "additionalProperties": false,
+        "properties": {
+          "issue": { "type": "string", "format": "uri", "minLength": 1 },
+          "status": { "enum": ["open", "closed"] },
+          "verifiedAt": { "type": ["string", "null"], "format": "date-time" }
+        }
+      }
     }
   }
 }

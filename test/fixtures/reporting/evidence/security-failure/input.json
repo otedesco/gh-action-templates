@@ -1,0 +1,12 @@
+{
+  "outcome": "failure",
+  "policyVersion": "1",
+  "scannerVersions": {
+    "codeql": "2.20.0",
+    "gitleaks": "8.0.0"
+  },
+  "findings": [
+    { "rule": "rule-a", "subject": "private/path", "secret": "SENTINEL-SECRET" },
+    { "rule": "rule-b", "subject": "private/path" }
+  ]
+}
