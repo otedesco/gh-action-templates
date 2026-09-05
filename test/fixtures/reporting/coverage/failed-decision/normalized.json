@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "files": {
+    "src/a.ts": {
+      "statements": { "covered": 2, "total": 3 },
+      "branches": { "covered": 1, "total": 2 },
+      "functions": { "covered": 1, "total": 2 },
+      "lines": { "covered": 3, "total": 4 }
+    },
+    "src/b.ts": {
+      "statements": { "covered": 3, "total": 3 },
+      "branches": { "covered": 2, "total": 2 },
+      "functions": { "covered": 1, "total": 1 },
+      "lines": { "covered": 4, "total": 4 }
+    }
+  }
+}

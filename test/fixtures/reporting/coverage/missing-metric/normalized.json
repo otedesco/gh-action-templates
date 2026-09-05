@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "files": {
+    "src/a.ts": {
+      "statements": { "covered": 1, "total": 1 },
+      "functions": { "covered": 1, "total": 1 },
+      "lines": { "covered": 1, "total": 1 }
+    }
+  }
+}

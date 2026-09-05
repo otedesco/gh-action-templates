@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "sourceErrors": ["src/a.ts is uncovered"],
+  "changed": { "passed": false },
+  "ratchet": { "passed": true }
+}
