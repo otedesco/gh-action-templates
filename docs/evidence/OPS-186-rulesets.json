@@ -17,16 +17,8 @@
           "target": "branch",
           "targetRef": "refs/heads/main",
           "bypassActors": [],
-          "ruleTypes": [
-            "required_status_checks",
-            "required_linear_history",
-            "non_fast_forward",
-            "deletion"
-          ],
-          "requiredContexts": [
-            "Quality / core",
-            "Security / aggregate"
-          ]
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate"]
         },
         {
           "id": 22223814,
@@ -43,9 +35,7 @@
               "mode": "pull_request"
             }
           ],
-          "ruleTypes": [
-            "pull_request"
-          ]
+          "ruleTypes": ["pull_request"]
         }
       ],
       "requiredChecks": [
@@ -84,16 +74,8 @@
           "target": "branch",
           "targetRef": "refs/heads/main",
           "bypassActors": [],
-          "ruleTypes": [
-            "required_status_checks",
-            "required_linear_history",
-            "non_fast_forward",
-            "deletion"
-          ],
-          "requiredContexts": [
-            "Quality / core",
-            "Security / aggregate / Security / aggregate"
-          ]
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
         },
         {
           "id": 22223823,
@@ -110,9 +92,7 @@
               "mode": "pull_request"
             }
           ],
-          "ruleTypes": [
-            "pull_request"
-          ]
+          "ruleTypes": ["pull_request"]
         }
       ],
       "requiredChecks": [
@@ -151,16 +131,8 @@
           "target": "branch",
           "targetRef": "refs/heads/main",
           "bypassActors": [],
-          "ruleTypes": [
-            "required_status_checks",
-            "required_linear_history",
-            "non_fast_forward",
-            "deletion"
-          ],
-          "requiredContexts": [
-            "Quality / core",
-            "Security / aggregate / Security / aggregate"
-          ]
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
         },
         {
           "id": 22223826,
@@ -177,9 +149,7 @@
               "mode": "pull_request"
             }
           ],
-          "ruleTypes": [
-            "pull_request"
-          ]
+          "ruleTypes": ["pull_request"]
         }
       ],
       "requiredChecks": [
@@ -218,16 +188,8 @@
           "target": "branch",
           "targetRef": "refs/heads/main",
           "bypassActors": [],
-          "ruleTypes": [
-            "required_status_checks",
-            "required_linear_history",
-            "non_fast_forward",
-            "deletion"
-          ],
-          "requiredContexts": [
-            "Quality / core",
-            "Security / aggregate / Security / aggregate"
-          ]
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
         },
         {
           "id": 22223830,
@@ -244,9 +206,7 @@
               "mode": "pull_request"
             }
           ],
-          "ruleTypes": [
-            "pull_request"
-          ]
+          "ruleTypes": ["pull_request"]
         }
       ],
       "requiredChecks": [
@@ -285,16 +245,8 @@
           "target": "branch",
           "targetRef": "refs/heads/main",
           "bypassActors": [],
-          "ruleTypes": [
-            "required_status_checks",
-            "required_linear_history",
-            "non_fast_forward",
-            "deletion"
-          ],
-          "requiredContexts": [
-            "Quality / core",
-            "Security / aggregate / Security / aggregate"
-          ]
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
         },
         {
           "id": 22223840,
@@ -311,9 +263,7 @@
               "mode": "pull_request"
             }
           ],
-          "ruleTypes": [
-            "pull_request"
-          ]
+          "ruleTypes": ["pull_request"]
         }
       ],
       "requiredChecks": [
@@ -352,16 +302,8 @@
           "target": "branch",
           "targetRef": "refs/heads/main",
           "bypassActors": [],
-          "ruleTypes": [
-            "required_status_checks",
-            "required_linear_history",
-            "non_fast_forward",
-            "deletion"
-          ],
-          "requiredContexts": [
-            "Quality / core",
-            "Security / aggregate / Security / aggregate"
-          ]
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
         },
         {
           "id": 22223851,
@@ -378,9 +320,7 @@
               "mode": "pull_request"
             }
           ],
-          "ruleTypes": [
-            "pull_request"
-          ]
+          "ruleTypes": ["pull_request"]
         }
       ],
       "requiredChecks": [
@@ -419,16 +359,8 @@
           "target": "branch",
           "targetRef": "refs/heads/main",
           "bypassActors": [],
-          "ruleTypes": [
-            "required_status_checks",
-            "required_linear_history",
-            "non_fast_forward",
-            "deletion"
-          ],
-          "requiredContexts": [
-            "Quality / core",
-            "Security / aggregate / Security / aggregate"
-          ]
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Quality / core", "Security / aggregate / Security / aggregate"]
         },
         {
           "id": 22223864,
@@ -445,9 +377,7 @@
               "mode": "pull_request"
             }
           ],
-          "ruleTypes": [
-            "pull_request"
-          ]
+          "ruleTypes": ["pull_request"]
         }
       ],
       "requiredChecks": [
@@ -486,15 +416,8 @@
           "target": "branch",
           "targetRef": "refs/heads/main",
           "bypassActors": [],
-          "ruleTypes": [
-            "required_status_checks",
-            "required_linear_history",
-            "non_fast_forward",
-            "deletion"
-          ],
-          "requiredContexts": [
-            "Security / aggregate / Security / aggregate"
-          ]
+          "ruleTypes": ["required_status_checks", "required_linear_history", "non_fast_forward", "deletion"],
+          "requiredContexts": ["Security / aggregate / Security / aggregate"]
         },
         {
           "id": 22223874,
@@ -511,9 +434,7 @@
               "mode": "pull_request"
             }
           ],
-          "ruleTypes": [
-            "pull_request"
-          ]
+          "ruleTypes": ["pull_request"]
         }
       ],
       "requiredChecks": [
