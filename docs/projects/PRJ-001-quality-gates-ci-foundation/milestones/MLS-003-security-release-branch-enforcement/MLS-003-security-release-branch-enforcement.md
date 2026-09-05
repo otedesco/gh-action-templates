@@ -2,9 +2,9 @@
 
 - **Project:** `PRJ-001` — Quality Gates & CI Foundation
 - **Linear milestone:** M3 — Security, release, and branch enforcement
-- **Status:** In progress — OPS-184 and OPS-185 complete; OPS-186 remains
+- **Status:** Complete — 2026-09-04
 - **Target date:** 2026-10-23
-- **Progress:** 81.25% (13 of 16 points complete; OPS-184 and OPS-185 complete)
+- **Progress:** 100% (16 of 16 points complete)
 - **Owner:** Oswaldo Tedesco
 
 ## Purpose
@@ -15,10 +15,11 @@ The milestone closes the gap between having reliable workflows and enforcing the
 
 ## Delivery progress
 
-OPS-184 and OPS-185 are complete. OPS-184 delivered the central blocking security policy and reusable workflow, then adopted the immutable caller across all eight repositories. OPS-185 now adds build-once container release verification, digest-bound SBOM/provenance evidence, least-privilege registry publication, and hardened Cerberus/Hermes production images. The remaining milestone scope is live protected-branch ruleset enforcement (OPS-186).
+OPS-184, OPS-185, and OPS-186 are complete. OPS-184 delivered the central blocking security policy and reusable workflow, then adopted the immutable caller across all eight repositories. OPS-185 added build-once container release verification, digest-bound SBOM/provenance evidence, least-privilege registry publication, and hardened Cerberus/Hermes production images. OPS-186 completed the live protected-branch ruleset rollout and required-check enforcement across all eight repositories.
 
 See the [OPS-184 completion record](tasks/OPS-184-security-gates.md) for merged pull requests, commit references, validation, limitations, and follow-up ownership.
 See the [OPS-185 completion record](tasks/OPS-185-container-release-gates.md#completion-record--2026-09-03) for the container implementation, merged repositories, validation, and limitations.
+See the [OPS-186 completion record](tasks/OPS-186-repository-rulesets.md#completion-record--2026-09-04) and [live verification evidence](../../../../evidence/OPS-186-live-verification.md) for the protected-branch rollout.
 
 ## Entry criteria
 
@@ -47,7 +48,7 @@ Before security and repository enforcement begins:
 |---|---|---:|---|---|---|
 | `OPS-184` | Add CodeQL, dependency review, secret, license, and workflow security gates | 5 | Complete — 2026-09-03 | [Completion record](tasks/OPS-184-security-gates.md) |
 | `OPS-185` | Add container build, scan, smoke, SBOM, and provenance gates | 8 | Complete — 2026-09-03 | 2026-10-04 | [Completion record](tasks/OPS-185-container-release-gates.md#completion-record--2026-09-03) |
-| `OPS-186` | Add repository rulesets and required checks on main | 3 | Backlog | 2026-10-11 | [Implementation plan](tasks/OPS-186-repository-rulesets.md) |
+| `OPS-186` | Add repository rulesets and required checks on main | 3 | Complete — 2026-09-04 | 2026-10-11 | [Completion record](tasks/OPS-186-repository-rulesets.md#completion-record--2026-09-04) |
 
 Total estimated scope: 16 points.
 
@@ -144,3 +145,11 @@ MLS-002 truthful, immutable, least-privilege gates
 - [`MLS-002` core gates and coverage ratchet](../MLS-002-core-gates-coverage-ratchet/MLS-002-core-gates-coverage-ratchet.md)
 - [Quality gate specification](../../../../quality-gates/gate-specification.md)
 - [Testing and coverage strategy](../../../../testing/testing-and-coverage-strategy.md)
+
+## Delivery summary — 2026-09-04
+
+MLS-003 delivered the security, container-release, and protected-branch controls required by the Quality Gates & CI Foundation. OPS-184 added blocking security analysis and least-privilege reusable workflows; OPS-185 added build-once container verification with digest-bound vulnerability, SBOM, provenance, startup, health, and publication controls; OPS-186 made the approved quality and security contexts mandatory on main across all eight repositories.
+
+The OPS-186 implementation added the canonical governance policy and inventory, CODEOWNERS and required-check audits, deterministic ruleset rendering, a fail-closed staged rollout script, and sanitized live evidence. GitHub Codex app read-back on 2026-09-04 confirmed two active rulesets per repository, strict required checks, linear history, force-push/deletion denial, review and CODEOWNERS requirements, and a pull-request-only sole-maintainer bypass isolated from CI and history rules. The affected repositories are otedesco/gh-action-templates, commons, cache, server-utils, notify, cerberus, hermes, and web-app.
+
+Validation includes the merged PR checks, central governance and payload tests, CODEOWNERS and required-check audits, successful required-context runs on all eight controlled verification PRs, live read-back of all 16 rulesets, and git diff --check. Evidence is in [OPS-186-rulesets.json](../../../../evidence/OPS-186-rulesets.json) and [OPS-186-live-verification.md](../../../../evidence/OPS-186-live-verification.md). Remaining limitations are documented: destructive direct-push/force-push/deletion and intentionally failing-check attempts were not run, the Codex app cannot read the separate branch-protection endpoint because of GitHub HTTP 403, and the sole-maintainer bypass should be removed when an independent reviewer is available. MLS-004 owns the subsequent adoption and stability campaign.

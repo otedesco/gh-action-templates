@@ -106,3 +106,38 @@ git commit -m "test: define protected branch policy"
 - Controlled negative and positive tests are recorded.
 - Evidence is linked to `OPS-186`.
 
+## Completion record — 2026-09-04
+
+**Status:** Complete — implementation, live rollout, evidence, and repository documentation closeout are complete.
+
+### Merged pull requests and affected repositories
+
+All scoped implementation and verification pull requests are merged into the default `main` branches:
+
+- [gh-action-templates #32](https://github.com/otedesco/gh-action-templates/pull/32) — central ruleset policy, inventory, validators, payload renderer, runbook, and initial evidence; merged as `dee2826`.
+- [gh-action-templates #33](https://github.com/otedesco/gh-action-templates/pull/33) — consumer required-check provenance alignment; merged as `1ff2338`.
+- [gh-action-templates #34](https://github.com/otedesco/gh-action-templates/pull/34) — nested reusable-workflow check contexts and fail-closed rollout tooling; merged as `939239b`.
+- [gh-action-templates #36](https://github.com/otedesco/gh-action-templates/pull/36) — isolated sole-maintainer review bypass and guarded ruleset updates; merged as `bd54b75`.
+- [gh-action-templates #35](https://github.com/otedesco/gh-action-templates/pull/35) — controlled verification fixture; merged as `4fbf9f8`.
+- Consumer contract PRs: [commons #21](https://github.com/otedesco/commons/pull/21), [cache #25](https://github.com/otedesco/cache/pull/25), [server-utils #16](https://github.com/otedesco/server-utils/pull/16), [notify #21](https://github.com/otedesco/notify/pull/21), [cerberus #54](https://github.com/otedesco/cerberus/pull/54), [hermes #22](https://github.com/otedesco/hermes/pull/22), and [web-app #8](https://github.com/otedesco/web-app/pull/8); all merged on 2026-09-03.
+- Consumer verification PRs: [commons #22](https://github.com/otedesco/commons/pull/22), [cache #26](https://github.com/otedesco/cache/pull/26), [server-utils #17](https://github.com/otedesco/server-utils/pull/17), [notify #22](https://github.com/otedesco/notify/pull/22), [cerberus #55](https://github.com/otedesco/cerberus/pull/55), [hermes #23](https://github.com/otedesco/hermes/pull/23), and [web-app #9](https://github.com/otedesco/web-app/pull/9); all merged on 2026-09-03.
+
+GitHub Codex app verification confirmed these resulting `main` commits: `gh-action-templates` `4fbf9f8`, `commons` `f24c5e6`, `cache` `0dd9019`, `server-utils` `80e1bc5`, `notify` `257c09b`, `cerberus` `3c37788`, `hermes` `c42dac7`, and `web-app` `62017f8`.
+
+### Implementation and technical decisions
+
+- Added a deterministic central policy and eight-repository inventory under `governance/`.
+- Added policy, CODEOWNERS, required-check, and payload validation/audit tooling plus the administrator rollout script.
+- Standardized the exact required contexts emitted by the default-branch workflows, including nested reusable-workflow contexts such as `Security / aggregate / Security / aggregate`.
+- Applied two active rulesets per repository, both targeting `refs/heads/main`: a review-protection layer with one approval, CODEOWNERS review, stale-review dismissal, and conversation resolution; and a no-bypass main-protection layer with strict checks, linear history, force-push denial, and deletion denial.
+- Limited the sole-maintainer exception to the exact `otedesco` GitHub user in `pull_request` mode and kept it out of required checks and history enforcement.
+
+### Evidence and validation
+
+Live ruleset IDs, required-check URLs, verification PRs, final main commits, and limitations are recorded in [OPS-186-rulesets.json](../../../../../evidence/OPS-186-rulesets.json) and [OPS-186-live-verification.md](../../../../../evidence/OPS-186-live-verification.md). The GitHub Codex app read back all 16 active rulesets and all eight default-branch refs. Successful required contexts were observed on each controlled verification PR head.
+
+Validation passed: `pnpm test:repository-rulesets`, `pnpm test:codeowners`, `pnpm test:required-checks`, `pnpm test:ruleset-payload`, and `git diff --check`. Local runs emitted the expected Node engine warning because the workspace runtime was Node 20.11.1 while the project contract is Node 24.20.0.
+
+### Delivered capability, limitations, and follow-up
+
+All eight repositories now require pull requests, ownership review, stable strict checks, protected history, and auditable review bypass behavior on `main`. Direct push, force-push, deletion, and intentionally failing-check attempts were not performed because they would create destructive or noisy external state; the active ruleset read-back is the recorded policy evidence for those controls. The GitHub Codex app cannot read the separate branch-protection endpoint because GitHub returns HTTP 403, but it can read the repository rulesets used for enforcement. The sole-maintainer bypass should be removed when an independent eligible reviewer becomes available. MLS-004 owns broader adoption/stability campaigns.
